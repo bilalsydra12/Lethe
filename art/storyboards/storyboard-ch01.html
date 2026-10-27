@@ -1,0 +1,167 @@
+<title>LETHE Chapter 1 Storyboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a dark screening-room reel. Each scene opens with a film slate, then its frames run in order, picture first, one line under each. */
+:root {
+  --bg: #121117;        /* projection-room dark, faintly violet */
+  --panel: #1b1a22;
+  --fg: #ece8f2;
+  --muted: #a39cb3;
+  --violet: #b9a2ea;    /* Nysa's light (NOW) */
+  --line: #2e2b3a;
+  --display: "Marcellus", "Cormorant Garamond", Georgia, serif;
+  --body: "Literata", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-block: 48px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+header { display: flex; flex-direction: column; gap: 12px; max-width: 65ch; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--violet);
+}
+h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(34px, 6vw, 60px);
+  line-height: 1.05;
+  margin: 0;
+  text-wrap: balance;
+}
+.lede { color: var(--muted); margin: 0; }
+.cast { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 8px; }
+.cast figure { margin: 0; display: flex; gap: 12px; align-items: center; }
+.cast img { width: 56px; height: 56px; object-fit: cover; object-position: top; border-radius: 50%; border: 1px solid var(--line); }
+.cast figcaption { font-family: var(--mono); font-size: 12px; color: var(--muted); line-height: 1.4; }
+.cast b { color: var(--fg); font-weight: 500; display: block; }
+
+section.scene { display: flex; flex-direction: column; gap: 28px; }
+.slate {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 24px;
+  align-items: baseline;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+.slate .no { font-family: var(--mono); font-size: 13px; color: var(--violet); letter-spacing: .1em; }
+.slate h2 { font-family: var(--display); font-weight: 400; font-size: clamp(26px, 4vw, 38px); margin: 0; line-height: 1.15; text-wrap: balance; }
+.slate .meta { grid-column: 2; font-family: var(--mono); font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 18px; }
+
+.frames { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; }
+.frame { margin: 0; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.frame.wide { grid-column: 1 / -1; }
+.frame .shot { position: relative; }
+.frame img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; border-radius: 3px; background: var(--panel); }
+.frame .tag {
+  position: absolute; top: 10px; left: 10px;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .08em;
+  background: rgba(18,17,23,.78); color: var(--fg);
+  padding: 3px 8px; border-radius: 2px;
+}
+.frame figcaption { display: flex; flex-direction: column; gap: 4px; max-width: 62ch; }
+.frame .what { margin: 0; }
+.frame .feel { margin: 0; font-family: var(--mono); font-size: 12px; letter-spacing: .06em; color: var(--violet); text-transform: uppercase; }
+.frame q { font-style: italic; }
+
+footer { border-top: 1px solid var(--line); padding-top: 20px; color: var(--muted); font-size: 14px; max-width: 70ch; }
+
+@media (max-width: 720px) {
+  .frames { grid-template-columns: minmax(0, 1fr); }
+  .slate { grid-template-columns: 1fr; }
+  .slate .meta { grid-column: 1; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">LETHE · Part One · Chapter 1 · Storyboard v1</span>
+    <h1>The Stars on the Ceiling</h1>
+    <p class="lede">Scenes 1 and 2, New York, June 2026. Nine frames, in order. Read the pictures; the line under each says what happens.</p>
+    <div class="cast">
+      <figure><img src="characters/nysa-v9.png" alt="Nysa, locked look"><figcaption><b>Nysa Ali, 25</b>Paintings conservator · NOW · violet</figcaption></figure>
+      <figure><img src="characters/eesa-v9.png" alt="Eesa, locked look"><figcaption><b>Eesa Ali, 29</b>Erased in 2011 · THEN · blue</figcaption></figure>
+    </div>
+  </header>
+
+  <section class="scene" aria-labelledby="s1">
+    <div class="slate">
+      <span class="no">SCENE 1</span>
+      <h2 id="s1">The Painted-Over Child</h2>
+      <div class="meta"><span>Fri 5 June 2026 · 6:40 pm</span><span>Ellery Museum, Upper East Side</span><span>26 °C, humid, storms coming</span></div>
+    </div>
+    <div class="frames">
+      <figure class="frame wide">
+        <div class="shot"><img src="ch01/s1-1.jpg" alt="Nysa at the conservation table, staring at the 1871 family portrait"><span class="tag">1A</span></div>
+        <figcaption><p class="what">Nysa cleans an 1871 family portrait. She has always hated the empty chair in it. Under the green curtain paint, a boy's white collar appears.</p><p class="feel">Wonder</p></figcaption>
+      </figure>
+      <figure class="frame">
+        <div class="shot"><img src="ch01/s1-2.jpg" alt="Close-up of the hidden boy emerging from under the curtain paint"><span class="tag">1B</span></div>
+        <figcaption><p class="what">A boy, painted out 150 years ago. The mother's hand was never on an empty chair. It was on her son.</p><p class="feel">Cold recognition</p></figcaption>
+      </figure>
+      <figure class="frame">
+        <div class="shot"><img src="ch01/s1-3.jpg" alt="Video call with Ammi in her prayer dupatta in the mountain kitchen"><span class="tag">1C</span></div>
+        <figcaption><p class="what">Ammi calls from Chandsar just after dawn prayer. The house is sold. <q>Clear out the store room.</q> It was Eesa's room.</p><p class="feel">The first crack</p></figcaption>
+      </figure>
+      <figure class="frame wide">
+        <div class="shot"><img src="ch01/s1-4.jpg" alt="Dark studio, the painting under a white sheet, ERASED banner on the wall"><span class="tag">1D</span></div>
+        <figcaption><p class="what">She leaves. The painting lies under a white sheet. ERASED hangs on the wall. The storm reaches the city.</p><p class="feel">Dread · Eesa's theme enters</p></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="scene" aria-labelledby="s2">
+    <div class="slate">
+      <span class="no">SCENE 2</span>
+      <h2 id="s2">Four Faces</h2>
+      <div class="meta"><span>Same night · 11:20 pm</span><span>Her apartment, 37th Avenue, Jackson Heights</span><span>Thunderstorm, 23 °C</span></div>
+    </div>
+    <div class="frames">
+      <figure class="frame wide">
+        <div class="shot"><img src="ch01/s2-1.jpg" alt="Nysa on the rug in her apartment during the storm, purple lights and empty frames"><span class="tag">2A</span></div>
+        <figcaption><p class="what">Her apartment: purple lights, forty-one restored frames with no paintings in them, the 7 train glowing through the rain. The flight is on screen. She doesn't book it yet.</p><p class="feel">A loneliness she has made peace with</p></figcaption>
+      </figure>
+      <figure class="frame">
+        <div class="shot"><img src="ch01/s2-2.jpg" alt="Homemade Lego rocket on the top shelf"><span class="tag">2B</span></div>
+        <figcaption><p class="what">The rocket Eesa built from mismatched bricks. Nobody else ever notices it. Rule No. 1: when someone is erased, their things stay.</p><p class="feel">Mystery</p></figcaption>
+      </figure>
+      <figure class="frame">
+        <div class="shot"><img src="ch01/s2-3.jpg" alt="The family photo at Lake Saiful Muluk, 2010"><span class="tag">2C</span></div>
+        <figcaption><p class="what">Saiful Muluk, August 2010. Abbu, Ammi, Nysa on his shoulders, and Eesa with his telescope, looking at the sky. Everyone else sees three faces.</p><p class="feel">Grief nobody believes</p></figcaption>
+      </figure>
+      <figure class="frame">
+        <div class="shot"><img src="ch01/s2-4.jpg" alt="Sketchbook with drawings of the same boy growing older"><span class="tag">2D</span></div>
+        <figcaption><p class="what">Every June since he vanished, she draws him one year older. Fourteen drawings. She has never written his name.</p><p class="feel">Love, kept by hand</p></figcaption>
+      </figure>
+      <figure class="frame">
+        <div class="shot"><img src="ch01/s2-5.jpg" alt="Laptop email ending with the words my brother's"><span class="tag">2E</span></div>
+        <figcaption><p class="what">She books the flight and writes to her boss: <q>…clear my brother's</q>. She deletes it, writes <q>the old store room</q>, and sends.</p><p class="feel">Heartbreak, quietly</p></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <footer>
+    These are AI concept frames for mood and staging only. Final characters and scenes will be made by a human artist from the locked looks. Full prose script: <span style="font-family: var(--mono)">scripts/chapter-01-script.md</span>. Next: Scene 3, The Road Up.
+  </footer>
+</div>
