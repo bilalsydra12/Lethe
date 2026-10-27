@@ -162,7 +162,7 @@ The kettle behind her mother began to tick as it heated.
 
 "You said you were thinking about *thinking*."
 
-"Well, we thought. Your father's knees, Nysa. You haven't seen him on the stairs. And the winters, *Allah*, last winter the road was closed for nineteen days. Nineteen days. If something happened to one of us, what? A helicopter? We're old. Your Abbu found a flat in Islamabad, in F-11, near the hospital, with a lift. A *lift*." She said it the way someone else might say *a swimming pool*. "A man from Lahore is buying the house. He's going to make it into a guest house for tourists. He takes the keys on the twentieth."
+"Well, we thought. Your father got the post at the university, Nysa. In Islamabad. *Professor* Ali." She said the word as if she were tasting it. "And the winters, *Allah*, last winter the road was closed for nineteen days. Nineteen days. If something happened to one of us, what? A helicopter? Your Abbu found a flat in F-11, with a balcony and a lift. A *lift*." She said it the way someone else might say *a swimming pool*. "A man from Lahore is buying the house. He's going to make it into a guest house for tourists. He takes the keys on the twentieth."
 
 "The twentieth of *June*?"
 
@@ -311,7 +311,7 @@ It was an ordinary print from an ordinary shop in Mansehra, glossy, the colours 
 
 In the photograph the lake was so still that the mountain stood in it twice. Malika Parbat, the Queen of Mountains, white and enormous, and below it her reflection, white and enormous and upside down. In front of the water, on the stony shore, a family stood in a row in their jackets. It had been cold even in August.
 
-Her father, Alex, at forty-five: thinner, black-haired, in a brown wool jacket and a grey cap, squinting into the sun and smiling with only one side of his mouth, which was the only way he ever smiled for cameras. On his shoulders, holding onto his ears with both hands, a nine-year-old girl in a bright pink anorak with the hood up, laughing so hard her eyes had disappeared. Beside them her mother, Syd, in a green shawl, one hand raised to shield her eyes and the other half-lifted toward the girl, as if she were about to say *careful*, which she probably was.
+Her father, Alex, at thirty-nine: tall, his long black hair combed straight back and tied at the nape, a full dark beard, a brown leather jacket, grinning so widely his eyes had creased almost shut. On his shoulders, holding onto his ears with both hands, a nine-year-old girl in a bright pink anorak with the hood up, laughing so hard her eyes had disappeared. Beside them her mother, Syd, at thirty-six, her long caramel-brown hair loose and blowing across her face, a green shawl around her shoulders, small gold jhumkas catching the sun, one hand raised to shield her eyes and the other half-lifted toward the girl, as if she were about to say *careful*, which she probably was.
 
 And at the end of the row, standing a little apart from the others, a boy.
 

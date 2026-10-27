@@ -49,6 +49,22 @@ The AI images do **not** show this correctly. Use this description:
 
 ---
 
+## The parents · Alex (Abbu) 55 and Syd (Ammi) 52, in 2026
+
+![Alex and Syd](parents-v1.png)
+
+Young, stylish and warm for their age. **Never** frail or elderly.
+
+| | Alex (Abbu) | Syd (Ammi) |
+|---|---|---|
+| **Age** | 55 in 2026 · 39 in the 2010 lake photo | 52 in 2026 · 36 in the 2010 lake photo |
+| **Look** | Tall, fair. Long black hair with a few silver strands, combed straight back and tied at the nape. Full, neatly groomed dark beard, a touch of grey at the chin. | Fair, glowing skin. Long loose wavy caramel-brown hair with lighter highlights. Defined brows, warm brown eyes. |
+| **Expression** | A big, warm grin that creases his eyes. | A soft, affectionate smile; animated when she talks. |
+| **Style** | Black kurta and white shalwar at home; leather jacket outdoors; steel wristwatch. | Elegant even at home: lace or embroidered outfits, sheer dupatta, gold jhumkas and thin gold bangles. A white chiffon prayer dupatta at dawn. |
+| **Life** | Teacher, just given a university post in Islamabad. Drives an old white Corolla he refuses to sell. | Talks fast, always feeding someone. |
+
+---
+
 ## The pair
 
 - **Nysa:** dawn, mist, the lake above, violet and grey.

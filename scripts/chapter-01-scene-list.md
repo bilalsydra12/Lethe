@@ -28,8 +28,8 @@
 
 | Person | In 2026 |
 |---|---|
-| **Abbu: Alex** (father) | 61. Retired schoolteacher. Quiet, practical, drives an old white Corolla. Doesn't remember Eesa. |
-| **Ammi: Syd** (mother) | 57. Warm, talks fast, always feeding someone. Doesn't remember Eesa. |
+| **Abbu: Alex** (father) | 55. Tall, long black hair combed back and tied, full dark beard, a wide easy grin. A teacher who has just been given a university post in Islamabad. Drives an old white Corolla he refuses to sell. Doesn't remember Eesa. |
+| **Ammi: Syd** (mother) | 52. Fair, long caramel-brown hair with lighter streaks, gold jhumkas, stylish even at home. Warm, talks fast, always feeding someone. Doesn't remember Eesa. |
 | **Nysa** | 25. Paintings conservator in New York. Remembers four people in the family photo. |
 | **Eesa** | Would be 29. Erased on the night of 16–17 June 2011, aged 14. |
 
@@ -70,7 +70,7 @@ The family photograph: **Lake Saiful Muluk, August 2010.** All four in jackets, 
 - **Where:** Islamabad airport, then north on the N-15 through Abbottabad, Mansehra, Balakot (rebuilt after the 2005 earthquake), Kaghan and Naran, up to Chandsar.
 - **Weather:** 38 °C and hazy in Islamabad, cooling every hour. By Naran, 17 °C with snow on the peaks. The Kunhar River runs grey-green and loud with snowmelt.
 - **Who:** Nysa and Abbu, in his old white Corolla with prayer beads hanging from the mirror.
-- **What happens:** painted trucks, roadside chai at Balakot, landslide rubble near Kaghan. Abbu talks about the move and his knees. She asks carefully: "Do you remember the trip to Saiful Muluk?" He remembers it fondly: "The three of us. You got so sunburned."
+- **What happens:** painted trucks, roadside chai at Balakot, landslide rubble near Kaghan. Abbu talks about the move and his new university job. She asks carefully: "Do you remember the trip to Saiful Muluk?" He remembers it fondly: "The three of us. You got so sunburned."
 - **Player does:** conversation choices in the car. Some unlock small details about her childhood.
 - **Feeling:** the ache of being home and alone at the same time.
 - **History:** the 2005 earthquake (real), mentioned in passing.
