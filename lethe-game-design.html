@@ -1,0 +1,331 @@
+<title>LETHE Game Design</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a field manual for the descent. One column of reading, with weapon and enemy "specimen cards" in grids, like a museum catalogue of things that can hurt you. */
+:root {
+  --bg: #121117;
+  --panel: #1b1a22;
+  --panel2: #22202b;
+  --fg: #ece8f2;
+  --muted: #a39cb3;
+  --violet: #b9a2ea;   /* Nysa, NOW */
+  --blue: #8fb4ec;     /* Eesa, THEN */
+  --grey: #8d8a96;     /* the Grey */
+  --ember: #e0a46a;    /* danger / bosses */
+  --line: #2e2b3a;
+  --display: "Marcellus", "Cormorant Garamond", Georgia, serif;
+  --body: "Literata", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.65; }
+.wrap {
+  max-width: 1080px; margin: 0 auto;
+  padding-block: 48px 80px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 56px;
+}
+header { display: flex; flex-direction: column; gap: 14px; max-width: 68ch; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--violet); }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(36px, 6vw, 62px); line-height: 1.05; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 400; font-size: clamp(26px, 4vw, 36px); margin: 0; line-height: 1.15; text-wrap: balance; }
+h3 { font-family: var(--display); font-weight: 400; font-size: 22px; margin: 0; line-height: 1.2; }
+p { margin: 0; }
+.lede { color: var(--muted); font-size: 18px; }
+section { display: flex; flex-direction: column; gap: 20px; }
+section > .intro { max-width: 68ch; color: var(--muted); }
+.sec-head { display: flex; gap: 16px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 20px; flex-wrap: wrap; }
+.sec-head .no { font-family: var(--mono); font-size: 13px; letter-spacing: .1em; color: var(--violet); }
+
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { font-family: var(--mono); font-size: 12px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
+
+.split { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
+.split div { background: var(--panel); padding: 16px; border-radius: 4px; display: flex; flex-direction: column; gap: 6px; }
+.split b { font-family: var(--display); font-weight: 400; font-size: 34px; line-height: 1; }
+.split span { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+
+ol.loop { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; counter-reset: s; }
+ol.loop li { counter-increment: s; background: var(--panel); border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+ol.loop li::before { content: counter(s); font-family: var(--mono); font-size: 12px; color: var(--violet); }
+ol.loop b { font-family: var(--display); font-weight: 400; font-size: 19px; }
+ol.loop p { font-size: 14px; color: var(--muted); }
+
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+.cards.three { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.card { background: var(--panel); border-radius: 4px; padding: 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; border-top: 2px solid var(--line); }
+.card.nysa { border-top-color: var(--violet); }
+.card.eesa { border-top-color: var(--blue); }
+.card.grey { border-top-color: var(--grey); }
+.card.boss { border-top-color: var(--ember); }
+.card .kind { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.card dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; }
+.card dt { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.card dd { margin: 0; }
+.card .src { font-size: 13px; color: var(--muted); font-style: italic; }
+
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--panel); }
+tr:last-child td { border-bottom: 0; }
+td.yr { font-family: var(--mono); font-size: 13px; white-space: nowrap; color: var(--violet); }
+
+.rules { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 72ch; }
+.rules li { padding-left: 18px; position: relative; }
+.rules li::before { content: ""; position: absolute; left: 0; top: .7em; width: 8px; height: 1px; background: var(--violet); }
+.note { background: var(--panel2); border-radius: 4px; padding: 16px 18px; max-width: 72ch; font-size: 15px; }
+.note b { color: var(--violet); font-weight: 600; }
+footer { border-top: 1px solid var(--line); padding-top: 20px; color: var(--muted); font-size: 14px; max-width: 72ch; }
+
+@media (max-width: 860px) {
+  .split, ol.loop { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .cards.three { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 600px) {
+  .cards, .cards.three { grid-template-columns: minmax(0,1fr); }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">LETHE · Game Design Document · v0.1 · 27 October 2026</span>
+    <h1>How LETHE Plays</h1>
+    <p class="lede">The story is the spine. This document is the muscle: what the player holds, what they fight, what it costs, and the moments they'll talk about afterwards.</p>
+    <div class="pills">
+      <span class="pill">Third-person cinematic action-adventure</span>
+      <span class="pill">Unreal Engine 5</span>
+      <span class="pill">PS5 · Xbox Series · PC</span>
+      <span class="pill">Target rating: Teen / PEGI 16</span>
+      <span class="pill">Part One: 12–15 hours</span>
+    </div>
+  </header>
+
+  <!-- 1 -->
+  <section>
+    <div class="sec-head"><span class="no">01</span><h2>What kind of game this is</h2></div>
+    <p class="intro">Think <b>The Last of Us</b> and <b>God of War (2018)</b> for the closeness of the camera and the weight of the fights, <b>Uncharted</b> for the set pieces, <b>A Plague Tale</b> and <b>Hellblade</b> for the dread, and <b>Control</b> for the strangeness. One continuous camera in Lethe, no cuts during play. Fights are close, heavy and deliberate, never button-mashing.</p>
+    <div class="split">
+      <div><b>30%</b><span>Combat</span></div>
+      <div><b>30%</b><span>Exploration and puzzles</span></div>
+      <div><b>15%</b><span>Stealth and escapes</span></div>
+      <div><b>25%</b><span>Story, choices, the THEN timeline</span></div>
+    </div>
+    <div class="note"><b>Tone rule:</b> violence is real but never gory. Creatures of the Grey break apart into ash, ink, plaster dust or fog. In the NOW timeline Nysa never kills a human being: against Sealer agents she hides, escapes, disarms or knocks out. This keeps the game open to a wide audience while the story stays adult.</div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="sec-head"><span class="no">02</span><h2>The chapter loop</h2></div>
+    <p class="intro">Every chapter, from Roanoke to Göbekli Tepe, follows the same eight beats, so players learn the rhythm and feel the dread of the last one coming.</p>
+    <ol class="loop">
+      <li><b>Dream</b><p>A short playable dream, sent from the layer below. It shows the place before you see it.</p></li>
+      <li><b>Arrive</b><p>Fall into the new layer. New light, new language, new rules.</p></li>
+      <li><b>The forgotten</b><p>Meet the people who live there. Help them, and they give you memories back.</p></li>
+      <li><b>Eesa's star</b><p>Find the star he carved. Always a puzzle; often a fight to reach it.</p></li>
+      <li><b>THEN</b><p>Play as Eesa in the same place, years earlier. What you do as him changes what Nysa finds.</p></li>
+      <li><b>Set piece</b><p>The chapter's big action moment: a chase, a flood, a siege.</p></li>
+      <li><b>Warden</b><p>The boss that guards the way down.</p></li>
+      <li><b>The price</b><p>Spend one memory you love to open the door to the next layer.</p></li>
+    </ol>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="sec-head"><span class="no">03</span><h2>Nysa's arsenal</h2></div>
+    <p class="intro">She is a paintings conservator, not a soldier, so every tool she fights with comes from her trade or from the layer she is in. That's what makes her fighting style unlike any other hero's.</p>
+    <div class="cards">
+      <article class="card nysa">
+        <span class="kind">Main weapon · melee</span>
+        <h3>The Mahl Stick</h3>
+        <p>A painter's rest stick from her studio: 1.1 m of ash wood with a padded tip. In Lethe she caps it with whatever she finds, and it becomes a fighting staff.</p>
+        <dl>
+          <dt>Moves</dt><dd>Light and heavy combos, sweeping strikes, a parry that opens enemies up, a vault over low cover.</dd>
+          <dt>Upgrades</dt><dd>A Roman bronze ferrule (Ch. 3), a Hittite iron core (Ch. 5), each changing its weight and speed.</dd>
+        </dl>
+        <p class="src">From Scene 1: it leans against her easel.</p>
+      </article>
+      <article class="card nysa">
+        <span class="kind">Power weapon · costs memories</span>
+        <h3>The Brass Chisel</h3>
+        <p>The Sealers' own tool, stolen from Tomas's desk when she escapes the clinic. It cuts through the Grey, but every strong strike is paid for with a memory.</p>
+        <dl>
+          <dt>Carve</dt><dd>Breaks armour of plaster and stone in one blow.</dd>
+          <dt>Unname</dt><dd>Strips the name off a creature of the Grey, and it falls apart.</dd>
+          <dt>Anchor</dt><dd>Carve a name into a place to make it safe: a checkpoint and a refuge.</dd>
+        </dl>
+        <p class="src">From Scene 12 (taken) and Scene 16 (first used).</p>
+      </article>
+      <article class="card nysa">
+        <span class="kind">Tool · light</span>
+        <h3>The UV Lantern</h3>
+        <p>Her conservation UV torch. In our world it shows overpaint. In Lethe it shows what has been hidden: erased writing, secret doors and enemies that can't otherwise be seen.</p>
+        <dl>
+          <dt>Uses</dt><dd>Reveal hidden enemies, stun creatures of the Grey, read erased inscriptions, solve light puzzles.</dd>
+          <dt>Limit</dt><dd>A charge meter that refills only at anchored places.</dd>
+        </dl>
+        <p class="src">From Scene 1: the UV check on the painting.</p>
+      </article>
+      <article class="card nysa">
+        <span class="kind">Ability · voice</span>
+        <h3>Calling the Names</h3>
+        <p>Like the Roman general who called his soldiers by name across the river Limia, Nysa can shout a name she has learned.</p>
+        <dl>
+          <dt>Uses</dt><dd>Rally the forgotten to fight beside her for a short time, part water, break a boss's hold, wake a frozen person.</dd>
+          <dt>Limit</dt><dd>Each name can be called once per area. Learning names means talking to people.</dd>
+        </dl>
+        <p class="src">From Scene 16: she calls Eesa's name across the Shoal.</p>
+      </article>
+    </div>
+
+    <h3 style="margin-top:12px">Relic weapons: one per layer</h3>
+    <p class="intro">Each layer gives her one weapon of its own time. It is historically accurate, and it <b>can't leave the layer</b>: when she goes down, it stays behind (things belong to their time). Every chapter feels new, and players miss what they lose.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Ch.</th><th>Layer</th><th>Relic</th><th>How it plays</th><th>Real history</th></tr></thead>
+        <tbody>
+          <tr><td class="yr">1 · 1590</td><td>Roanoke</td><td>Matchlock caliver</td><td>One devastating shot, then a long reload while enemies close in. Teaches timing.</td><td>The standard English firearm of the 1580s.</td></tr>
+          <tr><td class="yr">2 · 1258</td><td>Baghdad</td><td>Composite bow</td><td>Silent ranged attacks; fire arrows set the river of ink alight.</td><td>Horn-and-sinew bows were the most advanced weapons of the 13th century.</td></tr>
+          <tr><td class="yr">3 · AD 211</td><td>Rome</td><td>Legionary shield (scutum)</td><td>Block, bash, and push through crowds. The only shield in the game.</td><td>The curved rectangular shield of the Roman legions.</td></tr>
+          <tr><td class="yr">4 · 48 BC</td><td>Alexandria</td><td>Bronze burning mirror</td><td>Focus the Lantern's light into a beam that burns ash creatures and lights the dark.</td><td>Legend says Archimedes burned ships with mirrors. Labelled as legend.</td></tr>
+          <tr><td class="yr">5 · c. 1177 BC</td><td>Hattusa</td><td>Iron dagger</td><td>Fast, and cuts through anything made of bronze. Rare and precious.</td><td>Iron was a luxury in the Bronze Age; Tutankhamun was buried with an iron dagger.</td></tr>
+          <tr><td class="yr">6 · c. 1336 BC</td><td>Amarna</td><td>Throwing stick</td><td>A curved wooden thrower that returns. Knocks down enemies at range.</td><td>Egyptian throwing sticks were found in Tutankhamun's tomb.</td></tr>
+          <tr><td class="yr">7 · c. 9500 BC</td><td>Göbekli Tepe</td><td>Flint blade and sling</td><td>The oldest, simplest weapons for the final, most dangerous layer.</td><td>Flint tools are found by the thousand at Göbekli Tepe.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>Never a weapon:</b> Eesa's Zulfiqar pendant, and anything else sacred to a living faith. It is jewellery, worn quietly, with no power in the game.</div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="sec-head"><span class="no">04</span><h2>The price: memories as power</h2></div>
+    <p class="intro">This is the system no other game has, and the one that makes LETHE more than an action game. Nysa's memories are real items in her journal, collected through the story (the car journey in Scene 3 gives four). Her strongest moves cost them.</p>
+    <ul class="rules">
+      <li><b>Spending is permanent.</b> A spent memory is deleted from the journal, and the game changes: spend "Abbu's laugh", and in every later flashback Abbu's laugh is silent.</li>
+      <li><b>You choose which one.</b> When the chisel needs a memory, the player picks from their own journal. Small ones buy small strikes; precious ones buy the strongest.</li>
+      <li><b>No grinding.</b> Memories are limited. New ones come from helping the forgotten: give a lost person their name back and they give you a memory in return.</li>
+      <li><b>One memory per door.</b> Going down to the next layer always costs one memory the game chooses for you, at the end of each chapter.</li>
+      <li><b>It shapes the ending.</b> How much of Eesa you still remember when you reach him decides what you can say to him, and how Part Three begins.</li>
+    </ul>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="sec-head"><span class="no">05</span><h2>What you fight</h2></div>
+    <h3>The Grey: creatures of forgetting</h3>
+    <div class="cards three">
+      <article class="card grey"><span class="kind">Common</span><h3>Hollows</h3><p>Forgotten people who stopped whispering their own names. Slow, many, and they grab: if one holds you, it drains a memory. Break the grip, or call its name to free it.</p></article>
+      <article class="card grey"><span class="kind">Fast</span><h3>Smudges</h3><p>Blurs at the corner of your eye. Invisible except under the UV Lantern. They strike from behind and teach players to use their light.</p></article>
+      <article class="card grey"><span class="kind">Armoured</span><h3>Whitewash</h3><p>Shapes coated in thick white lime plaster, like overpaint on a painting. Ordinary blows bounce off. Crack them with heavy strikes or one chisel Carve.</p></article>
+      <article class="card grey"><span class="kind">Hunter</span><h3>Lethe Hounds</h3><p>Dogs made of river water. Blind; they hunt by sound. The stealth enemy: walk, don't run, and never splash.</p></article>
+      <article class="card grey"><span class="kind">Elite</span><h3>Erasers</h3><p>Tall and faceless. Their touch erases things from your screen: your map, your health bar, your journal flicker and vanish until you kill them.</p></article>
+      <article class="card grey"><span class="kind">Human</span><h3>Sealer Wardens</h3><p>Masked hunters in Lethe with long chisels and chains. They fight like Nysa, and they learn: use the same move too often and they counter it.</p></article>
+    </div>
+
+    <h3 style="margin-top:12px">Layer enemies: each layer has its own</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Layer</th><th>Enemy</th><th>What makes it different</th></tr></thead>
+        <tbody>
+          <tr><td class="yr">Roanoke</td><td>The Fogbound</td><td>Lantern-carrying shapes in the fog, drawn by the bell. Put out their lanterns and they lose you.</td></tr>
+          <tr><td class="yr">Baghdad</td><td>The Ink-drowned</td><td>Rise out of the river of ink and spit blinding ink across your screen.</td></tr>
+          <tr><td class="yr">Rome</td><td>The Unfaced</td><td>Statues with their faces chiselled off, like Geta's. They only move when you can't see their faces.</td></tr>
+          <tr><td class="yr">Alexandria</td><td>Ash-moths</td><td>Swarms made of burning pages. Scatter them with light; douse them with water.</td></tr>
+          <tr><td class="yr">Hattusa</td><td>The Bronze Host</td><td>Soldiers of a fallen age that collapse into rust and rebuild themselves. The iron dagger stops them reforming.</td></tr>
+          <tr><td class="yr">Amarna</td><td>Shadows of Noon</td><td>Exist only in shade. Drag them into sunlight and they burn.</td></tr>
+          <tr><td class="yr">Göbekli Tepe</td><td>The Carved</td><td>The fox, boar, vulture, scorpion and snake carved on the real pillars, awake.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:12px">In our world: the Lindqvist Institute</h3>
+    <p class="intro">Grey-coated orderlies with sedative darts and handheld tone emitters that make Nysa drowsy (the screen blurs and slows). These sections are stealth and escape: the clinic at night (Scene 12), the dig at dusk (Scene 15). Nysa can knock out, never kill.</p>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <div class="sec-head"><span class="no">06</span><h2>The Wardens: one boss per chapter</h2></div>
+    <p class="intro">Bosses are not real people. Each one is the layer's way of forgetting, given a body. Every fight has a twist that uses the chapter's history.</p>
+    <div class="cards">
+      <article class="card boss"><span class="kind">Ch. 1 · Roanoke · 1590</span><h3>The Bellringer</h3><p>A giant in the fog whose head is the colony's bell. Every time it rings, you forget something mid-fight: a button stops working, the map goes blank. Win by carving the colonists' names into the CROATOAN post until the bell can't ring.</p></article>
+      <article class="card boss"><span class="kind">Ch. 2 · Baghdad · 1258</span><h3>The Drowned Scribe</h3><p>A towering figure made of the books thrown into the Tigris. The arena floods with ink in waves. Save books from the river to make platforms; burn the rest with fire arrows.</p></article>
+      <article class="card boss"><span class="kind">Ch. 3 · Rome · AD 211</span><h3>The Censor</h3><p>Its arms are chisels, and it erases faces from the walls around you. Where faces vanish, the floor gives way. Restore the faces, the way Nysa cleans a painting, to make places to stand.</p></article>
+      <article class="card boss"><span class="kind">Ch. 4 · Alexandria · 48 BC</span><h3>The Pyre</h3><p>The library fire, alive. Each phase you choose: fight, or save the scrolls the fire is reaching for. What you save comes back in Part Three.</p></article>
+      <article class="card boss"><span class="kind">Ch. 5 · Hattusa · c. 1177 BC</span><h3>The Great Forgetting</h3><p>Not one creature but a storm: an army of the erased crashing against the burning walls of the Hittite capital. A siege, fought on the walls, across the city, into the citadel.</p></article>
+      <article class="card boss"><span class="kind">Ch. 6 · Amarna · c. 1336 BC</span><h3>The Hands of Noon</h3><p>A blinding sun-disc whose rays end in hands, as on Amarna's own carvings. Its light erases shadows, and the only cover is shade. The reunion with Eesa comes straight after.</p></article>
+    </div>
+    <div class="note"><b>Recurring rival:</b> Tomas Vey. Nysa never fights him in Part One; he watches, and lets her go. In Part Two the Sealers send their best Warden after her, and in Part Three Tomas finally steps into the arena himself. The Chapter 7 boss, the thing under the First Door, stays secret until Part Three.</div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <div class="sec-head"><span class="no">07</span><h2>Playing as Eesa</h2></div>
+    <p class="intro">The THEN timeline is a different way to play, and it grows with him. Each chapter he is older: 14 at Roanoke, the scholar of the locked portrait by the time Nysa finds him.</p>
+    <div class="cards">
+      <article class="card eesa"><span class="kind">His style</span><h3>Stealth, stars and cleverness</h3><p>He starts as a frightened boy with no weapons. He survives by hiding, climbing and thinking: reading the stars to find paths, building traps, using what each layer gives him. He fights more as he grows, with a staff and a sling, but he never becomes a brawler.</p></article>
+      <article class="card eesa"><span class="kind">His tool</span><h3>The Astrolabe</h3><p>A brass astronomer's instrument he finds in Baghdad's House of Wisdom (Ch. 2). Aim it at the sky of a layer to reveal hidden routes, time doors to the stars, and solve the game's best puzzles.</p></article>
+      <article class="card eesa"><span class="kind">Cross-time puzzles</span><h3>What he does, she finds</h3><p>Where Eesa carves a star, Nysa finds it. If Eesa breaks a bridge, Nysa has to climb. If he hides a key, she can use it. Every chapter has at least one puzzle solved across fifteen years.</p></article>
+      <article class="card eesa"><span class="kind">The Bleed</span><h3>When the timelines touch</h3><p>Rare moments when both timelines play on one split screen, and the two of them almost meet. The first is in Chapter 3. They are the scenes players will clip and share.</p></article>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <div class="sec-head"><span class="no">08</span><h2>Set pieces: the moments people talk about</h2></div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Where</th><th>Set piece</th></tr></thead>
+        <tbody>
+          <tr><td class="yr">Prologue</td><td><b>The clinic at night.</b> Wired to sensors, journal fading, alarms silent, grey coats in the corridors. Escape with the notebook and the chisel.</td></tr>
+          <tr><td class="yr">Prologue</td><td><b>The door opens.</b> At the dig, the sealed door bursts and grey water floods the trench. Climb out, or go in.</td></tr>
+          <tr><td class="yr">Ch. 1</td><td><b>The bell in the fog.</b> A chase through the empty colony as the bell rings and the Fogbound close in.</td></tr>
+          <tr><td class="yr">Ch. 2</td><td><b>The river turns black.</b> A boat chase down a Tigris of ink while the House of Wisdom burns on the bank. (Chroniclers wrote that the river ran black with ink in 1258.)</td></tr>
+          <tr><td class="yr">Ch. 3</td><td><b>The palace of erased faces.</b> A Roman palace where every portrait is being chiselled as you run past it. The first Bleed.</td></tr>
+          <tr><td class="yr">Ch. 4</td><td><b>The harbour fire.</b> Caesar's fleet burns, the fire jumps to the warehouses, and you race it to the shelves.</td></tr>
+          <tr><td class="yr">Ch. 5</td><td><b>The fall of Hattusa.</b> The capital of an empire burns and empties in one night.</td></tr>
+          <tr><td class="yr">Ch. 6</td><td><b>The empty sun city.</b> Amarna abandoned in a day, and the reunion in its heart.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section>
+    <div class="sec-head"><span class="no">09</span><h2>Growing stronger</h2></div>
+    <div class="cards three">
+      <article class="card nysa"><span class="kind">Skill tree</span><h3>Craft</h3><p>The Mahl Stick: new combos, a stronger parry, counter-attacks. Paid for with materials from each layer.</p></article>
+      <article class="card nysa"><span class="kind">Skill tree</span><h3>Memory</h3><p>The Chisel: cheaper strikes, new carvings, longer-lasting anchors. Paid for with names returned to the forgotten.</p></article>
+      <article class="card nysa"><span class="kind">Skill tree</span><h3>Voice</h3><p>Calling names: more allies, louder calls, new uses. Paid for by learning the names of the people in each layer.</p></article>
+    </div>
+    <p class="intro">Collectibles all mean something: Eesa's notebook pages, star charts, and <b>history cards</b> that tell the player what really happened in each layer and mark clearly what is fact and what is our story.</p>
+  </section>
+
+  <!-- 10 -->
+  <section>
+    <div class="sec-head"><span class="no">10</span><h2>For every player</h2></div>
+    <ul class="rules">
+      <li><b>Three difficulty settings:</b> Story (for players who want the tale; fights are forgiving), Balanced, and Grounded (enemies hit hard and the Lantern drains fast).</li>
+      <li><b>Puzzle help</b> comes from inside the story: Eesa's notebook gets more specific the longer you're stuck.</li>
+      <li><b>Accessibility:</b> full control remapping, subtitles with speaker names, and the violet/blue timelines also marked by shape, not only colour.</li>
+      <li><b>Languages:</b> each layer speaks its own language with subtitles. The game launches in English, Urdu, Turkish, Arabic and the major European languages.</li>
+    </ul>
+  </section>
+
+  <!-- 11 -->
+  <section>
+    <div class="sec-head"><span class="no">11</span><h2>What we build first</h2></div>
+    <p class="intro">A <b>vertical slice</b>: about 20 minutes of the game at final quality, to show players, publishers and funders. It proves both halves of LETHE.</p>
+    <div class="cards">
+      <article class="card nysa"><span class="kind">Slice part 1 · story and feeling</span><h3>The Store Room (Scene 4)</h3><p>One room in Chandsar at night. Phone torch, light switch, the stars on the ceiling, Ammi at the door. No combat. Proves the mood, the characters and the "things stay" mystery.</p></article>
+      <article class="card boss"><span class="kind">Slice part 2 · action</span><h3>The Bell in the Fog (Chapter 1)</h3><p>The Roanoke colony: one fight against Hollows and Smudges with the Mahl Stick and Lantern, one chisel strike that costs a real memory, and the chase as the bell begins to ring. Proves the combat and the price.</p></article>
+    </div>
+  </section>
+
+  <footer>
+    Draft v0.1 for discussion. Real history in this document is checked again before release. Companion pages: the Bible (world and story), Lore (myth and history), Release Map (parts and chapters), Storyboard (Chapter 1 in pictures).
+  </footer>
+</div>

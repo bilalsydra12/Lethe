@@ -143,7 +143,7 @@ The family photograph: **Lake Saiful Muluk, August 2010.** All four in jackets, 
 - **When:** Wednesday 24 June, 9:00 am
 - **Where:** the clinic: white walls, a soft lavender scent, a fountain in reception.
 - **Who:** **Tomas Vey**, 64: silver hair, rimless glasses, a grey wool coat on the hook even in June, a soft voice with a faint European accent.
-- **What happens:** he listens beautifully. He asks about names, and gently explains that the ancient Egyptians believed a person's name was part of their soul. He recommends an overnight sleep study: "We'll help your mind let go of what's troubling it."
+- **What happens:** he listens beautifully. He asks about names, and gently explains that the ancient Egyptians believed a person's name was part of their soul. When Nysa says the word from Eesa's notebook, *Lethe*, he smiles and tells her about the oracle of Trophonius in Greece, where visitors drank from two real springs, Lethe to forget and Mnemosyne to remember, before going down into a cave. "People have always wanted to choose what they forget," he says. To the player it sounds like history. Later it turns out to be the Sealers' own origin. He recommends an overnight sleep study: "We'll help your mind let go of what's troubling it."
 - **Player does:** dialogue choices. Looking around his office, you find a small brass chisel used as a paperweight, and a notebook he closes when he sees you looking.
 - **Feeling:** being understood by someone, too easily.
 - **History and myth:** the Egyptian *ren*; Greek dream temples (Asclepius), echoed in the clinic.
@@ -151,7 +151,7 @@ The family photograph: **Lake Saiful Muluk, August 2010.** All four in jackets, 
 ### Scene 12 · NOW · "The Overnight"
 - **When:** that night, 2:40 to 3:30 am
 - **Where:** sleep room 4B.
-- **What happens:** wired to sensors, she sleeps while a low tone plays through the room. She dreams the **River of Ink**, and Eesa's voice says: *"Don't drink their water."* She wakes. Her journal entries on the bedside table are **fading**. She pulls off the sensors and escapes through the clinic to get the notebook back from her locker.
+- **What happens:** wired to sensors, she sleeps while a low tone plays through the room. She dreams the **River of Ink**, and Eesa's voice says: *"Don't drink their water."* She wakes. Her journal entries on the bedside table are **fading**. She pulls off the sensors and escapes through the clinic to get the notebook back from her locker. On the way out she passes Tomas's dark office and, on impulse, takes the **brass chisel** from his desk. It becomes her main weapon in Lethe.
 - **Player does:** a stealth escape. The in-game journal visibly losing entries is the first taste of erasure.
 - **Writers' note:** Tomas watches her leave on a monitor and lets her go. He wants to see where she leads. Revealed later.
 
