@@ -28,8 +28,8 @@
 
 | Person | In 2026 |
 |---|---|
-| **Abbu** (father, name to confirm) | 61. Retired schoolteacher. Quiet, practical, drives an old white Corolla. Doesn't remember Eesa. |
-| **Ammi** (mother, name to confirm) | 57. Warm, talks fast, always feeding someone. Doesn't remember Eesa. |
+| **Abbu: Alex** (father) | 61. Retired schoolteacher. Quiet, practical, drives an old white Corolla. Doesn't remember Eesa. |
+| **Ammi: Syd** (mother) | 57. Warm, talks fast, always feeding someone. Doesn't remember Eesa. |
 | **Nysa** | 25. Paintings conservator in New York. Remembers four people in the family photo. |
 | **Eesa** | Would be 29. Erased on the night of 16–17 June 2011, aged 14. |
 
@@ -219,6 +219,6 @@ The family photograph: **Lake Saiful Muluk, August 2010.** All four in jackets, 
 
 ## Still to decide
 
-- Ammi's and Abbu's names
+- ~~Ammi's and Abbu's names~~ Decided: **Alex** (Abbu) and **Syd** (Ammi). Optional idea: "Alex" could be short for **Iskandar**, the Urdu/Persian form of Alexander, which quietly links him to the Water of Life legend. Your call.
 - The old woman at the Shoal: her name and look
 - Whether Dana and Dr. Arslan return in later chapters
