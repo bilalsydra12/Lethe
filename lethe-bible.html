@@ -1,0 +1,534 @@
+<title>Lethe Franchise Bible</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a field dossier. Sticky index on the left, one reading column, storyboards and tables break wider. Single dark look by choice: the river at night. */
+:root{
+  --river:#0f1517;
+  --slate:#161f22;
+  --stone:#1d282b;
+  --line:#2b383b;
+  --bone:#dbe1dd;
+  --fog:#93a19f;
+  --bronze:#c09a62;
+  --bronze-dim:#7d6743;
+  --rust:#b8664a;
+  --display:"Marcellus","Trajan Pro",Georgia,serif;
+  --body:"Literata",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--river);color:var(--bone);font-family:var(--body);font-size:17px;line-height:1.65;margin:0}
+a{color:var(--bronze);text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--bronze);outline-offset:3px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:56px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr);gap:0}}
+
+nav.index{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding-top:48px;max-height:100vh;overflow:auto}
+nav.index p{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fog);margin:0 0 14px}
+nav.index ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;counter-reset:s}
+nav.index li{counter-increment:s}
+nav.index a{display:flex;gap:10px;padding:6px 0;color:var(--fog);text-decoration:none;font-size:14px;line-height:1.35}
+nav.index a::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:11px;color:var(--bronze-dim);padding-top:2px}
+nav.index a:hover{color:var(--bone)}
+@media (max-width:900px){nav.index{display:none}}
+
+main{min-width:0;max-width:760px}
+
+header.cover{padding-block:72px 48px;border-bottom:1px solid var(--line);margin-bottom:24px}
+.stamp{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--fog);display:flex;flex-wrap:wrap;gap:8px 20px}
+.stamp b{color:var(--bronze);font-weight:500}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(64px,13vw,132px);letter-spacing:.18em;line-height:1;margin:28px 0 8px;color:var(--bone)}
+.logline{font-size:clamp(20px,2.6vw,26px);line-height:1.45;font-style:italic;color:var(--bone);max-width:30ch;text-wrap:balance;margin:18px 0 28px}
+.tagline{font-family:var(--display);font-size:20px;letter-spacing:.06em;color:var(--bronze);margin:0}
+
+section{padding-top:56px;scroll-margin-top:16px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--bronze);margin:0 0 6px}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(30px,4.2vw,40px);line-height:1.15;letter-spacing:.03em;margin:0 0 20px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:400;font-size:24px;letter-spacing:.03em;margin:36px 0 10px;color:var(--bone);text-wrap:balance}
+h4{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fog);margin:22px 0 6px}
+p{margin:0 0 16px;max-width:65ch}
+.lead{font-size:19px;color:var(--bone)}
+.muted{color:var(--fog)}
+ul.plain{margin:0 0 16px;padding-left:20px;max-width:65ch}
+ul.plain li{margin-bottom:6px}
+
+.note{border:1px solid var(--bronze-dim);background:var(--slate);padding:16px 20px;margin:20px 0;font-size:15.5px}
+.note strong{color:var(--bronze);font-weight:600}
+.secret{border:1px dashed var(--rust);background:var(--slate);padding:18px 22px;margin:24px 0}
+.secret .eyebrow{color:var(--rust)}
+.secret p:last-child{margin-bottom:0}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--fog);border:1px solid var(--line);padding:1px 6px;white-space:nowrap}
+
+.pillars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:24px 0}
+.pillars div{background:var(--river);padding:18px 20px}
+.pillars b{display:block;font-family:var(--display);font-weight:400;font-size:19px;color:var(--bronze);margin-bottom:4px}
+.pillars span{font-size:15.5px;color:var(--fog)}
+@media (max-width:560px){.pillars{grid-template-columns:minmax(0,1fr)}}
+
+ol.rules{list-style:none;padding:0;margin:20px 0;counter-reset:r;display:grid;gap:14px}
+ol.rules li{counter-increment:r;display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:baseline}
+ol.rules li::before{content:counter(r,upper-roman);font-family:var(--display);font-size:22px;color:var(--bronze)}
+
+.regions{margin:20px 0;border-top:1px solid var(--line)}
+.region{display:grid;grid-template-columns:170px minmax(0,1fr);gap:20px;padding:16px 0;border-bottom:1px solid var(--line)}
+.region .r-name{font-family:var(--display);font-size:18px;color:var(--bone);line-height:1.3}
+.region .r-name small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--fog);margin-top:4px;text-transform:uppercase}
+.region p{margin:0;font-size:16px}
+@media (max-width:560px){.region{grid-template-columns:minmax(0,1fr);gap:6px}}
+
+.timeline{margin:24px 0;border-left:1px solid var(--line)}
+.t{display:grid;grid-template-columns:120px minmax(0,1fr);gap:18px;padding:12px 0 12px 18px;position:relative}
+.t::before{content:"";position:absolute;left:-4px;top:20px;width:7px;height:7px;background:var(--bronze);transform:rotate(45deg)}
+.t time{font-family:var(--mono);font-size:13px;color:var(--bronze);font-variant-numeric:tabular-nums;padding-top:3px}
+.t p{margin:0;font-size:16px}
+.t p b{color:var(--bone);font-weight:600}
+.t .tag{margin-left:6px}
+@media (max-width:560px){.t{grid-template-columns:minmax(0,1fr);gap:2px}}
+
+.cast{display:grid;gap:18px;margin:24px 0}
+.char{border:1px solid var(--line);background:var(--slate);padding:20px 22px}
+.char header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 16px;margin-bottom:10px}
+.char h3{margin:0;font-size:24px}
+.char .role{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze)}
+.char p{font-size:16px;margin-bottom:10px}
+.char dl{display:grid;grid-template-columns:90px minmax(0,1fr);gap:6px 14px;margin:12px 0 0;font-size:15px}
+.char dt{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fog);padding-top:3px}
+.char dd{margin:0}
+@media (max-width:480px){.char dl{grid-template-columns:minmax(0,1fr);gap:0}.char dd{margin-bottom:8px}}
+
+.acts{margin:24px 0;border-top:1px solid var(--line)}
+.act{display:grid;grid-template-columns:110px minmax(0,1fr);gap:20px;padding:18px 0;border-bottom:1px solid var(--line)}
+.act .a-no{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze);padding-top:5px}
+.act h3{margin:0 0 6px;font-size:21px}
+.act p{margin:0 0 8px;font-size:16px}
+.act .play{font-family:var(--mono);font-size:12.5px;color:var(--fog);line-height:1.5;margin:0}
+@media (max-width:560px){.act{grid-template-columns:minmax(0,1fr);gap:4px}}
+
+.board{margin:28px 0 40px}
+.board h3{margin-top:0}
+.frames{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.frame{min-width:0}
+.shot{aspect-ratio:16/9;max-width:100%;border:1px solid var(--line);position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:8px 10px}
+.shot span{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone);background:rgba(15,21,23,.7);padding:2px 6px;position:relative}
+.shot .num{position:absolute;top:8px;left:10px;font-family:var(--display);font-size:15px;color:var(--bronze);background:none;padding:0}
+.s-dawn{background:radial-gradient(120% 90% at 70% 110%,#6b5233 0%,#2a2a24 45%,var(--river) 85%)}
+.s-pit{background:radial-gradient(60% 70% at 50% 60%,#e6d2a4 0%,#7d6743 18%,#1d1d1a 50%,var(--river) 90%)}
+.s-fog{background:linear-gradient(180deg,#4b5859 0%,#2a3436 55%,var(--river) 100%)}
+.s-river{background:linear-gradient(180deg,var(--river) 0%,#1d2a2d 50%,#3d4e50 52%,#151d1f 100%)}
+.s-gold{background:radial-gradient(80% 80% at 50% 0%,#a07b3d 0%,#3a2e1c 45%,var(--river) 90%)}
+.s-fire{background:radial-gradient(90% 80% at 30% 100%,#9c4a2c 0%,#3b211a 45%,var(--river) 90%)}
+.s-face{background:radial-gradient(40% 55% at 50% 45%,#5d6a68 0%,#232d2f 55%,var(--river) 100%)}
+.s-city{background:linear-gradient(0deg,#3a4446 0%,#1b2426 35%,#0b1012 100%)}
+.frame p{font-size:14.5px;line-height:1.5;margin:8px 0 0;color:var(--bone)}
+.frame p em{color:var(--fog);font-style:normal;font-family:var(--mono);font-size:12px;display:block;margin-top:4px}
+
+.tbl{overflow-x:auto;margin:20px 0;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:520px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fog);background:var(--slate)}
+td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr.total td{background:var(--stone);color:var(--bronze);font-weight:600}
+
+.road{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px 14px;margin:24px 0}
+.road div{border-top:2px solid var(--bronze);padding-top:10px}
+.road time{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze)}
+.road b{display:block;font-family:var(--display);font-weight:400;font-size:19px;margin:4px 0}
+.road p{font-size:15px;color:var(--fog);margin:0}
+
+ol.steps{padding-left:22px;max-width:65ch}
+ol.steps li{margin-bottom:10px}
+ol.steps b{color:var(--bone)}
+
+footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--fog);letter-spacing:.06em}
+</style>
+
+<div class="wrap">
+<nav class="index" aria-label="Contents">
+  <p>Dossier contents</p>
+  <ol>
+    <li><a href="#promise">The promise</a></li>
+    <li><a href="#world">The world of Lethe</a></li>
+    <li><a href="#history">The secret history</a></li>
+    <li><a href="#cast">Characters</a></li>
+    <li><a href="#game">The game</a></li>
+    <li><a href="#stages">Story stages</a></li>
+    <li><a href="#boards">Storyboards</a></li>
+    <li><a href="#launch">Where we push it</a></li>
+    <li><a href="#start">Start small</a></li>
+    <li><a href="#budget">Full-scale budget</a></li>
+    <li><a href="#franchise">Books, series, film</a></li>
+    <li><a href="#next">Next 30 days</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="cover">
+  <div class="stamp"><span>Franchise bible <b>v0.3</b></span><span>26 Oct 2026</span><span>Working title</span><span>Confidential draft</span></div>
+  <h1>LETHE</h1>
+  <p class="logline">Everything humanity forgot went somewhere. Some of it was forgotten on purpose.</p>
+  <p class="tagline">Some things were forgotten for a reason.</p>
+</header>
+
+<div class="note"><strong>About the name.</strong> We first called this <em>Firstlight</em>, but IO Interactive's <em>007 First Light</em> came out in 2026, and we can't share a name with a Bond game. <strong>LETHE</strong> is the working title. "Firstlight" stays in the story as the name of the gift that lets someone see across. The first spend is a trademark search on the final name.</div>
+
+<section id="promise">
+  <p class="eyebrow">01 · The promise</p>
+  <h2>A hidden war, older than history</h2>
+  <p class="lead">For twelve thousand years a secret order has buried temples, burned libraries and chiseled names off stone to keep humanity from remembering a world that sits right behind ours. Now satellites, archaeology and digital archives are uncovering the doors faster than the order can close them.</p>
+  <p>This is the pull every lasting franchise shares: <b>ordinary people discover a hidden truth about the world, and must decide what they're willing to lose to protect the people they love.</b></p>
+  <div class="pillars">
+    <div><b>History has holes in it</b><span>Every mystery points at something real. Players can look it up, and that's how the lore spreads.</span></div>
+    <div><b>Power costs memory</b><span>Every great act burns something you remember. The cost is real, in the story and in the game.</span></div>
+    <div><b>No one is clean</b><span>The order that protects us has burned libraries. The monsters were once people history wronged.</span></div>
+    <div><b>The forgotten are people</b><span>Lethe isn't a dungeon. It's a civilization of the erased, with kingdoms, politics and grudges.</span></div>
+  </div>
+  <p class="muted">Target rating: Teen / PEGI 16. The darkness comes from ideas and dread, the way <em>Stranger Things</em> works, not from gore. That keeps younger players in while giving adults the weight of <em>The Witcher</em>.</p>
+</section>
+
+<section id="world">
+  <p class="eyebrow">02 · The world</p>
+  <h2>Lethe, the country of the forgotten</h2>
+  <p>In Greek myth, the dead drink from the river Lethe and forget their lives before they're reborn. The Greeks only had half of it. Lethe is a country lying alongside ours. Everything humanity forgets drifts there. What was <b>erased on purpose</b> arrives whole, and remembers why.</p>
+
+  <h3>The four laws of Lethe</h3>
+  <ol class="rules">
+    <li><span><b>What is forgotten goes to Lethe.</b> Lost cities, dead languages, abandoned gods, the unnamed dead.</span></li>
+    <li><span><b>Power is paid in memory.</b> Every use of Lethe's power burns a memory from whoever uses it. Small acts cost small memories. Great acts cost the ones you love.</span></li>
+    <li><span><b>What the living name, the Grey cannot take.</b> Naming a place, a person or a thing anchors it. This is why the Sealers chisel names away.</span></li>
+    <li><span><b>The dead drink and move on. The erased cannot drink.</b> Someone with no name can't forget and can't be reborn. They're stuck, and they've been waiting for centuries.</span></li>
+  </ol>
+
+  <h3>Regions</h3>
+  <div class="regions">
+    <div class="region"><div class="r-name">The Shoal of Names<small>The crossing</small></div><p>Grey shallows where Lethe meets our world. Names float in the water like leaves. The newly forgotten wash up here, confused, still holding car keys and phone chargers.</p></div>
+    <div class="region"><div class="r-name">The Chiseled Court<small>Seat of the erased</small></div><p>A palace built from defaced statues and scraped-off inscriptions, ruled by monarchs history condemned to vanish. Its politics are the most dangerous thing in Lethe.</p></div>
+    <div class="region"><div class="r-name">Hattusa of the Thousand Gods<small>The fallen kingdom</small></div><p>The Hittite capital, abandoned in our world around 1180 BC, stands intact here. The Hittites really did call their land "the land of a thousand gods". Most of those gods are still here, starving.</p></div>
+    <div class="region"><div class="r-name">Alexandria Below<small>The library that lived</small></div><p>Every scroll ever lost, shelved in a city of lamplight. Its librarians trade in memory and answer to nobody.</p></div>
+    <div class="region"><div class="r-name">The Grey<small>Unclaimed land</small></div><p>A fog of pure forgetting between the regions. Things that wander in lose their names. Things that live in it never had any.</p></div>
+    <div class="region"><div class="r-name">The First Door<small>Beneath everything</small></div><p>Under Lethe's mirror of Göbekli Tepe lies the first door ever opened, and the first thing ever shut away. Nobody alive has seen it.</p></div>
+  </div>
+
+  <h3>Thin Places</h3>
+  <p>Doorways between the worlds open where something was deliberately forgotten: a cellar bricked up after a crime, a village drowned for a reservoir, an excavation pit, a station platform taken off the maps. Thin Places let the story happen anywhere on Earth, including the player's own city.</p>
+</section>
+
+<section id="history">
+  <p class="eyebrow">03 · The secret history</p>
+  <h2>Twelve thousand years of burying the truth</h2>
+  <p>The <b>Sealers</b> are an order older than any religion, hidden inside every empire, church and government. They never rule. They advise, they archive, and when they think it's necessary they make the world forget. Events tagged <span class="tag">Real</span> happened. Our story explains why.</p>
+
+  <div class="timeline">
+    <div class="t"><time>c. 9500 BC</time><p><b>The First Door.</b> Hunter-gatherers raise Göbekli Tepe, a temple older than farming, and touch Lethe for the first time.<span class="tag">Real</span></p></div>
+    <div class="t"><time>c. 8000 BC</time><p><b>The burial.</b> The temple ends up under earth. In our story, the people who buried it became the first Sealers. Archaeologists still argue about whether the burial was deliberate.<span class="tag">Real</span></p></div>
+    <div class="t"><time>c. 1350 BC</time><p><b>The heretic king.</b> Pharaoh Akhenaten abandons Egypt's gods for a single sun-disk, the Aten. In our story, the Aten was a light from Lethe. After his death his name is struck from the king lists.<span class="tag">Real</span></p></div>
+    <div class="t"><time>c. 1177 BC</time><p><b>The Collapse.</b> Within decades, nearly every Bronze Age civilization around the eastern Mediterranean falls, and raiders called the "Sea Peoples" appear. In our story, this was the last open war between the worlds, and the "Sea Peoples" were the erased coming home. The Sealers end it with the Great Forgetting.<span class="tag">Real</span></p></div>
+    <div class="t"><time>48 BC</time><p><b>Alexandria burns.</b> A fire during Caesar's war in Alexandria is the most famous of several losses that eventually ended the library. In our story, its scholars had found the way across, and the fire was no accident.<span class="tag">Real</span></p></div>
+    <div class="t"><time>AD 211</time><p><b>The erased emperor.</b> Geta, co-emperor of Rome, is murdered on his brother Caracalla's orders, and his name and face are cut from monuments across the empire. Rome's <em>damnatio memoriae</em> becomes the Sealers' favorite tool.<span class="tag">Real</span></p></div>
+    <div class="t"><time>1590</time><p><b>CROATOAN.</b> The English colony at Roanoke vanishes, leaving one word carved into a post. In our story, it's the one Thin Place the Sealers failed to close in time.<span class="tag">Real</span></p></div>
+    <div class="t"><time>1994</time><p><b>Rediscovery.</b> Göbekli Tepe is identified as a prehistoric temple, and excavations begin the next year. The Sealers can't bury it twice in the age of photographs.<span class="tag">Real</span></p></div>
+    <div class="t"><time>Now</time><p><b>The doors are opening.</b> LiDAR maps lost cities under jungle. Archives go online. Humanity is remembering faster than the Sealers can make it forget, and something under the First Door has noticed.</p></div>
+  </div>
+
+  <div class="secret">
+    <p class="eyebrow">Writers' room only · do not publish</p>
+    <p><b>What lies beneath the First Door.</b> It is the first god, made when the first humans remembered something together. When people stopped remembering it, it starved. Lethe is its stomach, and the Grey is its breath. It feeds on whatever is forgotten, and if enough people ever <em>remember</em> it again, it becomes real in our world.</p>
+    <p>That's the central dilemma of the franchise. Justice for the erased means remembering them, but every act of remembering feeds the thing under the door. The Sealers are right, and the Sealers are monsters. Both are true.</p>
+  </div>
+</section>
+
+<section id="cast">
+  <p class="eyebrow">04 · Characters</p>
+  <h2>The people at the center</h2>
+  <div class="cast">
+    <article class="char">
+      <header><h3>Nysa</h3><span class="role">Protagonist · 25</span></header>
+      <p>A restorer of paintings and frescoes who brings faded colour back to life. Fifteen years ago, when she was ten, her big brother was erased: no birth record, no school photo, no memory of him in anyone but her. She has a photograph with four people in it. Everyone else sees three.</p>
+      <p>Lethe drains colour, and Nysa is the one thing in it that stays vivid. Her Firstlight glows violet and pink and shimmers in the air like glitter. In a world of grey fog she is the brightest thing on screen, and proud of it.</p>
+      <dl>
+        <dt>Wants</dt><dd>To bring Eesa back.</dd>
+        <dt>Needs</dt><dd>To accept that some things were lost for a reason.</dd>
+        <dt>Flaw</dt><dd>She will burn anything, including her own memories, to get what she wants.</dd>
+        <dt>Gift</dt><dd>The Firstlight: a memory the world couldn't take from her. She was raised to believe that remembering the wronged is a duty, and she never stopped.</dd>
+        <dt>Look</dt><dd>Tall, fair skin, dark brown eyes, dark brown hair with natural curls at the ends, tinted purple. A lavender scarf, a fitted jacket with a little sparkle on the cuffs, glitter nail polish chipped from work.</dd>
+        <dt>Details</dt><dd>A silver ring with a red stone she never takes off. A quiet word under her breath before a hard moment. Her grandmother's voice in her memories. Never explained on screen.</dd>
+      </dl>
+    </article>
+    <article class="char">
+      <header><h3>Tomas Vey</h3><span class="role">The man in the grey coat · Sealer · 64</span></header>
+      <p>Soft-spoken, kind to waiters, and responsible for erasing more than a hundred people. Tomas has spent his own memories so often that he keeps a notebook of his children's names. He's the first person to tell Nysa the truth, and the most dangerous person in her life.</p>
+      <dl>
+        <dt>Wants</dt><dd>For the doors to stay shut until he dies.</dd>
+        <dt>Secret</dt><dd>He erased Eesa.</dd>
+        <dt>Archetype</dt><dd>Snape, Jaime Lannister: the villain who might be the hero.</dd>
+      </dl>
+    </article>
+    <article class="char">
+      <header><h3>Eesa</h3><span class="role">The erased big brother · 29</span></header>
+      <p>Nysa remembers the big brother who built Lego spaceships, stuck glow-in-the-dark stars on his ceiling and solved every puzzle box he could find. He taught her the names of the planets.</p>
+      <p>The Eesa she finds in Lethe has spent fifteen years there. Lethe has its own sky, made of stars humanity forgot the names of, and he has charted it. He builds machines from forgotten parts, serves in the Chiseled Court's guard, and isn't sure he wants to be found.</p>
+      <dl>
+        <dt>Look</dt><dd>Tall and lean, warm wheatish skin, dark brown eyes, black hair worn a little long. Mismatched armour from erased eras, hand-built gadgets, a grey cloak lined with his own star map. His light is deep blue starlight, against her violet.</dd>
+        <dt>Detail</dt><dd>A cheap kids' space watch with a rocket on it, stopped at the minute he was erased. He never takes it off.</dd>
+        <dt>Puzzles</dt><dd>He left locks, machines and star-map riddles across Lethe, hoping someone would follow. When players solve them, they're solving his mind.</dd>
+        <dt>Secret</dt><dd>He wasn't taken. At fourteen he followed a mystery to a Thin Place, and the Sealers erased him to close it. He has never forgiven the world that let him go.</dd>
+      </dl>
+    </article>
+    <article class="char">
+      <header><h3>Akhenaten</h3><span class="role">The Sun King Below</span></header>
+      <p>The pharaoh Egypt tried to erase. In Lethe he leads the Return: an army of the erased who want to cross back and be seen. He's warm, brilliant and sincere, and if he wins, the thing under the door wakes.</p>
+      <dl>
+        <dt>Belief</dt><dd>"They took our names to feel safe. Let them learn what we learned in the dark."</dd>
+        <dt>Archetype</dt><dd>Magneto, Thanos: the villain half the audience agrees with.</dd>
+      </dl>
+    </article>
+    <article class="char">
+      <header><h3>Hatshepsut</h3><span class="role">The Queen Who Was Chiseled</span></header>
+      <p>One of Egypt's most successful pharaohs, whose statues were smashed and whose images were defaced after her death. She doesn't want war. She wants her name back, and she'll make any alliance to get it. She is the political heart of the Chiseled Court.</p>
+      <dl>
+        <dt>Role</dt><dd>Akhenaten's rival. Nysa's most useful and least trustworthy ally.</dd>
+      </dl>
+    </article>
+    <article class="char">
+      <header><h3>Geta</h3><span class="role">The boy emperor · 22 forever</span></header>
+      <p>Murdered in his mother's arms on his brother's orders, then erased from Rome. He commands the Court's guard, sleeps badly and is kinder than anyone expects. Younger players will love him. He doesn't survive the trilogy.</p>
+    </article>
+    <article class="char">
+      <header><h3>Ione</h3><span class="role">Last Librarian of Alexandria Below</span></header>
+      <p>She answers any question, for the price of a memory. Neutral in the war, she has outlived three Sealer grandmasters, and she's the only one who knows what the First Door holds.</p>
+    </article>
+  </div>
+</section>
+
+<section id="game">
+  <p class="eyebrow">05 · The game</p>
+  <h2>What players actually do</h2>
+  <p><b>Genre:</b> a third-person action-adventure with story choices, in the same family as <em>The Witcher 3</em>, <em>Uncharted</em> and <em>God of War</em>, with an online co-op mode added after launch.</p>
+  <h4>Core loop</h4>
+  <ul class="plain">
+    <li><b>Explore</b> real-world dig sites, then cross into their mirror in Lethe.</li>
+    <li><b>Uncover</b> fragments of erased history, which unlock powers and story.</li>
+    <li><b>Spend memory</b> to fight, open doors and change outcomes.</li>
+    <li><b>Choose</b> sides in the Chiseled Court. Alliances change the ending and who survives.</li>
+    <li><b>Solve Eesa's puzzles:</b> the locks, machines and star-map riddles he left across Lethe for someone to follow.</li>
+  </ul>
+  <h4>Signature mechanic: the chisel</h4>
+  <p>Memory is the only currency. Using a great power erases something <em>in the game itself</em>: a journal entry gets scratched out, a map region turns grey, a companion stops recognizing Nysa. Players feel the cost because the game really does forget. This is the feature people will talk about.</p>
+  <h4>Expeditions (online co-op, after launch)</h4>
+  <p>Groups of 3–5 push into the Grey together. Any place they reach and name is anchored for every player on the server, with their name on it. One player in the group may secretly be working for the Sealers. This keeps the shared-world naming and the betrayal ideas from earlier, now inside a serious world.</p>
+</section>
+
+<section id="stages">
+  <p class="eyebrow">06 · Story stages</p>
+  <h2>Game one: LETHE</h2>
+  <p>The franchise is planned as a trilogy, with the full ending written before production starts. Game one runs about 25–30 hours.</p>
+  <div class="acts">
+    <div class="act"><div class="a-no">Prologue</div><div><h3>The Fourth Face</h3><p>At her mother's house, Nysa switches off the light in the "storage room" and sees faint glow-in-the-dark stars on the ceiling that nobody else can see. Days later she's called to a dig in the hills outside Şanlıurfa, in southern Turkey, to clean the carvings on a sealed door. Under the dust she finds her brother's name. Tomas Vey arrives. The door opens from the other side.</p><p class="play">Tutorial · 45 min · becomes the playable demo and the reveal trailer</p></div></div>
+    <div class="act"><div class="a-no">Act I</div><div><h3>The Shoal of Names</h3><p>Nysa crosses and learns the four laws the hard way. She spends her first memory to survive and meets Ione, who tells her Eesa is alive.</p><p class="play">First memory spent · first boss in the Grey</p></div></div>
+    <div class="act"><div class="a-no">Act II</div><div><h3>The Chiseled Court</h3><p>Palace politics between Akhenaten and Hatshepsut. Nysa finds Eesa, and he doesn't want to come home.</p><p class="play">Major alliance choice · Game of Thrones–style intrigue</p></div></div>
+    <div class="act"><div class="a-no">Act III</div><div><h3>1177 BC</h3><p>A recovered memory becomes a playable flashback. You play an ancient Sealer during the Collapse and carry out the Great Forgetting yourself.</p><p class="play">Perspective switch · players commit the crime they've been fighting</p></div></div>
+    <div class="act"><div class="a-no">Act IV</div><div><h3>Alexandria Below</h3><p>The truth comes out: Eesa wasn't taken, and Tomas erased him. To learn where the First Door is, Nysa must trade her memory of her mother.</p><p class="play">The hardest memory choice in the game</p></div></div>
+    <div class="act"><div class="a-no">Act V</div><div><h3>The Bleed</h3><p>Akhenaten's army crosses into Istanbul. Erased people walk the streets, and only those with Firstlight can see them.</p><p class="play">Open-city set piece in the real world</p></div></div>
+    <div class="act"><div class="a-no">Finale</div><div><h3>The First Door</h3><p>Nysa reaches the door with Eesa, or without him, depending on your choices. Something on the other side says her name. The game ends as the door begins to open.</p><p class="play">Multiple endings, all leading into game two</p></div></div>
+  </div>
+  <div class="secret">
+    <p class="eyebrow">Writers' room only · the trilogy's ending</p>
+    <p>In game three, the only way to starve the god under the door for good is for someone it knows to be forgotten completely, by everyone, forever. Nysa chooses to be erased. The last shot of the franchise is the photograph from the first scene. Everyone can see Eesa now, and the fourth face in the picture belongs to a woman no one remembers.</p>
+  </div>
+</section>
+
+<section id="boards">
+  <p class="eyebrow">07 · Storyboards</p>
+  <h2>The scenes that sell it</h2>
+  <p>These are the moments for the trailer, the demo and the key art. Each frame is a shot for the concept artists and the cinematics team.</p>
+
+  <div class="board">
+    <h3>Reveal trailer · "The Fourth Face" (90 sec)</h3>
+    <div class="frames">
+      <div class="frame"><div class="shot s-face"><span class="num">1</span><span>Close · photograph</span></div><p>A family photo on a kitchen table. Four people. Slowly, one face fades out of the paper.<em>Sound: a chisel scraping stone</em></p></div>
+      <div class="frame"><div class="shot s-dawn"><span class="num">2</span><span>Wide · dig site, dawn</span></div><p>Göbekli Tepe's pillars against a red sky. Nysa walks down into the pit alone.<em>VO: "Everyone forgets. Not everyone is forgotten."</em></p></div>
+      <div class="frame"><div class="shot s-pit"><span class="num">3</span><span>Low · the door</span></div><p>Her brush reveals a stone door covered in names, all chiseled out except one: EESA.<em>Music drops out</em></p></div>
+      <div class="frame"><div class="shot s-fog"><span class="num">4</span><span>Over shoulder · Tomas</span></div><p>A man in a grey coat at the edge of the pit: "How can you still see his face?"<em>Hold two seconds</em></p></div>
+      <div class="frame"><div class="shot s-river"><span class="num">5</span><span>Montage · Lethe</span></div><p>Quick cuts: a drowned Alexandria, a defaced statue opening its eyes, an army walking out of grey water.<em>Drums build</em></p></div>
+      <div class="frame"><div class="shot s-pit"><span class="num">6</span><span>Title</span></div><p>The door opens from the other side. Black. LETHE. "Some things were forgotten for a reason."<em>Hard cut</em></p></div>
+    </div>
+  </div>
+
+  <div class="board">
+    <h3>Act I · the first memory spent</h3>
+    <div class="frames">
+      <div class="frame"><div class="shot s-river"><span class="num">1</span><span>Wide · the Shoal</span></div><p>Nysa knee-deep in grey water. Something huge moves in the fog.</p></div>
+      <div class="frame"><div class="shot s-face"><span class="num">2</span><span>Close · her hand</span></div><p>Violet light gathers in her palm, glittering. A prompt appears: <b>Spend "The night Eesa showed me Saturn"?</b></p></div>
+      <div class="frame"><div class="shot s-gold"><span class="num">3</span><span>Action · release</span></div><p>The light tears the creature apart. She survives.</p></div>
+      <div class="frame"><div class="shot s-fog"><span class="num">4</span><span>Insert · journal</span></div><p>Her journal opens on its own. The page about that night is scratched out, line by line.<em>That journal entry is gone for the rest of the game</em></p></div>
+    </div>
+  </div>
+
+  <div class="board">
+    <h3>Act II · the Chiseled Court</h3>
+    <div class="frames">
+      <div class="frame"><div class="shot s-gold"><span class="num">1</span><span>Wide · throne hall</span></div><p>Faceless statues line the hall. On a broken throne sits Akhenaten, lit by a sun that isn't there.</p></div>
+      <div class="frame"><div class="shot s-face"><span class="num">2</span><span>Medium · Hatshepsut</span></div><p>The Queen steps out of shadow and offers Nysa a deal behind his back.</p></div>
+      <div class="frame"><div class="shot s-fog"><span class="num">3</span><span>Reveal · the guard</span></div><p>Geta's guard parts. A swordsman removes his helmet. It's Eesa, fifteen years older, a rocket watch on his wrist.</p></div>
+      <div class="frame"><div class="shot s-face"><span class="num">4</span><span>Close · Eesa</span></div><p>"You took fifteen years to find me. Why should I remember you?"<em>Dialogue choice</em></p></div>
+    </div>
+  </div>
+
+  <div class="board">
+    <h3>Act V · the Bleed, Istanbul</h3>
+    <div class="frames">
+      <div class="frame"><div class="shot s-city"><span class="num">1</span><span>Aerial · Bosphorus, night</span></div><p>Ordinary traffic on the bridges. Grey fog rising off the water.</p></div>
+      <div class="frame"><div class="shot s-fire"><span class="num">2</span><span>Street · crowd</span></div><p>Commuters walk straight through ranks of Bronze Age soldiers they can't see.</p></div>
+      <div class="frame"><div class="shot s-gold"><span class="num">3</span><span>High · the skyline</span></div><p>Akhenaten's sun-disk ignites over the city. For one second, everyone can see.</p></div>
+      <div class="frame"><div class="shot s-fog"><span class="num">4</span><span>Close · Tomas</span></div><p>Tomas opens his notebook, reads his children's names one last time, and tears out the page.<em>He's about to spend everything</em></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="launch">
+  <p class="eyebrow">08 · Where we push it</p>
+  <h2>How players find it</h2>
+  <p class="lead">Our advantage is that the lore is real. Every mystery in LETHE points at something people can look up, and history and mystery videos already pull huge audiences on YouTube and TikTok.</p>
+
+  <h3>Who it's for</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Audience</th><th>They already love</th><th>Where we reach them</th></tr></thead>
+    <tbody>
+      <tr><td>Story-action players, 16–35</td><td>The Witcher, God of War, Uncharted</td><td>Steam, PlayStation Store, showcase trailers, Twitch</td></tr>
+      <tr><td>History and mystery fans, all ages</td><td>Lost-civilization documentaries, mythology channels</td><td>YouTube long-form, podcasts, Reddit</td></tr>
+      <tr><td>Teens</td><td>Stranger Things, lore theory videos</td><td>TikTok, YouTube Shorts, Discord</td></tr>
+      <tr><td>Co-op and streamer audiences</td><td>Betrayal games, group horror</td><td>Twitch and YouTube creators (Expeditions mode)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>The plan, in order</h3>
+  <ol class="steps">
+    <li><b>Before any announcement: the "Erased" series.</b> Sixty-second videos about real people and places history deleted: Hatshepsut, Geta, Roanoke, the Bronze Age Collapse. Each ends on a chiseled name and a date. No game mentioned yet. This builds the audience and the brand.</li>
+    <li><b>An alternate-reality game.</b> A website with one old photograph. Each week another face fades. Hidden clues lead to real erased places. The community solves it, and the answer is the trailer.</li>
+    <li><b>Announce at a major showcase</b> with the 90-second "Fourth Face" trailer: The Game Awards (December), Summer Game Fest (June) or Gamescom (August). Store pages go live the same minute.</li>
+    <li><b>Wishlists are the number that matters.</b> Target 100,000 before the public demo and 250,000+ by launch. Steam wishlists are the clearest early signal for sales, store featuring and publisher interest.</li>
+    <li><b>Steam Next Fest demo:</b> the Prologue, 45 minutes, ending as the door opens.</li>
+    <li><b>Creators get early access:</b> history and lore channels first, then streamers. The chisel moments are made for reaction clips.</li>
+    <li><b>Launch on PC and PS5 together,</b> Xbox the same day if funding allows, Switch 2 later. A free web companion, "The Archive", lets fans explore the real history behind the game.</li>
+  </ol>
+  <p class="muted">Launch price recommendation: $39.99. Premium enough to signal quality, and below the $70 games it'll be compared with.</p>
+</section>
+
+<section id="start">
+  <p class="eyebrow">09 · Start small</p>
+  <h2>The game we build first: <em>The Fourth Face</em></h2>
+  <p class="lead">We don't start with the $10M game. We start with a short, excellent story game made by a tiny team, and let it prove LETHE.</p>
+  <p>Many lasting indie hits began this way: <em>Undertale</em>, <em>Stardew Valley</em>, <em>Papers, Please</em> and <em>Return of the Obra Dinn</em> were each made by one person, and <em>Hollow Knight</em> by three.</p>
+  <h4>What it is</h4>
+  <ul class="plain">
+    <li>A 1–2 hour story game covering the Prologue and Act I: the photograph, the dig, the door, the first crossing, the first memory spent. It ends on a cliffhanger.</li>
+    <li>Stylized art with strong atmosphere. No motion capture and no voice acting at first.</li>
+    <li>The chisel mechanic is the centerpiece. A small game built around one strong idea can travel far.</li>
+    <li>Built in Godot: free, open source, no royalties.</li>
+  </ul>
+  <h4>Who does what</h4>
+  <div class="tbl"><table>
+    <thead><tr><th>Claude</th><th>Founder</th></tr></thead>
+    <tbody>
+      <tr><td>Story, scripts, dialogue and all in-game text</td><td>Final say on story and direction</td></tr>
+      <tr><td>Game code and mechanics in Godot</td><td>Plays every build and says what feels wrong</td></tr>
+      <tr><td>Level, puzzle and system design</td><td>Character and art direction for AI tools and freelancers</td></tr>
+      <tr><td>"Erased" video scripts, store page, press text</td><td>The public face: posts, community, creators</td></tr>
+    </tbody>
+  </table></div>
+  <h4>What it costs</h4>
+  <div class="tbl"><table>
+    <thead><tr><th>Item</th><th class="num">Cost</th></tr></thead>
+    <tbody>
+      <tr><td>Godot engine</td><td class="num">Free</td></tr>
+      <tr><td>Early free release on itch.io</td><td class="num">Free</td></tr>
+      <tr><td>Steam release fee (recouped after $1,000 in sales)</td><td class="num">$100</td></tr>
+      <tr><td>AI art tools, a few months of subscriptions</td><td class="num">$50–300</td></tr>
+      <tr><td>Freelance artist for final key characters, and music</td><td class="num">$300–1,500</td></tr>
+      <tr><td>Website domain</td><td class="num">≈ $15 / year</td></tr>
+      <tr class="total"><td>Realistic total</td><td class="num">≈ $500–2,000</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted">If <em>The Fourth Face</em> finds its audience, it becomes the vertical slice in the full-scale plan below, with players already behind it.</p>
+</section>
+
+<section id="budget">
+  <p class="eyebrow">10 · Full-scale budget</p>
+  <h2>What the full game would cost</h2>
+  <div class="note"><strong>These are planning estimates, not quotes.</strong> They're based on typical team sizes and blended salary costs for this kind of game. The biggest variable is where the team works: a studio in South Asia or Eastern Europe can cost a third to half of one in the US or Western Europe. Every number should be checked against real quotes before fundraising.</div>
+
+  <h3>Stage by stage</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Stage</th><th>Length</th><th>Team</th><th class="num">Lower-cost team</th><th class="num">US / W. Europe team</th></tr></thead>
+    <tbody>
+      <tr><td><b>0 · Bible and pitch</b><br><span class="muted">Story bible, 10–15 concept paintings, pitch deck, trademark</span></td><td>2–3 months</td><td>3–4</td><td class="num">$20k–40k</td><td class="num">$60k–120k</td></tr>
+      <tr><td><b>1 · Vertical slice</b><br><span class="muted">The Prologue, fully playable at final quality</span></td><td>8–10 months</td><td>10–15</td><td class="num">$350k–700k</td><td class="num">$1.2M–2.5M</td></tr>
+      <tr><td><b>2 · Full production</b><br><span class="muted">25–30 hour game, voice cast, motion capture, music</span></td><td>24–30 months</td><td>40–70</td><td class="num">$6M–12M</td><td class="num">$20M–40M</td></tr>
+      <tr><td><b>3 · Launch and marketing</b><br><span class="muted">Trailers, showcase slots, creators, ads, events</span></td><td>12 months</td><td>Agency + team</td><td class="num">$1.5M–4M</td><td class="num">$5M–12M</td></tr>
+      <tr><td><b>Other costs</b><br><span class="muted">Localization (8–10 languages), age ratings, console certification, legal</span></td><td>Ongoing</td><td>Vendors</td><td class="num">$400k–900k</td><td class="num">$800k–1.5M</td></tr>
+      <tr class="total"><td>Total, game one</td><td>≈ 3.5–4 years</td><td></td><td class="num">≈ $8M–18M</td><td class="num">≈ $27M–56M</td></tr>
+    </tbody>
+  </table></div>
+  <p>For comparison, a full AAA game today often costs $100M–300M or more. LETHE is planned as a high-quality <b>AA</b> game: smaller scope, PlayStation-level presentation, stylized realism rather than photorealism everywhere.</p>
+
+  <h3>Platform costs to know</h3>
+  <ul class="plain">
+    <li><b>Unreal Engine 5:</b> free to develop with, then a 5% royalty on gross revenue above the first $1 million per game.</li>
+    <li><b>Steam, PlayStation and Xbox stores</b> keep about 30% of each sale (Steam's cut drops on very large sales).</li>
+    <li>After the store cut, refunds and taxes, a $39.99 sale typically leaves the studio roughly $22–25.</li>
+  </ul>
+
+  <h3>Break-even</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Budget</th><th class="num">Copies to break even</th><th>What that looks like</th></tr></thead>
+    <tbody>
+      <tr><td>$10M</td><td class="num">≈ 450,000</td><td>A solid AA hit</td></tr>
+      <tr><td>$18M</td><td class="num">≈ 800,000</td><td>A breakout AA hit</td></tr>
+      <tr><td>$40M</td><td class="num">≈ 1.8 million</td><td>A major hit with publisher-level marketing</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>How to fund it without losing the IP</h3>
+  <ol class="steps">
+    <li><b>Stages 0–1:</b> self-funding, angel investors or a small seed round. A vertical slice turns "an idea" into "a deal".</li>
+    <li><b>With the slice in hand:</b> pitch platform holders (Sony, Microsoft and Epic all fund or co-market games), story-focused publishers and game investment funds. Apply for Epic MegaGrants and any national game-development grants where the studio is based.</li>
+    <li><b>The rule we don't break:</b> trade revenue share for funding, never the IP. Book, series, film and merchandise rights stay with us. That's what makes the next section possible.</li>
+  </ol>
+</section>
+
+<section id="franchise">
+  <p class="eyebrow">11 · Books, series, film</p>
+  <h2>From game to franchise</h2>
+  <p>Games have become one of the most reliable sources of screen franchises: <em>Arcane</em>, <em>The Last of Us</em>, <em>Fallout</em> and <em>Castlevania</em> all started as games, and <em>The Witcher</em> went from books to games to Netflix. The path that works is <b>prove the audience with the game, then adapt.</b> Animation usually comes before live action because it's cheaper and stays closer to the source.</p>
+  <div class="road">
+    <div><time>Year 0–1</time><b>The world goes live</b><p>Bible finished. "Erased" video series. ARG. Free serialized prequel fiction about the Sealers.</p></div>
+    <div><time>Year 1–2</time><b>Slice and announce</b><p>Vertical slice, funding, showcase trailer, wishlists. Graphic novel: <em>1177 BC</em>.</p></div>
+    <div><time>Year 3–4</time><b>Game one launches</b><p>Prequel novel published. Expeditions co-op added. Animated series pitched to streamers.</p></div>
+    <div><time>Year 4–6</time><b>The world expands</b><p>Game two. Animated series. Tabletop RPG and merchandise: the chisel, the photograph, the Sealer sigil.</p></div>
+    <div><time>Year 6+</time><b>Live action</b><p>Game three closes the trilogy. Live-action series or film, with the ending already written.</p></div>
+  </div>
+  <p><b>Why it can go wide:</b> every format gives something different. The game makes you spend memories. The series makes you watch someone else lose theirs. The books tell the Sealers' twelve-thousand-year history. And because the places are real, fans will visit Göbekli Tepe and Hattusa the way <em>Lord of the Rings</em> fans visit New Zealand.</p>
+</section>
+
+<section id="next">
+  <p class="eyebrow">12 · Next 30 days</p>
+  <h2>What happens first</h2>
+  <ol class="steps">
+    <li><b>Ground the lore.</b> Agree on the real history and myths behind every part of the world (see the companion Lore Sources dossier).</li>
+    <li><b>Lock the name.</b> Trademark search on LETHE (and two backups) in the video game and entertainment classes in key markets.</li>
+    <li><b>Design the characters.</b> Character sheets for Nysa, Eesa and Tomas using AI concept tools, then one freelance artist to finalize them.</li>
+    <li><b>Write the <em>Fourth Face</em> script.</b> It becomes the game, the demo, the trailer and the pitch.</li>
+    <li><b>Prototype the chisel in Godot.</b> A small playable test of memory spending, to prove it feels as strong as it reads.</li>
+    <li><b>Start the "Erased" channel.</b> Ten short history videos to test which stories pull the most viewers.</li>
+  </ol>
+</section>
+
+<footer>LETHE · franchise bible v0.3 · working draft, 26 October 2026 · all costs are estimates</footer>
+</main>
+</div>

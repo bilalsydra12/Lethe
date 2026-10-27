@@ -1,0 +1,417 @@
+<title>Lethe Lore Sources</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: companion to the franchise bible. Same dossier look; each source is a catalogue card with fixed fields. Single dark look by choice. */
+:root{
+  --river:#0f1517;
+  --slate:#161f22;
+  --stone:#1d282b;
+  --line:#2b383b;
+  --bone:#dbe1dd;
+  --fog:#93a19f;
+  --bronze:#c09a62;
+  --bronze-dim:#7d6743;
+  --rust:#b8664a;
+  --sage:#8fae9a;
+  --display:"Marcellus","Trajan Pro",Georgia,serif;
+  --body:"Literata",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--river);color:var(--bone);font-family:var(--body);font-size:17px;line-height:1.65;margin:0}
+a{color:var(--bronze);text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--bronze);outline-offset:3px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:56px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr);gap:0}}
+nav.index{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding-top:48px;max-height:100vh;overflow:auto}
+nav.index p{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fog);margin:0 0 14px}
+nav.index ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+nav.index a{display:block;padding:6px 0;color:var(--fog);text-decoration:none;font-size:14px;line-height:1.35}
+nav.index a:hover{color:var(--bone)}
+@media (max-width:900px){nav.index{display:none}}
+main{min-width:0;max-width:760px}
+
+header.cover{padding-block:72px 40px;border-bottom:1px solid var(--line);margin-bottom:24px}
+.stamp{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--fog);display:flex;flex-wrap:wrap;gap:8px 20px}
+.stamp b{color:var(--bronze);font-weight:500}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(44px,8vw,84px);letter-spacing:.1em;line-height:1.05;margin:24px 0 12px}
+.logline{font-size:clamp(19px,2.4vw,23px);line-height:1.5;font-style:italic;max-width:38ch;margin:0}
+
+section{padding-top:56px;scroll-margin-top:16px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--bronze);margin:0 0 6px}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(30px,4.2vw,40px);line-height:1.15;letter-spacing:.03em;margin:0 0 16px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:400;font-size:25px;line-height:1.2;letter-spacing:.02em;margin:0;text-wrap:balance}
+p{margin:0 0 16px;max-width:65ch}
+.lead{font-size:19px}
+.muted{color:var(--fog)}
+ul.plain{margin:0 0 16px;padding-left:20px;max-width:65ch}
+ul.plain li{margin-bottom:8px}
+
+.key{display:flex;flex-wrap:wrap;gap:10px 18px;margin:18px 0 8px;font-size:14.5px;color:var(--fog)}
+.key span{display:flex;align-items:center;gap:8px}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:2px 7px;border:1px solid var(--line);color:var(--fog);white-space:nowrap}
+.tag.myth{color:var(--bronze);border-color:var(--bronze-dim)}
+.tag.hist{color:var(--sage);border-color:#4a6152}
+.tag.deb{color:var(--rust);border-color:#6e3f30}
+.tag.new{color:var(--bone);border-color:var(--fog)}
+
+.entry{border-top:1px solid var(--line);padding:28px 0 8px;scroll-margin-top:16px}
+.entry .meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-bottom:10px}
+.entry .when{font-family:var(--mono);font-size:12.5px;color:var(--fog);font-variant-numeric:tabular-nums}
+.entry h3{margin-bottom:14px}
+.fields{display:grid;grid-template-columns:132px minmax(0,1fr);gap:10px 20px;margin:0}
+.fields dt{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fog);padding-top:4px}
+.fields dd{margin:0;font-size:16px;max-width:62ch}
+.fields dd.use{color:var(--bone)}
+.fields dd.use::before{content:"";display:inline-block;width:6px;height:6px;background:var(--bronze);transform:rotate(45deg);margin-right:9px;vertical-align:middle}
+@media (max-width:560px){.fields{grid-template-columns:minmax(0,1fr);gap:2px}.fields dd{margin-bottom:10px}}
+
+.tbl{overflow-x:auto;margin:20px 0;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:520px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fog);background:var(--slate)}
+tr:last-child td{border-bottom:none}
+
+.private{border:1px dashed var(--rust);background:var(--slate);padding:20px 24px;margin:16px 0}
+.private .eyebrow{color:var(--rust)}
+.private ul{margin:0;padding-left:20px}
+.private li{margin-bottom:10px;max-width:62ch}
+.private li:last-child{margin-bottom:0}
+
+footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--fog);letter-spacing:.06em}
+</style>
+
+<div class="wrap">
+<nav class="index" aria-label="Contents">
+  <p>Lore sources</p>
+  <ol>
+    <li><a href="#how">How to read this</a></li>
+    <li><a href="#myths">The myths of forgetting</a></li>
+    <li><a href="#places">The places</a></li>
+    <li><a href="#people">The erased people</a></li>
+    <li><a href="#fires">Burnings and vanishings</a></li>
+    <li><a href="#now">The doors opening now</a></li>
+    <li><a href="#reach">Why this mix works</a></li>
+    <li><a href="#avoid">What we avoid</a></li>
+    <li><a href="#quiet">Founder's notes</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="cover">
+  <div class="stamp"><span>Companion to the franchise bible <b>v0.2</b></span><span>26 Oct 2026</span></div>
+  <h1>Lore Sources</h1>
+  <p class="logline">The real history and the old myths under every part of LETHE, and why each one is there.</p>
+</header>
+
+<section id="how">
+  <p class="eyebrow">How to read this</p>
+  <h2>Fact stays fact. Fiction is labelled.</h2>
+  <p>LETHE works because players can look things up and find they're real. That only works if we never blur the line. In the game, anything goes. In our public content (the "Erased" videos, the store page, interviews) we state history accurately and say clearly which parts are our story.</p>
+  <p>Each source below has the same fields: what happened, what historians still argue about, how LETHE uses it, and why it earns its place.</p>
+  <div class="key">
+    <span><span class="tag myth">Myth</span> Ancient story or belief</span>
+    <span><span class="tag hist">History</span> Documented event</span>
+    <span><span class="tag deb">Debated</span> Scholars disagree</span>
+    <span><span class="tag new">New</span> Proposed, not in the bible yet</span>
+  </div>
+</section>
+
+<section id="myths">
+  <p class="eyebrow">Part one</p>
+  <h2>The myths of forgetting</h2>
+  <p>These give LETHE its rules. Many cultures imagined a river or a drink that wipes memory before the next life. That's why the idea feels familiar to everyone.</p>
+
+  <article class="entry">
+    <div class="meta"><span class="tag myth">Myth</span><span class="when">Greece · c. 700 BC onward</span></div>
+    <h3>Lethe, the river of forgetting</h3>
+    <dl class="fields">
+      <dt>The story</dt><dd>Lethe is one of the five rivers of the Greek underworld, with the Styx, Acheron, Cocytus and Phlegethon. Hesiod names Lethe as a child of Eris (Strife). In Plato's <em>Republic</em> (Book X), the soldier Er sees the dead cross the Plain of Lethe and drink from the River of Unmindfulness before rebirth. In Virgil's <em>Aeneid</em> (Book VI), souls crowd the banks of the Lethe to drink and forget before returning to life.</dd>
+      <dt>In LETHE</dt><dd class="use">The world's name and its first law: what is forgotten goes to Lethe.</dd>
+      <dt>Why it's in</dt><dd>People already half-know the idea, and it has 2,500 years of literature behind it. Players feel the depth without needing it explained.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag myth">Myth</span><span class="tag new">New</span><span class="when">Greece and southern Italy · c. 400 BC onward</span></div>
+    <h3>Mnemosyne and the gold tablets</h3>
+    <dl class="fields">
+      <dt>The story</dt><dd>Mnemosyne is the Titan goddess of memory and mother of the nine Muses. Thin gold tablets buried with followers of the Orphic mysteries tell the dead what to do in the underworld: avoid the first spring, beside a white cypress, and ask instead to drink from the lake of Memory. Drinking from Memory meant keeping who you were.</dd>
+      <dt>In LETHE</dt><dd class="use">Proposal: the Firstlight is what happens to someone who, once, drank from Memory instead of Lethe. The Sealers are hunting for the lake of Mnemosyne, and so is the thing under the First Door.</dd>
+      <dt>Why it's in</dt><dd>It gives Lethe an opposite. Real buried instructions for keeping your memory after death are the kind of detail fans dig into for years.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag myth">Myth</span><span class="tag new">New</span><span class="when">Mesopotamia to Persia · c. 2000 BC onward</span></div>
+    <h3>The Water of Life in the Land of Darkness</h3>
+    <dl class="fields">
+      <dt>The story</dt><dd>Almost every old civilization near our story imagined a hidden water or plant that defeats death, and nearly always someone just misses it.
+        <br><br><b>Mesopotamia:</b> in the <em>Epic of Gilgamesh</em>, the hero dives for a plant at the bottom of the sea that restores youth. While he bathes, a snake steals it.
+        <br><br><b>The Alexander legends:</b> in the Greek <em>Alexander Romance</em>, Alexander's cook stumbles on a spring in a land of darkness, and a dried fish he rinses in it comes back to life. Alexander never drinks.
+        <br><br><b>Islamic and Persian tradition:</b> the Quran (Surah al-Kahf, 18:83–98) tells of Dhul-Qarnayn, a righteous ruler who travels to the far west and the far east and builds a barrier against Gog and Magog. The Quran itself doesn't mention a water of life. That story comes from later tradition and Persian poetry, such as Nizami's <em>Iskandarnameh</em> and Ferdowsi's <em>Shahnameh</em>: the king searches the Land of Darkness (<em>Zulumat</em>) for the spring of life (<em>Ab-e-Hayat</em>), and his guide al-Khidr finds it and drinks, while the king does not. Commentators also link it to the Quran's account of Musa and al-Khidr, where a fish comes alive at the meeting of the two seas (18:60–63).
+        <br><br><b>Elsewhere:</b> <em>amrita</em>, the nectar of immortality in Hindu tradition, and the European Fountain of Youth, attached to Ponce de León only after his death.</dd>
+      <dt>Debated</dt><dd>Whether Dhul-Qarnayn was a prophet. Many scholars, including in Shia tradition, describe him as a righteous servant of God rather than a prophet, and who he was historically is argued over.</dd>
+      <dt>In LETHE</dt><dd class="use">Proposal: somewhere in the deepest dark of Lethe there's one spring that does the opposite of the river. The Greeks called it the lake of Memory. Older peoples called it the water of life. Every culture remembered it, under a different name. It's what the Sealers fear most and what the thing under the First Door wants. Nysa's Firstlight comes from it. No holy figure appears; only the spring, the darkness and the search.</dd>
+      <dt>Why it's in</dt><dd>It joins East and West: one spring that Greek, Mesopotamian, Persian and Islamic storytellers all reached for. Players from each tradition recognize their own story, and nobody has to be told.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag myth">Myth</span><span class="when">Ancient Egypt · c. 2500–30 BC</span></div>
+    <h3>The <em>ren</em>, the name that is part of the soul</h3>
+    <dl class="fields">
+      <dt>The belief</dt><dd>Egyptians saw the soul as several parts, and one of them was the <em>ren</em>, the name. As long as a name was spoken or written, the person lived on. Destroying someone's name was a way of destroying them even after death, which is why names were carved deep in stone and why enemies chiseled them out.</dd>
+      <dt>In LETHE</dt><dd class="use">The third and fourth laws: what the living name, the Grey can't take, and the erased can't move on. It also explains why the Sealers chisel names rather than simply killing people.</dd>
+      <dt>Why it's in</dt><dd>It makes erasure feel like a fate worse than death, and it's true to how real people thought.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag myth">Myth</span><span class="tag new">New</span><span class="when">China · folk religion</span></div>
+    <h3>Meng Po and the soup of forgetting</h3>
+    <dl class="fields">
+      <dt>The story</dt><dd>In Chinese tradition, souls about to be reborn meet Meng Po, an old woman on the Bridge of Helplessness, who serves a soup that erases all memory of past lives. It's the same idea as Lethe, imagined on the other side of the world.</dd>
+      <dt>In LETHE</dt><dd class="use">Proposal: a character in the Shoal of Names, an old woman who offers the newly lost a bowl of soup, and peace. Nysa refuses it.</dd>
+      <dt>Why it's in</dt><dd>It shows the idea is human, not just Greek, and it gives players in China and East Asia, one of the world's largest gaming markets, something of their own in the world.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="tag new">New</span><span class="when">Northern Portugal · c. 137 BC</span></div>
+    <h3>The Limia, the real river Lethe</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>Roman soldiers marching under the general Decimus Junius Brutus refused to cross the river Limia, believing it was the Lethe and that they'd forget their homes. According to Roman writers, Brutus crossed alone, then called each soldier by name from the far bank to prove his memory was intact. They followed him.</dd>
+      <dt>In LETHE</dt><dd class="use">Proposal: a key scene and a mechanic. Calling a person's name across the water brings them back. Nysa's first rescue of Eesa could echo it.</dd>
+      <dt>Why it's in</dt><dd>A real army feared our myth. It's the ideal first "Erased" video.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag myth">Myth</span><span class="when">Ireland and Scotland · Celtic Christian tradition</span></div>
+    <h3>Thin places</h3>
+    <dl class="fields">
+      <dt>The belief</dt><dd>A "thin place" is somewhere the boundary between this world and the next feels close: an island, a ruin, a hilltop. The phrase is associated with Celtic Christian spirituality and became widely used in the last two centuries.</dd>
+      <dt>In LETHE</dt><dd class="use">The doorways between the worlds, recast as places where something was deliberately forgotten.</dd>
+      <dt>Why it's in</dt><dd>A gentle, recognizable idea that lets the story happen anywhere, including the player's own city.</dd>
+    </dl>
+  </article>
+</section>
+
+<section id="places">
+  <p class="eyebrow">Part two</p>
+  <h2>The places</h2>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="tag deb">Debated</span><span class="when">Southeastern Turkey · c. 9500–8000 BC</span></div>
+    <h3>Göbekli Tepe</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>A hilltop of massive T-shaped stone pillars carved with foxes, boars, snakes and vultures, built by hunter-gatherers before farming, pottery or writing. A 1963 survey noticed it and dismissed it as a medieval cemetery. In 1994 the archaeologist Klaus Schmidt recognized what it was, and excavation began in 1995. It became a UNESCO World Heritage Site in 2018. Nearby sites such as Karahan Tepe show it wasn't alone.</dd>
+      <dt>Debated</dt><dd>Schmidt believed the enclosures were deliberately buried. More recent work suggests the fill may have come partly from slope slides and gradual processes. It's also a favorite of fringe "lost civilization" theories, which archaeologists push back on strongly.</dd>
+      <dt>In LETHE</dt><dd class="use">The First Door, and the site of Nysa's dig. The Sealers' first act was to bury it.</dd>
+      <dt>Why it's in</dt><dd>It's among the oldest monumental sites known, it rewrote the history books, and its burial is a real open question. We present it as fiction inspired by a mystery, never as a claim about what really happened.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="when">Central Turkey · c. 1650–1180 BC</span></div>
+    <h3>Hattusa and the forgotten Hittites</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>The Hittites ran one of the great empires of the Bronze Age from their capital, Hattusa. Their treaties call on "the thousand gods of Hatti" as witnesses. Their treaty with Egypt after the Battle of Kadesh is one of the oldest known peace treaties, and a replica hangs at the United Nations. Around 1180 BC the capital was abandoned and burned. Then the world forgot them: for nearly 3,000 years they were a name in the Bible and little else, until excavators found their royal archive of clay tablets in 1906 and the scholar Bedřich Hrozný deciphered their language in 1915.</dd>
+      <dt>In LETHE</dt><dd class="use">Hattusa of the Thousand Gods, a region where a whole empire and its gods still stand.</dd>
+      <dt>Why it's in</dt><dd>A superpower that history forgot completely and then found again. It's the clearest real example of what Lethe is.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="tag deb">Debated</span><span class="when">Eastern Mediterranean · c. 1200–1150 BC</span></div>
+    <h3>The Bronze Age Collapse and the Sea Peoples</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>Within a few decades, the Hittite empire, Mycenaean Greece, the trading city of Ugarit and others collapsed. At his temple at Medinet Habu, Pharaoh Ramesses III recorded his victory over invaders known today as the "Sea Peoples", in his eighth year, around 1177 BC, the date historian Eric Cline used as the title of his book. Afterwards Greece lost the art of writing for about four centuries.</dd>
+      <dt>Debated</dt><dd>The cause. Drought, earthquakes, broken trade networks, migration and war have all been proposed, probably in combination. Who the Sea Peoples were is still argued over.</dd>
+      <dt>In LETHE</dt><dd class="use">The last open war between the worlds, and Act III's playable flashback. The Sea Peoples were the erased coming home.</dd>
+      <dt>Why it's in</dt><dd>A civilization so shaken it forgot how to write. That's the Great Forgetting with real evidence behind it.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="tag deb">Debated</span><span class="when">Egypt · c. 285 BC – AD 391</span></div>
+    <h3>The Library of Alexandria</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>Founded under the early Ptolemies, it aimed to collect every book in the world. It wasn't lost in one night. A fire during Julius Caesar's war in Alexandria in 48 BC destroyed many scrolls. Funding cuts, purges of scholars, fighting under Emperor Aurelian in the 270s, and the destruction of the Serapeum, its daughter library, in AD 391 ended it over centuries.</dd>
+      <dt>Debated</dt><dd>How much burned in 48 BC. A later story that the library was burned on a caliph's order after the Arab conquest first appears more than 500 years after the events, and most historians treat it as legend. We don't use it.</dd>
+      <dt>In LETHE</dt><dd class="use">Alexandria Below, the library that lived, and its last librarian, Ione.</dd>
+      <dt>Why it's in</dt><dd>The most famous loss of knowledge in history. Everyone wishes it had survived, so in LETHE it did.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="tag new">New</span><span class="when">Baghdad · c. 800–1258</span></div>
+    <h3>The House of Wisdom and the river of ink</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>Under the Abbasid caliphs, especially al-Ma'mun (813–833), Baghdad's <em>Bayt al-Hikma</em> drew scholars who translated Greek, Persian and Indian works and built on them. Al-Khwarizmi's work in Baghdad gave us the words "algebra" and "algorithm". In February 1258 the Mongol army under Hulagu sacked Baghdad. Chroniclers say so many books were thrown into the Tigris that the river ran black with ink.</dd>
+      <dt>In LETHE</dt><dd class="use">Proposal: a second great library in Lethe, built on a river of ink, rival and sister to Alexandria Below.</dd>
+      <dt>Why it's in</dt><dd>A real river that carried knowledge away: Lethe made literal. It also brings the Islamic Golden Age into the world as history, not religion.</dd>
+    </dl>
+  </article>
+</section>
+
+<section id="people">
+  <p class="eyebrow">Part three</p>
+  <h2>The erased people</h2>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="when">Egypt · reigned c. 1353–1336 BC</span></div>
+    <h3>Akhenaten, the heretic king</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>Born Amenhotep IV, he turned Egypt's religion toward a single sun-disk, the Aten, and built a new capital at Amarna. After his death, later rulers tore down his city, reused its stone blocks elsewhere, and left him off the official king lists. He was largely unknown until the 19th century. The Amarna letters, diplomatic tablets found by a local woman in 1887, helped bring his world back.</dd>
+      <dt>In LETHE</dt><dd class="use">The Sun King Below, who leads the Return.</dd>
+      <dt>Why it's in</dt><dd>A visionary that his own country tried to unmake. A villain with a reason audiences can understand.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="tag deb">Debated</span><span class="when">Egypt · reigned c. 1479–1458 BC</span></div>
+    <h3>Hatshepsut, the queen who was chiseled</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>One of Egypt's most successful rulers: she built the great temple at Deir el-Bahari and sent a famous trading expedition to the land of Punt. About twenty years after her death, under Thutmose III, her statues were smashed and dumped in a quarry, and her images were cut from monuments. Archaeologists later pieced the statues back together. In 2007 her mummy was identified, partly through a single tooth.</dd>
+      <dt>Debated</dt><dd>Why she was erased. Many historians now think it was about the royal succession rather than personal hatred.</dd>
+      <dt>In LETHE</dt><dd class="use">The political heart of the Chiseled Court. She wants her name back.</dd>
+      <dt>Why it's in</dt><dd>A powerful woman history tried to delete, and who was found again, down to a tooth.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="when">Rome · AD 189–211</span></div>
+    <h3>Geta and the painting with a missing face</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>Geta ruled Rome jointly with his older brother Caracalla until December 211, when Caracalla had him killed, according to the historian Cassius Dio in their mother Julia Domna's arms. His name was cut from inscriptions and his portraits destroyed, and Dio reports thousands of his supporters were killed. One painted family portrait survives, the Severan Tondo, now in Berlin. It shows the imperial family, and one face has been scraped away.</dd>
+      <dt>In LETHE</dt><dd class="use">The boy emperor of the Chiseled Court. The Severan Tondo is the ancient twin of Nysa's photograph.</dd>
+      <dt>Why it's in</dt><dd>A real family picture with a brother erased from it. It's the opening image of our story, made 1,800 years ago.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="tag new">New</span><span class="when">Soviet Union · 1937–1940</span></div>
+    <h3>The commissar who vanished from the photo</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>Nikolai Yezhov ran Stalin's secret police during the Great Purge. After he fell from power and was executed in 1940, he was retouched out of official photographs, including one where he walks beside Stalin along a canal. In the edited version, there's only water where he stood.</dd>
+      <dt>In LETHE</dt><dd class="use">Proof the Sealers' methods reach the modern age. A strong beat for the "Erased" series and the alternate-reality game.</dd>
+      <dt>Why it's in</dt><dd>It connects ancient erasure to the 20th century, and shows that removing a person from a picture really happens.</dd>
+    </dl>
+  </article>
+</section>
+
+<section id="fires">
+  <p class="eyebrow">Part four</p>
+  <h2>Burnings and vanishings</h2>
+  <p>In the story, these are the Sealers' fingerprints across history.</p>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="tag deb">Debated</span><span class="when">China · 213 BC</span></div>
+    <h3>The burning of the books</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>Under the first emperor of China, Qin Shi Huang, histories and philosophy outside approved subjects were ordered burned. The traditional account adds that scholars were buried alive. Historians debate how much of that later story is true.</dd>
+      <dt>In LETHE</dt><dd class="use">A Sealer operation in the secret history: the empire that unified China while making it forget.</dd>
+      <dt>Why it's in</dt><dd>It shows the war was global from the start, not just around the Mediterranean.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="when">Yucatán, Mexico · 1562</span></div>
+    <h3>The Maya books burned at Maní</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>The Spanish friar Diego de Landa ordered Maya books and sacred objects burned at Maní in 1562. He later wrote one of the main early accounts of Maya culture. Only four Maya codices are known to survive today.</dd>
+      <dt>In LETHE</dt><dd class="use">A future region: the lost libraries of the Maya, still standing in Lethe.</dd>
+      <dt>Why it's in</dt><dd>A whole written tradition reduced to four books. It brings Latin America into the world through a real, painful loss.</dd>
+    </dl>
+  </article>
+
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="tag deb">Debated</span><span class="when">North Carolina · 1587–1590</span></div>
+    <h3>Roanoke and the word CROATOAN</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>In 1587 about 115 English colonists settled on Roanoke Island. Their governor, John White, sailed to England for supplies, and war with Spain delayed his return until 1590. He found the settlement abandoned, "CROATOAN" carved into a post and "CRO" on a tree. Among the missing was his granddaughter Virginia Dare, the first English child born in the Americas.</dd>
+      <dt>Debated</dt><dd>Their fate. A leading theory is that they joined the Croatoan people on nearby Hatteras Island. Archaeologists are still digging.</dd>
+      <dt>In LETHE</dt><dd class="use">The one Thin Place the Sealers failed to close in time.</dd>
+      <dt>Why it's in</dt><dd>America's most famous mystery, and a familiar hook for North American players. The Croatoan people are never treated as the threat.</dd>
+    </dl>
+  </article>
+</section>
+
+<section id="now">
+  <p class="eyebrow">Part five</p>
+  <h2>The doors opening now</h2>
+  <article class="entry">
+    <div class="meta"><span class="tag hist">History</span><span class="when">2018 – today</span></div>
+    <h3>Lasers under the jungle</h3>
+    <dl class="fields">
+      <dt>What happened</dt><dd>LiDAR, laser scanning from aircraft, can see through forest to the ground. In 2018 a survey in northern Guatemala revealed more than 60,000 previously unknown Maya structures. In 2024 a doctoral student found a large lost Maya city, which his team named Valeriana, in survey data that had been gathered for other purposes and was freely available online.</dd>
+      <dt>In LETHE</dt><dd class="use">Why the story happens now: technology is uncovering the doors faster than the Sealers can bury them.</dd>
+      <dt>Why it's in</dt><dd>It makes the present day the most dangerous moment in twelve thousand years, and it's true.</dd>
+    </dl>
+  </article>
+</section>
+
+<section id="reach">
+  <p class="eyebrow">Why this mix works</p>
+  <h2>Something from everywhere</h2>
+  <p>The sources are chosen so that players in every major region find a piece of their own history in the game.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Region</th><th>What's theirs in LETHE</th></tr></thead>
+    <tbody>
+      <tr><td>Europe</td><td>Lethe, Mnemosyne, Rome and Geta, the Limia, thin places</td></tr>
+      <tr><td>Middle East and North Africa</td><td>Göbekli Tepe, the Hittites, Egypt, Alexandria, the House of Wisdom, Gilgamesh and the Water of Life</td></tr>
+      <tr><td>East Asia</td><td>Meng Po, the Qin book burning</td></tr>
+      <tr><td>North America</td><td>Roanoke</td></tr>
+      <tr><td>Latin America</td><td>The Maya codices, the LiDAR cities</td></tr>
+      <tr><td>South Asia</td><td><em>Amrita</em>, the nectar of immortality. Still open: a strong candidate for a real event is the destruction of the great monastery-university at Nalanda around 1200. To research next.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="avoid">
+  <p class="eyebrow">What we avoid</p>
+  <h2>Lines we don't cross</h2>
+  <ul class="plain">
+    <li><b>No false history in public.</b> Fringe theories about Göbekli Tepe and "lost civilizations" draw strong criticism from archaeologists. Our fiction is clearly fiction, and our facts are checked.</li>
+    <li><b>No discredited myths presented as fact.</b> For example, the late legend of a caliph ordering Alexandria burned.</li>
+    <li><b>No real peoples as villains.</b> Not the Croatoan, not the Mongols as a people, not any nation, sect or faith. The Sealers belong to no real group.</li>
+    <li><b>No holy figures as characters,</b> and nothing sacred used as a game power.</li>
+    <li><b>Respect for living heritage.</b> Hattusa and Göbekli Tepe are real heritage sites in Turkey. We use real places with care, and the "Erased" series should point people toward visiting and protecting them.</li>
+  </ul>
+</section>
+
+<section id="quiet">
+  <p class="eyebrow">Founder's notes · private</p>
+  <h2>The quiet threads</h2>
+  <div class="private">
+    <p class="eyebrow">Not for public material. Never explained on screen.</p>
+    <ul>
+      <li><b>The theme itself.</b> Remembering the wronged as a duty, and a sister who bears witness for her brother before people in power. It sits at the heart of the story without naming where it comes from.</li>
+      <li><b>Şanlıurfa.</b> Nysa's dig base is the city nearest Göbekli Tepe. Its old center has the sacred fish pools linked to the story of Ibrahim and the fire, honored by Muslims, Christians and Jews. It appears as a setting, with no comment.</li>
+      <li><b>The scholar who saved books.</b> When Baghdad fell in 1258, the scholar Nasir al-Din al-Tusi was in the conquerors' service and is said to have rescued a great many manuscripts for his new observatory and library at Maragheh. A complicated figure who served a conqueror to save knowledge, and a strong inspiration for Ione's backstory.</li>
+      <li><b>Nysa's details.</b> The silver ring with the red stone. A quiet word before hard moments. A grandmother's voice. Never commented on.</li>
+      <li><b>The spring in the dark.</b> The water of life in the Land of Darkness, from the tradition around Dhul-Qarnayn and al-Khidr, is the source of Nysa's Firstlight. It's shown only as a spring, a darkness and a search. No holy figure appears or is named in the game.</li>
+      <li><b>The music.</b> A lament-style melody in the main theme.</li>
+    </ul>
+  </div>
+  <div class="private">
+    <p class="eyebrow">Pending for the bible · approved in principle, not added yet</p>
+    <ul>
+      <li><b>New region: the Spring in the Dark.</b> Deep in Lethe's darkness, the one water that does the opposite of the river. The Greeks called it the lake of Memory. Older peoples called it the water of life. Every culture remembered it under a different name. The Sealers fear it most, and the thing under the First Door wants it.</li>
+      <li><b>Nysa's gift.</b> Her Firstlight comes from one drink from the Spring in the Dark, long ago. That's why the world could never make her forget.</li>
+      <li><b>Writers' room secret: Eesa's last gift.</b> At fourteen, Eesa found the spring and brought some of its water home to his little sister. The next night he was gone. Her Firstlight was his last gift to her, and the reason she's the only one who remembers him.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>LETHE · lore sources v0.3 · 26 October 2026 · check every fact again before it goes into public material</footer>
+</main>
+</div>

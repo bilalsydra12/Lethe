@@ -1,0 +1,281 @@
+<title>The Descent</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a vertical descent. Each layer is a full-width band that gets darker as you scroll down; a depth meter tracks "years ago". Single dark look by choice. */
+:root{
+  --ink:#0f1517;
+  --line:#2b383b;
+  --bone:#dbe1dd;
+  --fog:#93a19f;
+  --bronze:#c09a62;
+  --violet:#b99be0;
+  --star:#9fb6e8;
+  --display:"Marcellus","Trajan Pro",Georgia,serif;
+  --body:"Literata",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--ink);color:var(--bone);font-family:var(--body);font-size:17px;line-height:1.65;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ink)}
+.inner{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+p{margin:0 0 14px;max-width:64ch}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--bronze);margin:0 0 6px}
+
+.meter{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(10,14,16,.92);border-bottom:1px solid var(--line)}
+.meter .inner{display:flex;align-items:center;gap:14px;padding-block:10px;font-family:var(--mono);font-size:12.5px;letter-spacing:.06em}
+.meter .lbl{color:var(--fog);text-transform:uppercase;letter-spacing:.14em;font-size:11px}
+.meter .now{color:var(--bone)}
+.meter .ago{color:var(--bronze);margin-left:auto;font-variant-numeric:tabular-nums;white-space:nowrap}
+.meter .bar{flex:0 0 120px;height:4px;background:var(--line);position:relative}
+.meter .bar i{position:absolute;inset:0 auto 0 0;width:0;background:var(--bronze);transition:width .4s}
+@media (max-width:560px){.meter .bar{display:none}.meter .lbl{display:none}}
+
+.cover{padding-block:64px 40px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(48px,9vw,96px);letter-spacing:.12em;line-height:1;margin:16px 0 14px}
+.lede{font-size:clamp(19px,2.4vw,23px);font-style:italic;max-width:42ch;margin:0 0 28px}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:8px 0 12px}
+.rules div{background:#1b2024;padding:18px 20px}
+.rules b{display:block;font-family:var(--display);font-weight:400;font-size:19px;color:var(--bronze);margin-bottom:6px;line-height:1.3}
+.rules span{font-size:15.5px;color:var(--fog)}
+@media (max-width:760px){.rules{grid-template-columns:minmax(0,1fr)}}
+.hud{display:inline-flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-family:var(--mono);font-size:13px;border:1px solid var(--line);padding:8px 14px;margin:18px 0 0;color:var(--bone)}
+.hud em{font-style:normal;color:var(--bronze)}
+
+.band{padding-block:56px;border-top:1px solid rgba(255,255,255,.06);scroll-margin-top:48px}
+.band header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;margin-bottom:6px}
+.band .n{font-family:var(--display);font-size:20px;color:var(--bronze)}
+.band .yr{font-family:var(--mono);font-size:13px;color:var(--bone);border:1px solid rgba(255,255,255,.18);padding:1px 8px}
+.band .ago{font-family:var(--mono);font-size:13px;color:var(--fog)}
+.band .part{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--violet);margin-left:auto}
+.band h2{font-family:var(--display);font-weight:400;font-size:clamp(32px,5vw,48px);line-height:1.1;letter-spacing:.03em;margin:4px 0 18px;text-wrap:balance}
+.scene{width:100%;max-width:100%;aspect-ratio:21/8;border:1px solid rgba(255,255,255,.1);margin:0 0 22px;overflow:hidden}
+.scene svg{width:100%;height:100%;display:block}
+.first{font-size:18.5px;font-style:italic;max-width:62ch;margin-bottom:24px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 32px}
+@media (max-width:720px){.grid{grid-template-columns:minmax(0,1fr)}}
+.f{min-width:0}
+.f h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fog);margin:0 0 4px}
+.f p{font-size:15.5px;margin:0}
+.f.trace p{color:var(--star)}
+.sw{display:flex;gap:6px;margin-top:4px}
+.sw i{width:34px;height:22px;border:1px solid rgba(255,255,255,.15);display:block}
+
+.b0{background:#1b2024}
+.b1{background:#162022}
+.b2{background:#121a22}
+.b3{background:#141617}
+.b4{background:#13140f}
+.b5{background:#120e0c}
+.b6{background:#110d08}
+.b7{background:#060708}
+
+.close{padding-block:64px 96px;background:#030404}
+.close h2{font-family:var(--display);font-weight:400;font-size:clamp(30px,4.2vw,40px);margin:0 0 14px}
+footer{margin-top:40px;font-family:var(--mono);font-size:12px;color:var(--fog);letter-spacing:.06em}
+</style>
+
+<div class="meter" aria-live="polite">
+  <div class="inner">
+    <span class="lbl">Depth</span>
+    <span class="now" id="now">The surface · today</span>
+    <span class="bar" aria-hidden="true"><i id="bar"></i></span>
+    <span class="ago" id="ago">0 years ago</span>
+  </div>
+</div>
+
+<div class="b0">
+<div class="inner cover">
+  <p class="eyebrow">LETHE · concept book · v0.1</p>
+  <h1>The Descent</h1>
+  <p class="lede">Seven layers of the forgotten, each older than the last. This is what each one looks, sounds and feels like, and how Nysa gets down to the next.</p>
+  <div class="rules">
+    <div><b>Each layer is lit by the light its people had</b><span>Lanterns, oil lamps, moonlight on marble, fire, a false sun. At the bottom, nothing at all.</span></div>
+    <div><b>The deeper, the older the words</b><span>English, Arabic, Latin, Greek, Hittite, Egyptian. The bottom layer is older than writing, so there are no words there. That's why it was forgotten.</span></div>
+    <div><b>Only two colours come from outside</b><span>Nysa's violet and Eesa's blue starlight. The deeper they go, the more those two lights matter.</span></div>
+  </div>
+  <p class="hud">On-screen depth meter: <em>Layer 3 · AD 211 · 1,815 years ago</em></p>
+</div>
+</div>
+
+<section class="band b0" data-name="The surface · today" data-ago="0 years ago" data-depth="0">
+<div class="inner">
+  <header><span class="n">0</span><span class="yr">2026</span><span class="ago">Today</span><span class="part">Prologue</span></header>
+  <h2>The Surface</h2>
+  <div class="scene"><svg viewBox="0 0 420 160" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A dig site at dusk with T-shaped pillars and a sealed door"><rect width="420" height="160" fill="#2a2420"/><rect y="0" width="420" height="80" fill="#3a2e26"/><circle cx="330" cy="58" r="22" fill="#b07a45" opacity=".55"/><rect y="100" width="420" height="60" fill="#1e1a17"/><rect x="60" y="62" width="10" height="44" fill="#8c8170"/><rect x="50" y="56" width="30" height="10" fill="#8c8170"/><rect x="130" y="68" width="9" height="38" fill="#8c8170"/><rect x="121" y="63" width="27" height="9" fill="#8c8170"/><rect x="230" y="78" width="54" height="34" fill="#4a4238"/><rect x="246" y="86" width="22" height="26" fill="#14110f"/><circle cx="257" cy="99" r="2" fill="#b99be0"/></svg></div>
+  <p class="first">"A kitchen table, a photograph with four people in it. Then a hillside outside Şanlıurfa at dusk, dust in the air, and a stone door with every name chiseled away except one."</p>
+  <div class="grid">
+    <div class="f"><h3>Light</h3><p>Warm, ordinary, modern: a kitchen lamp, then the orange dusk over the hills. The last normal light Nysa sees.</p></div>
+    <div class="f"><h3>Colours</h3><div class="sw"><i style="background:#d8c3a0"></i><i style="background:#b07a45"></i><i style="background:#3a2e26"></i><i style="background:#b99be0"></i></div></div>
+    <div class="f"><h3>Sound</h3><p>A fridge humming. Wind over the hills. Brushes on stone. Then silence as the door opens.</p></div>
+    <div class="f"><h3>Landmark</h3><p>The T-shaped pillars of the dig, and the glow-in-the-dark stars on the ceiling of the "storage room".</p></div>
+    <div class="f"><h3>How it plays</h3><p>Quiet exploration: the house, the dig, small moments. Players get to know Nysa before her world breaks.</p></div>
+    <div class="f"><h3>The way down</h3><p>The door opens from the other side. Behind it, grey water: the Shoal of Names, where Lethe begins.</p></div>
+  </div>
+</div>
+</section>
+
+<section class="band b1" data-name="Layer 1 · 1590" data-ago="436 years ago" data-depth="1">
+<div class="inner">
+  <header><span class="n">1</span><span class="yr">1590</span><span class="ago">436 years ago</span><span class="part">Part One</span></header>
+  <h2>The Vanished</h2>
+  <div class="scene"><svg viewBox="0 0 420 160" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A wooden palisade in fog with a tall carved post"><rect width="420" height="160" fill="#4d5a55"/><rect y="70" width="420" height="90" fill="#2f3a36"/><g fill="#1e2623"><rect x="20" y="60" width="12" height="70"/><rect x="36" y="56" width="12" height="74"/><rect x="52" y="62" width="12" height="68"/><rect x="68" y="58" width="12" height="72"/><rect x="300" y="60" width="12" height="70"/><rect x="316" y="55" width="12" height="75"/><rect x="332" y="62" width="12" height="68"/><rect x="348" y="57" width="12" height="73"/></g><rect x="196" y="34" width="16" height="96" fill="#c9b48f"/><text x="204" y="90" fill="#2f3a36" font-family="monospace" font-size="6" text-anchor="middle" transform="rotate(-90 204 90)">CROATOAN</text><text x="204" y="46" fill="#9fb6e8" font-size="9" text-anchor="middle">✦</text><circle cx="140" cy="110" r="5" fill="#e0a95a" opacity=".85"/><rect width="420" height="160" fill="#b8c4bf" opacity=".18"/></svg></div>
+  <p class="first">"A palisade in the fog. Doors left open, tables still set. People everywhere, quiet, waiting. Everyone in history who vanished without a trace ends up here."</p>
+  <div class="grid">
+    <div class="f"><h3>Light</h3><p>Hand lanterns and candle-glow inside the fog. You never see more than twenty steps ahead.</p></div>
+    <div class="f"><h3>Colours</h3><div class="sw"><i style="background:#6f7d72"></i><i style="background:#c9b48f"></i><i style="background:#e0a95a"></i><i style="background:#2f3a36"></i></div></div>
+    <div class="f"><h3>Sound</h3><p>Creaking timber, dripping fog, a bell somewhere that never stops. People whispering their own names so they won't forget them.</p></div>
+    <div class="f"><h3>Language</h3><p>Early modern English, and voices from every century of the vanished.</p></div>
+    <div class="f"><h3>Landmark</h3><p>The post carved with CROATOAN.</p></div>
+    <div class="f"><h3>How it plays</h3><p>Exploring in fog, with a touch of horror. The first use of the chisel, and the first memory spent.</p></div>
+    <div class="f trace"><h3>Eesa's trace · Alkaid</h3><p>His star carved beside CROATOAN. The wood is still pale. He was here, and not long ago.</p></div>
+    <div class="f"><h3>The way down</h3><p>The colony well. When Nysa drops a lantern in, it falls for a very long time.</p></div>
+  </div>
+</div>
+</section>
+
+<section class="band b2" data-name="Layer 2 · 1258" data-ago="768 years ago" data-depth="2">
+<div class="inner">
+  <header><span class="n">2</span><span class="yr">1258</span><span class="ago">768 years ago</span><span class="part">Part One</span></header>
+  <h2>The River of Ink</h2>
+  <div class="scene"><svg viewBox="0 0 420 160" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Domes above a black river with floating pages"><rect width="420" height="160" fill="#1c2433"/><circle cx="90" cy="70" r="30" fill="#2f5c8f"/><rect x="60" y="70" width="60" height="40" fill="#2f5c8f"/><circle cx="250" cy="62" r="40" fill="#24476e"/><rect x="210" y="62" width="80" height="48" fill="#24476e"/><rect x="330" y="40" width="10" height="70" fill="#24476e"/><circle cx="335" cy="38" r="6" fill="#b88a3e"/><rect y="110" width="420" height="50" fill="#07090d"/><g fill="#d8cbb0" opacity=".7"><rect x="40" y="124" width="14" height="9" transform="rotate(-12 47 128)"/><rect x="160" y="132" width="12" height="8" transform="rotate(10 166 136)"/><rect x="290" y="122" width="15" height="9" transform="rotate(-6 297 126)"/></g><circle cx="250" cy="95" r="4" fill="#e3b54a"/><circle cx="90" cy="98" r="3" fill="#e3b54a"/></svg></div>
+  <p class="first">"Domes of lapis and gold above a river as black as oil. Pages drift past like leaves. On every bank, scholars copy what they can before the Grey takes it."</p>
+  <div class="grid">
+    <div class="f"><h3>Light</h3><p>Oil lamps in every window, reflected in black water.</p></div>
+    <div class="f"><h3>Colours</h3><div class="sw"><i style="background:#1c2433"></i><i style="background:#2f5c8f"></i><i style="background:#b88a3e"></i><i style="background:#d8cbb0"></i></div></div>
+    <div class="f"><h3>Sound</h3><p>Water, pages turning, quills scratching, people reading aloud, an oud far away.</p></div>
+    <div class="f"><h3>Language</h3><p>Arabic and Persian, with Greek and Sanskrit in the translations.</p></div>
+    <div class="f"><h3>Landmark</h3><p>The House of Wisdom, standing on the river that carried its books away.</p></div>
+    <div class="f"><h3>How it plays</h3><p>The first big puzzle chapter: brass instruments, star charts and machines. Eesa's mind starts to show.</p></div>
+    <div class="f trace"><h3>Eesa's trace · Mizar</h3><p>A brass star machine he built from forgotten parts, still turning. A scholar who taught him says he was looking for "a spring at the bottom of everything."</p></div>
+    <div class="f"><h3>The way down</h3><p>Into the river. Nysa dives through the ink, and the lost words of a thousand books rush past her.</p></div>
+  </div>
+</div>
+</section>
+
+<section class="band b3" data-name="Layer 3 · AD 211" data-ago="1,815 years ago" data-depth="3">
+<div class="inner">
+  <header><span class="n">3</span><span class="yr">AD 211</span><span class="ago">1,815 years ago</span><span class="part">Part One</span></header>
+  <h2>The Chiseled Court</h2>
+  <div class="scene"><svg viewBox="0 0 420 160" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A flooded forum with columns and faceless statues under moonlight"><rect width="420" height="160" fill="#1d2124"/><circle cx="350" cy="36" r="16" fill="#cfd6d8" opacity=".8"/><g fill="#b9b4aa"><rect x="40" y="40" width="14" height="80"/><rect x="90" y="40" width="14" height="80"/><rect x="300" y="40" width="14" height="80"/><rect x="350" y="40" width="14" height="80"/><rect x="30" y="32" width="84" height="8"/><rect x="290" y="32" width="84" height="8"/></g><rect x="180" y="62" width="20" height="50" fill="#9a958c"/><circle cx="190" cy="54" r="10" fill="#9a958c"/><rect x="183" y="50" width="14" height="8" fill="#4a4743"/><rect x="226" y="66" width="18" height="46" fill="#9a958c"/><circle cx="235" cy="58" r="9" fill="#9a958c"/><rect x="229" y="54" width="12" height="7" fill="#4a4743"/><rect x="130" y="70" width="12" height="40" fill="#7a2e2e"/><rect y="112" width="420" height="48" fill="#2b3439"/><rect x="260" y="104" width="4" height="10" fill="#9fb6e8"/></svg></div>
+  <p class="first">"A forum flooded knee-deep under moonlight. Statues line the colonnade, every face scraped away. In the palace above, the erased rulers of history hold court."</p>
+  <div class="grid">
+    <div class="f"><h3>Light</h3><p>Moonlight on marble and still water. Torches only inside the palace.</p></div>
+    <div class="f"><h3>Colours</h3><div class="sw"><i style="background:#b9b4aa"></i><i style="background:#7a2e2e"></i><i style="background:#2b3439"></i><i style="background:#cfd6d8"></i></div></div>
+    <div class="f"><h3>Sound</h3><p>Dripping water, echoes in marble halls, the clink of the guard's armour, a chisel somewhere, always working.</p></div>
+    <div class="f"><h3>Language</h3><p>Latin.</p></div>
+    <div class="f"><h3>Landmark</h3><p>The colonnade of faceless statues, and Geta's guard barracks.</p></div>
+    <div class="f"><h3>How it plays</h3><p>Court intrigue and choosing who to trust, stealth through the palace, a chase through the flooded forum.</p></div>
+    <div class="f trace"><h3>Eesa's trace · Alioth</h3><p>His old room in the barracks: star charts on the walls, a puzzle box left "for whoever comes looking." Then the near-miss: across the water he sees her, and walks into the Grey.</p></div>
+    <div class="f"><h3>The way down</h3><p>The catacombs under the palace, where Rome buried what it didn't want to see.</p></div>
+  </div>
+</div>
+</section>
+
+<section class="band b4" data-name="Layer 4 · 48 BC" data-ago="2,074 years ago" data-depth="4">
+<div class="inner">
+  <header><span class="n">4</span><span class="yr">48 BC</span><span class="ago">2,074 years ago</span><span class="part">Part Two</span></header>
+  <h2>The Library That Lived</h2>
+  <div class="scene"><svg viewBox="0 0 420 160" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Lamplit shelves and a lighthouse hanging upside down into darkness"><rect width="420" height="160" fill="#1d1a12"/><g fill="#3a3122"><rect x="0" y="20" width="120" height="6"/><rect x="0" y="50" width="120" height="6"/><rect x="0" y="80" width="120" height="6"/><rect x="0" y="110" width="120" height="6"/><rect x="300" y="20" width="120" height="6"/><rect x="300" y="50" width="120" height="6"/><rect x="300" y="80" width="120" height="6"/><rect x="300" y="110" width="120" height="6"/></g><g fill="#cdb88a" opacity=".6"><rect x="10" y="40" width="100" height="10"/><rect x="10" y="70" width="100" height="10"/><rect x="310" y="40" width="100" height="10"/><rect x="310" y="100" width="100" height="10"/></g><polygon points="190,0 230,0 222,110 198,110" fill="#5a4c33"/><polygon points="198,110 222,110 214,128 206,128" fill="#7d6743"/><circle cx="210" cy="136" r="18" fill="#d9a441" opacity=".25"/><circle cx="210" cy="136" r="9" fill="#d9a441"/></svg></div>
+  <p class="first">"Shelves rising out of sight in both directions, every scroll ever lost, all lamplit. In the middle, the great lighthouse of Alexandria hangs upside down, its fire burning downward into the dark."</p>
+  <div class="grid">
+    <div class="f"><h3>Light</h3><p>Thousands of small oil lamps, and the lighthouse fire pointing down.</p></div>
+    <div class="f"><h3>Colours</h3><div class="sw"><i style="background:#d9a441"></i><i style="background:#cdb88a"></i><i style="background:#3a3122"></i><i style="background:#1d3340"></i></div></div>
+    <div class="f"><h3>Sound</h3><p>Scrolls unrolling, the sea far off, a librarian's footsteps that never come closer.</p></div>
+    <div class="f"><h3>Language</h3><p>Greek, with every language the library ever collected.</p></div>
+    <div class="f"><h3>Landmark</h3><p>The upside-down lighthouse, and Ione's reading room.</p></div>
+    <div class="f"><h3>How it plays</h3><p>Trading with Ione: every answer costs a memory, and players choose which ones to give up. Library puzzles.</p></div>
+    <div class="f trace"><h3>Eesa's trace · Megrez</h3><p>The scroll he studied for months: the Sealers' own record. It shows that Tomas erased him, and that he went looking for Lethe himself. Megrez is the faintest of the seven stars and the hardest to find.</p></div>
+    <div class="f"><h3>The way down</h3><p>Follow the lighthouse beam. It points the way down.</p></div>
+  </div>
+</div>
+</section>
+
+<section class="band b5" data-name="Layer 5 · c. 1177 BC" data-ago="≈ 3,200 years ago" data-depth="5">
+<div class="inner">
+  <header><span class="n">5</span><span class="yr">c. 1177 BC</span><span class="ago">≈ 3,200 years ago</span><span class="part">Part Two</span></header>
+  <h2>The Collapse</h2>
+  <div class="scene"><svg viewBox="0 0 420 160" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A burning city wall with a stone gate guarded by two lions"><rect width="420" height="160" fill="#1c1210"/><rect y="0" width="420" height="70" fill="#3b211a"/><circle cx="80" cy="60" r="40" fill="#9c4a2c" opacity=".45"/><circle cx="340" cy="54" r="34" fill="#9c4a2c" opacity=".35"/><rect y="70" width="420" height="60" fill="#5a3a2a"/><rect x="170" y="54" width="80" height="76" fill="#4a4440"/><path d="M186 130 V86 Q210 62 234 86 V130 Z" fill="#120c0a"/><rect x="170" y="98" width="14" height="32" fill="#8a7a62"/><circle cx="177" cy="94" r="7" fill="#8a7a62"/><rect x="236" y="98" width="14" height="32" fill="#8a7a62"/><circle cx="243" cy="94" r="7" fill="#8a7a62"/><rect y="130" width="420" height="30" fill="#120c0a"/></svg></div>
+  <p class="first">"Hattusa, capital of a forgotten empire, standing whole and burning forever. Its thousand gods sit in the empty temples, starving. On the horizon, ships with no flags."</p>
+  <div class="grid">
+    <div class="f"><h3>Light</h3><p>Fire. Everything is lit by a city that never finishes burning.</p></div>
+    <div class="f"><h3>Colours</h3><div class="sw"><i style="background:#8a4b2f"></i><i style="background:#9b7a45"></i><i style="background:#4a4440"></i><i style="background:#1c1210"></i></div></div>
+    <div class="f"><h3>Sound</h3><p>Crackling fire, distant drums, wind through stone tunnels, clay tablets cracking in the heat.</p></div>
+    <div class="f"><h3>Language</h3><p>Hittite, written in cuneiform.</p></div>
+    <div class="f"><h3>Landmark</h3><p>The Lion Gate, a real gateway at Hattusa flanked by two carved lions.</p></div>
+    <div class="f"><h3>How it plays</h3><p>The playable flashback: you are an ancient Sealer during the Collapse, carrying out the Great Forgetting with your own hands. The most intense combat in the game.</p></div>
+    <div class="f trace"><h3>Eesa's trace · Phecda</h3><p>His voice, caught in an echo of memory, talking to someone about "opening the way home." Geta falls here.</p></div>
+    <div class="f"><h3>The way down</h3><p>Hattusa's real stone tunnel under its walls, the Yerkapı, leads down and keeps going.</p></div>
+  </div>
+</div>
+</section>
+
+<section class="band b6" data-name="Layer 6 · c. 1336 BC" data-ago="≈ 3,360 years ago" data-depth="6">
+<div class="inner">
+  <header><span class="n">6</span><span class="yr">c. 1336 BC</span><span class="ago">≈ 3,360 years ago</span><span class="part">Part Two</span></header>
+  <h2>The Sun City</h2>
+  <div class="scene"><svg viewBox="0 0 420 160" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A sun disk whose rays end in small hands, over a sandstone city"><rect width="420" height="160" fill="#2a1f14"/><circle cx="210" cy="40" r="26" fill="#e3b54a"/><g stroke="#e3b54a" stroke-width="2" opacity=".8"><line x1="190" y1="60" x2="140" y2="118"/><line x1="200" y1="64" x2="180" y2="122"/><line x1="210" y1="66" x2="210" y2="124"/><line x1="220" y1="64" x2="240" y2="122"/><line x1="230" y1="60" x2="280" y2="118"/></g><g fill="#e3b54a"><circle cx="140" cy="120" r="3.5"/><circle cx="180" cy="124" r="3.5"/><circle cx="210" cy="126" r="3.5"/><circle cx="240" cy="124" r="3.5"/><circle cx="280" cy="120" r="3.5"/></g><rect y="128" width="420" height="32" fill="#c79a63"/><rect x="30" y="104" width="60" height="24" fill="#a77e4c"/><rect x="330" y="100" width="64" height="28" fill="#a77e4c"/><rect x="214" y="112" width="3" height="16" fill="#9fb6e8"/><rect x="200" y="112" width="3" height="16" fill="#b99be0"/></svg></div>
+  <p class="first">"A city of white sandstone under a golden sun that isn't there. Its rays end in small open hands, the way they do in real Amarna art. Down here, the hands reach out and hold you."</p>
+  <div class="grid">
+    <div class="f"><h3>Light</h3><p>A false sun: bright, golden and shadowless after so many dark layers. Beautiful, and wrong.</p></div>
+    <div class="f"><h3>Colours</h3><div class="sw"><i style="background:#e3b54a"></i><i style="background:#c79a63"></i><i style="background:#2a1f14"></i><i style="background:#9fb6e8"></i></div></div>
+    <div class="f"><h3>Sound</h3><p>Heat humming, a single held note, voices singing a hymn to the sun.</p></div>
+    <div class="f"><h3>Language</h3><p>Ancient Egyptian, in hieroglyphs scraped off and carved again.</p></div>
+    <div class="f"><h3>Landmark</h3><p>The Great Temple of the Aten, open to the sky, and Akhenaten's broken throne.</p></div>
+    <div class="f"><h3>How it plays</h3><p>The biggest set piece so far: the erased crossing into Istanbul (the Bleed), and the reunion.</p></div>
+    <div class="f trace"><h3>Eesa · Merak</h3><p>Not a trace any more. Eesa himself, fifteen years older, a rocket watch on his wrist, standing beside Akhenaten. The first pointer star.</p></div>
+    <div class="f"><h3>The way down</h3><p>The sun's hands lower them both into a shaft beneath the temple, into a dark with no light at all.</p></div>
+  </div>
+</div>
+</section>
+
+<section class="band b7" data-name="Layer 7 · c. 9500 BC" data-ago="≈ 11,500 years ago" data-depth="7">
+<div class="inner">
+  <header><span class="n">7</span><span class="yr">c. 9500 BC</span><span class="ago">≈ 11,500 years ago</span><span class="part">Part Three</span></header>
+  <h2>The First Door</h2>
+  <div class="scene"><svg viewBox="0 0 420 160" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Darkness with giant T-shaped pillars lit only by a violet light and a blue light"><rect width="420" height="160" fill="#050607"/><circle cx="180" cy="120" r="34" fill="#b99be0" opacity=".14"/><circle cx="240" cy="120" r="34" fill="#9fb6e8" opacity=".14"/><g fill="#2a2925"><rect x="90" y="40" width="16" height="110"/><rect x="74" y="30" width="48" height="14"/><rect x="314" y="44" width="16" height="106"/><rect x="298" y="34" width="48" height="14"/></g><g fill="#3a3832"><rect x="196" y="56" width="12" height="94"/><rect x="182" y="48" width="40" height="11"/></g><circle cx="180" cy="126" r="3" fill="#b99be0"/><circle cx="240" cy="126" r="3" fill="#9fb6e8"/><ellipse cx="210" cy="152" rx="26" ry="3" fill="#cfe6ff" opacity=".35"/></svg></div>
+  <p class="first">"Total darkness, and giant stone pillars shaped like people, with carved arms reaching around their sides, as they really are at Göbekli Tepe. The only light is the two of them: her violet and his blue. Somewhere below, water is dripping."</p>
+  <div class="grid">
+    <div class="f"><h3>Light</h3><p>None, except Nysa and Eesa. Then, at the very end, the Spring.</p></div>
+    <div class="f"><h3>Colours</h3><div class="sw"><i style="background:#050607"></i><i style="background:#8c8576"></i><i style="background:#b99be0"></i><i style="background:#9fb6e8"></i><i style="background:#cfe6ff"></i></div></div>
+    <div class="f"><h3>Sound</h3><p>Silence. Two people breathing. Water dripping. A heartbeat that isn't theirs.</p></div>
+    <div class="f"><h3>Language</h3><p>None. This layer is older than writing. Nothing here has ever had a name, and that is why it was forgotten.</p></div>
+    <div class="f"><h3>Landmark</h3><p>The ring of pillars around the First Door, and the Spring in the Dark beneath it.</p></div>
+    <div class="f"><h3>How it plays</h3><p>Brother and sister together. Some puzzles need both lights, violet and blue, at once: the two kids, grown up, solving it side by side.</p></div>
+    <div class="f trace"><h3>The last star · Dubhe</h3><p>With Merak, it points the way, as the pointer stars do in the real sky. The map is complete.</p></div>
+    <div class="f"><h3>The way down</h3><p>There's no further down. Only the door, the Spring, and the choice.</p></div>
+  </div>
+</div>
+</section>
+
+<div class="close">
+<div class="inner">
+  <h2>Why this structure works</h2>
+  <p>Every layer is a world players have never seen in a game, rooted in real history. Each one is darker, older and quieter than the last, so the game itself feels like going down. And through all of it, the only colours that don't belong are a sister's violet and a brother's blue, getting closer one layer at a time.</p>
+  <footer>LETHE · The Descent · concept book v0.1 · 26 October 2026 · private</footer>
+</div>
+</div>
+
+<script>
+(function(){
+  var bands=document.querySelectorAll('.band');
+  var now=document.getElementById('now'),ago=document.getElementById('ago'),bar=document.getElementById('bar');
+  if(!('IntersectionObserver' in window)||!now) return;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var b=e.target;
+        now.textContent=b.getAttribute('data-name');
+        ago.textContent=b.getAttribute('data-ago');
+        bar.style.width=(Number(b.getAttribute('data-depth'))/7*100)+'%';
+      }
+    });
+  },{rootMargin:'-45% 0px -50% 0px'});
+  bands.forEach(function(b){io.observe(b);});
+})();
+</script>

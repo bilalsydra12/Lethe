@@ -1,0 +1,434 @@
+<title>Lethe Release Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: companion to the bible. Read top to bottom: the descent, three parts, seven chapters, the reveal ledger, then the gates. Single dark look by choice. */
+:root{
+  --river:#0f1517;
+  --slate:#161f22;
+  --stone:#1d282b;
+  --line:#2b383b;
+  --bone:#dbe1dd;
+  --fog:#93a19f;
+  --bronze:#c09a62;
+  --bronze-dim:#7d6743;
+  --rust:#b8664a;
+  --sage:#8fae9a;
+  --violet:#b99be0;
+  --star:#9fb6e8;
+  --display:"Marcellus","Trajan Pro",Georgia,serif;
+  --body:"Literata",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--river);color:var(--bone);font-family:var(--body);font-size:17px;line-height:1.65;margin:0}
+a{color:var(--bronze);text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--bronze);outline-offset:3px}
+.wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
+main{min-width:0}
+.col{max-width:760px}
+
+header.cover{padding-block:72px 40px;border-bottom:1px solid var(--line);margin-bottom:24px}
+.stamp{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--fog);display:flex;flex-wrap:wrap;gap:8px 20px}
+.stamp b{color:var(--bronze);font-weight:500}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(44px,8vw,84px);letter-spacing:.1em;line-height:1.05;margin:24px 0 12px}
+.logline{font-size:clamp(19px,2.4vw,23px);line-height:1.5;font-style:italic;max-width:40ch;margin:0}
+
+section{padding-top:56px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--bronze);margin:0 0 6px}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(30px,4.2vw,40px);line-height:1.15;letter-spacing:.03em;margin:0 0 16px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:400;font-size:24px;line-height:1.2;margin:0 0 8px;text-wrap:balance}
+p{margin:0 0 16px;max-width:65ch}
+.muted{color:var(--fog)}
+ul.plain{margin:0 0 16px;padding-left:20px;max-width:65ch}
+ul.plain li{margin-bottom:6px}
+blockquote{margin:20px 0;padding:4px 0 4px 20px;border-left:2px solid var(--bronze);font-style:italic;font-size:19px;max-width:60ch}
+
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:24px 0}
+.rules div{background:var(--river);padding:18px 20px}
+.rules b{display:block;font-family:var(--display);font-weight:400;font-size:19px;color:var(--bronze);margin-bottom:6px;line-height:1.3}
+.rules span{font-size:15.5px;color:var(--fog)}
+@media (max-width:760px){.rules{grid-template-columns:minmax(0,1fr)}}
+
+/* The descent: layers get darker as they go deeper */
+.descent{margin:24px 0;border:1px solid var(--line)}
+.layer{display:grid;grid-template-columns:64px 128px minmax(0,1fr) 110px;gap:16px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.layer:last-child{border-bottom:none}
+.layer .n{font-family:var(--display);font-size:26px;color:var(--bronze);line-height:1}
+.layer time{font-family:var(--mono);font-size:13px;color:var(--bone);font-variant-numeric:tabular-nums}
+.layer b{display:block;font-family:var(--display);font-weight:400;font-size:18px}
+.layer span.ev{font-size:14.5px;color:var(--fog)}
+.layer time small{display:block;font-size:11px;color:var(--fog);letter-spacing:.04em}
+.chap time small{font-size:11px;color:var(--fog);margin-left:8px}
+.layer .star{font-family:var(--mono);font-size:12px;color:var(--star);text-align:right}
+.layer .star::before{content:"✦ "}
+.l1{background:#162024}.l2{background:#141d21}.l3{background:#131b1e}.l4{background:#11181b}.l5{background:#0f1518}.l6{background:#0d1315}.l7{background:#0a0f11}
+.partline{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--violet);padding:8px 18px;background:var(--slate);border-bottom:1px solid var(--line)}
+@media (max-width:640px){.layer{grid-template-columns:44px minmax(0,1fr);gap:4px 12px}.layer time{grid-column:2}.layer > div{grid-column:2}.layer .star{grid-column:2;text-align:left}.layer .n{grid-row:span 3}}
+
+.parts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}
+@media (max-width:900px){.parts{grid-template-columns:minmax(0,1fr)}}
+.part{border:1px solid var(--line);background:var(--slate);padding:22px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.part .no{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze)}
+.part h3{font-size:26px;margin:2px 0 2px}
+.part .theme{font-style:italic;color:var(--fog);margin:0 0 6px}
+.part p{font-size:15.5px;margin:0 0 8px}
+.part dl{display:grid;grid-template-columns:84px minmax(0,1fr);gap:6px 12px;margin:10px 0 0;font-size:14.5px;border-top:1px solid var(--line);padding-top:12px}
+.part dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--fog);padding-top:3px}
+.part dd{margin:0}
+.part .q{margin-top:auto;padding-top:12px;font-size:14.5px;border-top:1px solid var(--line)}
+.part .q b{font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);display:block;margin:0 0 2px}
+.part .q .gap{margin-top:8px}
+
+/* Chapters */
+.chap{border-top:1px solid var(--line);padding:24px 0}
+.chap header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:8px}
+.chap .c-no{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze)}
+.chap time{font-family:var(--mono);font-size:12px;color:var(--bone);border:1px solid var(--line);padding:1px 8px}
+.chap .price{font-family:var(--mono);font-size:12px;color:var(--fog);margin-left:auto}
+.chap h3{font-size:24px;margin:0 0 8px}
+.chap p{font-size:16px;margin:0 0 10px}
+.chap dl{display:grid;grid-template-columns:108px minmax(0,1fr);gap:6px 16px;margin:10px 0 0;font-size:15px}
+.chap dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--fog);padding-top:3px}
+.chap dd{margin:0}
+.chap dd.s{color:var(--star)}
+@media (max-width:560px){.chap dl{grid-template-columns:minmax(0,1fr);gap:0}.chap dd{margin-bottom:8px}.chap .price{margin-left:0}}
+
+.tbl{overflow-x:auto;margin:20px 0;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:640px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fog);background:var(--slate)}
+.ledger td:first-child{color:var(--bone);font-weight:600;width:28%}
+tr:last-child td{border-bottom:none}
+.st{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:1px 7px;border:1px solid var(--line);margin-bottom:4px;white-space:nowrap}
+.st.raise{color:var(--violet);border-color:#5b4a73}
+.st.ans{color:var(--sage);border-color:#4a6152}
+.st.hide{color:var(--fog)}
+.st.lock{color:var(--rust);border-color:#6e3f30}
+td small{display:block;color:var(--fog);font-size:13.5px;line-height:1.45}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;color:var(--fog);margin:12px 0}
+.legend span{display:flex;align-items:center;gap:6px}
+
+.lockbox{border:1px dashed var(--rust);background:var(--slate);padding:18px 22px;margin:20px 0}
+.lockbox .eyebrow{color:var(--rust)}
+.lockbox ul{margin:0;padding-left:20px}
+.lockbox li{margin-bottom:8px;max-width:64ch}
+
+.gates td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+th.go{color:var(--sage)}
+th.fix{color:var(--bronze)}
+th.stop{color:var(--rust)}
+
+.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0}
+@media (max-width:640px){.metrics{grid-template-columns:minmax(0,1fr)}}
+.metrics div{border-top:2px solid var(--bronze-dim);padding-top:10px}
+.metrics b{display:block;font-family:var(--display);font-weight:400;font-size:18px;margin-bottom:4px}
+.metrics p{font-size:15px;color:var(--fog);margin:0}
+
+.road{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:18px 14px;margin:24px 0}
+.road div{border-top:2px solid var(--bronze);padding-top:10px}
+.road time{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze)}
+.road b{display:block;font-family:var(--display);font-weight:400;font-size:18px;margin:4px 0}
+.road p{font-size:14.5px;color:var(--fog);margin:0}
+
+.note{border:1px solid var(--bronze-dim);background:var(--slate);padding:16px 20px;margin:20px 0;font-size:15.5px}
+.note strong{color:var(--bronze);font-weight:600}
+
+footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--fog);letter-spacing:.06em}
+</style>
+
+<div class="wrap">
+<main>
+<header class="cover">
+  <div class="stamp"><span>Companion to the franchise bible <b>v0.4</b></span><span>Release map <b>v0.2</b></span><span>26 Oct 2026</span></div>
+  <h1>Release Map</h1>
+  <p class="logline">Seven layers, seven chapters, three parts. How the story of LETHE is released, what each part gives away, and how we know when to make the next one.</p>
+</header>
+
+<section class="col">
+  <p class="eyebrow">The three rules</p>
+  <h2>Every part earns the next</h2>
+  <div class="rules">
+    <div><b>The search is the engine</b><span>Nysa doesn't find Eesa until the end of Part Two. Until then, players know him through what he left behind.</span></div>
+    <div><b>Answer one question, ask a bigger one</b><span>Each chapter solves its mystery and opens a deeper one, the way each Harry Potter book does.</span></div>
+    <div><b>The audience decides the budget</b><span>A part only gets bigger once the previous one proves people want it.</span></div>
+  </div>
+</section>
+
+<section class="col">
+  <p class="eyebrow">The descent</p>
+  <h2>Lethe is layered like a dig</h2>
+  <p>Archaeologists dig down through layers, and the deeper the layer, the older it is. Lethe works the same way. The recently forgotten lie near the surface. The deeper you go, the older the forgotten, and the more you have to forget to get there.</p>
+  <p>Eesa went all the way down, looking for the Spring in the Dark. Nysa follows him one layer at a time. Each layer is one chapter, one real moment in history, and one of the seven stars he left behind.</p>
+  <blockquote>Every chapter gives three things: a clue to Eesa, a truth about the Sealers, and a memory Nysa has to spend.</blockquote>
+  <div class="descent">
+    <div class="partline">Part One · The Fourth Face</div>
+    <div class="layer l1"><span class="n">1</span><time>1590<small>436 years ago</small></time><div><b>The Vanished</b><span class="ev">Roanoke, the colony that disappeared</span></div><span class="star">Alkaid</span></div>
+    <div class="layer l2"><span class="n">2</span><time>1258<small>768 years ago</small></time><div><b>The River of Ink</b><span class="ev">Baghdad and the House of Wisdom</span></div><span class="star">Mizar</span></div>
+    <div class="layer l3"><span class="n">3</span><time>AD 211<small>1,815 years ago</small></time><div><b>The Chiseled Court</b><span class="ev">Rome and the erased emperor Geta</span></div><span class="star">Alioth</span></div>
+    <div class="partline">Part Two · The Bleed</div>
+    <div class="layer l4"><span class="n">4</span><time>48 BC<small>2,074 years ago</small></time><div><b>The Library That Lived</b><span class="ev">Alexandria and its lost scrolls</span></div><span class="star">Megrez</span></div>
+    <div class="layer l5"><span class="n">5</span><time>c. 1177 BC<small>≈ 3,200 years ago</small></time><div><b>The Collapse</b><span class="ev">Hattusa, the Sea Peoples, the Great Forgetting</span></div><span class="star">Phecda</span></div>
+    <div class="layer l6"><span class="n">6</span><time>c. 1336 BC<small>≈ 3,360 years ago</small></time><div><b>The Sun City</b><span class="ev">Amarna, Akhenaten's erased capital</span></div><span class="star">Merak</span></div>
+    <div class="partline">Part Three · The First Door</div>
+    <div class="layer l7"><span class="n">7</span><time>c. 9500 BC<small>≈ 11,500 years ago</small></time><div><b>The First Door</b><span class="ev">Göbekli Tepe and the Spring in the Dark</span></div><span class="star">Dubhe</span></div>
+  </div>
+  <h3>Eesa's seven stars</h3>
+  <p>Eesa left one star in each layer. Together they form the Big Dipper. The last two, <b>Merak</b> and <b>Dubhe</b>, are the real "pointer stars": a line through them points to the North Star. Players find Merak at the end of Part Two and Dubhe in Part Three, and only then does the map point to the Spring. It's one puzzle that runs across the whole saga, and it's real astronomy.</p>
+</section>
+
+<section>
+  <div class="col">
+    <p class="eyebrow">The saga</p>
+    <h2>Three parts</h2>
+    <p>The deeper the layer, the bigger the game. Part One is small and made by our tiny team. Part Three is the deepest layer and the biggest game.</p>
+  </div>
+  <div class="parts">
+    <article class="part">
+      <span class="no">Part One · Chapters 1–3</span>
+      <h3>The Fourth Face</h3>
+      <p class="theme">The search</p>
+      <p>Nysa crosses into Lethe and follows Eesa's trail through three layers: 1590, 1258 and AD 211. She finds his stars, his machines, people who knew him. In the last chapter she sees him across the water, and he walks into the Grey.</p>
+      <dl>
+        <dt>Size</dt><dd>3 chapters, about 4–6 hours</dd>
+        <dt>Team</dt><dd>You, Claude, a few freelancers</dd>
+        <dt>Budget</dt><dd>≈ $500–5,000</dd>
+        <dt>Platform</dt><dd>Godot, PC first</dd>
+      </dl>
+      <div class="q"><b>Answers</b>Is Eesa alive? Yes, and close.<b class="gap">Asks</b>Why did he walk away from her?</div>
+    </article>
+    <article class="part">
+      <span class="no">Part Two · Chapters 4–6</span>
+      <h3>The Bleed</h3>
+      <p class="theme">The truth</p>
+      <p>Deeper: 48 BC, 1177 BC, 1336 BC. Nysa learns that Tomas erased Eesa, and that Eesa went looking for Lethe himself. At Amarna she finally reaches him, and he stands beside Akhenaten as the erased cross into Istanbul.</p>
+      <dl>
+        <dt>Size</dt><dd>A full game, about 10–15 hours</dd>
+        <dt>Team</dt><dd>A small studio, 8–15 people</dd>
+        <dt>Budget</dt><dd>≈ $300k–1.5M, from sales, investors or a publisher</dd>
+        <dt>Platform</dt><dd>PC and consoles</dd>
+      </dl>
+      <div class="q"><b>Answers</b>Who erased Eesa, and why. Where he is.<b class="gap">Asks</b>What is behind the First Door, and why does it know Nysa's name?</div>
+    </article>
+    <article class="part">
+      <span class="no">Part Three · Chapter 7</span>
+      <h3>The First Door</h3>
+      <p class="theme">The cost</p>
+      <p>The bottom of Lethe, c. 9500 BC. Brother and sister together. The Spring in the Dark. The truth about Nysa's Firstlight. The thing beneath the door. Nysa's choice. The photograph.</p>
+      <dl>
+        <dt>Size</dt><dd>The big finale, 20–30 hours</dd>
+        <dt>Team</dt><dd>A full studio, 30–60 people</dd>
+        <dt>Budget</dt><dd>≈ $8M+, the AA plan in the bible</dd>
+        <dt>Platform</dt><dd>Unreal, PC and consoles</dd>
+      </dl>
+      <div class="q"><b>Answers</b>Everything.<b class="gap">Leaves</b>A world big enough for books, a series and new stories.</div>
+    </article>
+  </div>
+</section>
+
+<section class="col">
+  <p class="eyebrow">The seven chapters</p>
+  <h2>Layer by layer</h2>
+
+  <article class="chap">
+    <header><span class="c-no">Chapter 1 · Part One</span><time>1590<small>436 years ago</small></time><span class="price">Free · 60–90 min</span></header>
+    <h3>The Vanished</h3>
+    <p><b>Opens in the present day.</b> The glow-in-the-dark stars on the ceiling of the "storage room". The dig near Şanlıurfa, Eesa's name under the dust, Tomas, the door. Nysa crosses into the Shoal of Names, then descends to the first layer: a fog-bound colony where everyone who ever vanished without a trace still lives. The word CROATOAN is carved on a post.</p>
+    <dl>
+      <dt>Eesa's trace</dt><dd>His star, carved beside CROATOAN. The wood is still pale. It's fresh. He was here.</dd>
+      <dt>Sealer truth</dt><dd>Roanoke is the one door the Sealers failed to close. It's how Nysa gets in.</dd>
+      <dt>Memory spent</dt><dd>The night Eesa showed her Saturn.</dd>
+      <dt>Star</dt><dd class="s">Alkaid, "the leader"</dd>
+    </dl>
+  </article>
+
+  <article class="chap">
+    <header><span class="c-no">Chapter 2 · Part One</span><time>1258<small>768 years ago</small></time><span class="price">Paid · 90–120 min</span></header>
+    <h3>The River of Ink</h3>
+    <p>Baghdad's House of Wisdom, standing on a river that runs black with the ink of drowned books. Its scholars still work, copying what they can before the Grey takes it.</p>
+    <dl>
+      <dt>Eesa's trace</dt><dd>A brass star machine he built from forgotten parts, still turning, mapping Lethe's sky. A scholar who taught him tells Nysa he was searching for "a spring at the bottom of everything."</dd>
+      <dt>Sealer truth</dt><dd>The Sealers chose which books sank and which survived.</dd>
+      <dt>Star</dt><dd class="s">Mizar</dd>
+    </dl>
+  </article>
+
+  <article class="chap">
+    <header><span class="c-no">Chapter 3 · Part One</span><time>AD 211<small>1,815 years ago</small></time><span class="price">Paid · 90–120 min</span></header>
+    <h3>The Chiseled Court</h3>
+    <p>A palace of defaced statues ruled by erased monarchs. Geta, the murdered emperor, commands the guard, and he knew Eesa well: Eesa served beside him for years before going deeper.</p>
+    <dl>
+      <dt>Eesa's trace</dt><dd>His old room in the guard barracks: star charts on the walls, a puzzle box left for "whoever comes looking."</dd>
+      <dt>The near-miss</dt><dd>Across a flooded forum, Nysa sees him. He sees her. He walks into the Grey.</dd>
+      <dt>Ends</dt><dd>In our world, Tomas opens a notebook. Eesa's name is in it, crossed out in his own hand.</dd>
+      <dt>Star</dt><dd class="s">Alioth</dd>
+    </dl>
+  </article>
+
+  <article class="chap">
+    <header><span class="c-no">Chapter 4 · Part Two</span><time>48 BC<small>2,074 years ago</small></time><span class="price">Part Two</span></header>
+    <h3>The Library That Lived</h3>
+    <p>Alexandria Below, every lost scroll shelved in lamplight. Ione, the last librarian, answers any question for the price of a memory.</p>
+    <dl>
+      <dt>Eesa's trace</dt><dd>The scroll he studied for months: the Sealers' own record.</dd>
+      <dt>Sealer truth</dt><dd>Tomas erased Eesa. And Eesa wasn't taken: he went looking for Lethe on his own.</dd>
+      <dt>Hint</dt><dd>Ione begins the story of a spring in the dark, and refuses to finish it.</dd>
+      <dt>Star</dt><dd class="s">Megrez, the faintest of the seven and the hardest to find</dd>
+    </dl>
+  </article>
+
+  <article class="chap">
+    <header><span class="c-no">Chapter 5 · Part Two</span><time>c. 1177 BC<small>≈ 3,200 years ago</small></time><span class="price">Part Two</span></header>
+    <h3>The Collapse</h3>
+    <p>Hattusa of the Thousand Gods, intact and starving. A recovered memory becomes a playable flashback: you are an ancient Sealer during the Collapse, and you carry out the Great Forgetting yourself.</p>
+    <dl>
+      <dt>Eesa's trace</dt><dd>His voice, caught in an echo of memory, talking to someone about "opening the way home."</dd>
+      <dt>Sealer truth</dt><dd>Their oldest crime, and why the erased hate the living.</dd>
+      <dt>Loss</dt><dd>Geta falls defending the Court's people.</dd>
+      <dt>Star</dt><dd class="s">Phecda</dd>
+    </dl>
+  </article>
+
+  <article class="chap">
+    <header><span class="c-no">Chapter 6 · Part Two</span><time>c. 1336 BC<small>≈ 3,360 years ago</small></time><span class="price">Part Two</span></header>
+    <h3>The Sun City</h3>
+    <p>Amarna, Akhenaten's erased capital, lit by a sun that isn't there. Hatshepsut plays both sides. The Return is ready.</p>
+    <dl>
+      <dt>The reunion</dt><dd>Nysa finally reaches Eesa. He's fifteen years older, a rocket watch on his wrist, and he stands beside Akhenaten, holding open the way to our world.</dd>
+      <dt>The Bleed</dt><dd>The erased cross into Istanbul. Tomas spends every memory he has left.</dd>
+      <dt>Ends</dt><dd>The First Door begins to open. Something on the other side says Nysa's name.</dd>
+      <dt>Star</dt><dd class="s">Merak, the first pointer star</dd>
+    </dl>
+  </article>
+
+  <article class="chap">
+    <header><span class="c-no">Chapter 7 · Part Three</span><time>c. 9500 BC<small>≈ 11,500 years ago</small></time><span class="price">Part Three</span></header>
+    <h3>The First Door</h3>
+    <p>The bottom of Lethe: the oldest forgotten place, beneath Göbekli Tepe. Brother and sister go down together. Here the myths are oldest: the lake of Memory, the water of life in the land of darkness.</p>
+    <dl>
+      <dt>The truth</dt><dd>The Spring in the Dark, and Eesa's last gift. The thing beneath the door.</dd>
+      <dt>The ending</dt><dd>Nysa's choice. The photograph.</dd>
+      <dt>Star</dt><dd class="s">Dubhe, the second pointer star. With Merak, it points the way.</dd>
+    </dl>
+  </article>
+
+  <p class="muted">Part One's chapters are released one by one, then sold together for about $14.99, with Chapter 1 always free as the way in.</p>
+</section>
+
+<section>
+  <div class="col">
+    <p class="eyebrow">The reveal ledger</p>
+    <h2>What each part gives away</h2>
+    <p>Every major secret has a planned moment to be raised and a planned moment to be answered.</p>
+    <div class="legend">
+      <span><span class="st raise">Raised</span> Players start wondering</span>
+      <span><span class="st ans">Answered</span> Players learn the truth</span>
+      <span><span class="st hide">Hinted</span> A clue only fans will notice</span>
+      <span><span class="st lock">Locked</span> Not shown or hinted yet</span>
+    </div>
+  </div>
+  <div class="tbl ledger"><table>
+    <thead><tr><th>Secret</th><th>Part One</th><th>Part Two</th><th>Part Three</th></tr></thead>
+    <tbody>
+      <tr><td>Lethe exists, and memory is the price of power</td><td><span class="st ans">Answered</span><small>Chapter 1</small></td><td></td><td></td></tr>
+      <tr><td>Eesa is alive</td><td><span class="st raise">Raised</span> <span class="st ans">Answered</span><small>The fresh star at Roanoke; the near-miss in Rome</small></td><td></td><td></td></tr>
+      <tr><td>Eesa's star map</td><td><span class="st raise">Raised</span><small>Three of seven stars</small></td><td><span class="st hide">Hinted</span><small>Six of seven; the first pointer star</small></td><td><span class="st ans">Answered</span><small>The pointers lead to the Spring</small></td></tr>
+      <tr><td>What the Sealers have done through history</td><td><span class="st hide">Hinted</span><small>Roanoke and Baghdad</small></td><td><span class="st ans">Answered</span><small>The record in Alexandria; the 1177 BC flashback</small></td><td></td></tr>
+      <tr><td>Tomas erased Eesa</td><td><span class="st hide">Hinted</span><small>The notebook in the last shot</small></td><td><span class="st ans">Answered</span><small>Chapter 4</small></td><td></td></tr>
+      <tr><td>Eesa went looking for Lethe himself</td><td><span class="st hide">Hinted</span><small>"A spring at the bottom of everything"</small></td><td><span class="st ans">Answered</span><small>Chapter 4</small></td><td></td></tr>
+      <tr><td>Where Eesa is, and whose side he's on</td><td><span class="st raise">Raised</span><small>He walks away</small></td><td><span class="st ans">Answered</span><small>The reunion at Amarna</small></td><td></td></tr>
+      <tr><td>The Spring in the Dark</td><td><span class="st lock">Locked</span></td><td><span class="st hide">Hinted</span><small>Ione's unfinished story</small></td><td><span class="st ans">Answered</span></td></tr>
+      <tr><td>Nysa's Firstlight was Eesa's last gift</td><td><span class="st lock">Locked</span></td><td><span class="st lock">Locked</span></td><td><span class="st ans">Answered</span><small>The emotional peak of the saga</small></td></tr>
+      <tr><td>What lies beneath the First Door</td><td><span class="st lock">Locked</span></td><td><span class="st raise">Raised</span><small>It says Nysa's name</small></td><td><span class="st ans">Answered</span></td></tr>
+      <tr><td>Nysa's choice and the final photograph</td><td><span class="st lock">Locked</span></td><td><span class="st lock">Locked</span></td><td><span class="st ans">Answered</span><small>The last scene of the saga</small></td></tr>
+    </tbody>
+  </table></div>
+  <div class="lockbox col">
+    <p class="eyebrow">Kept private until the part that reveals them</p>
+    <ul>
+      <li>The full bible stays private. Public material (videos, store pages, the alternate-reality game, interviews) only uses what released parts have already revealed.</li>
+      <li>Writers' room secrets are shared with freelancers only when they're working on that part.</li>
+      <li>The ending is planned now and kept locked, so earlier chapters can plant clues that pay off later.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="col">
+  <p class="eyebrow">Measuring the audience</p>
+  <h2>How we'll know people want more</h2>
+  <p>Before each release, we decide what success looks like. Afterwards, the numbers tell us whether to go bigger, fix things, or rethink.</p>
+  <div class="metrics">
+    <div><b>Players</b><p>How many people download and start Chapter 1. Steam and itch.io show this for free.</p></div>
+    <div><b>Completion</b><p>What share of players reach the end. It shows whether the story holds people, which matters more than downloads.</p></div>
+    <div><b>Wishlists</b><p>How many add the next chapter or part to their Steam wishlist. The best single sign of future sales.</p></div>
+    <div><b>"Remember them" sign-ups</b><p>The final screen asks <em>"Will you remember them?"</em> and offers a sign-up to hear when the story continues. It fits the theme and builds a mailing list.</p></div>
+    <div><b>Reviews</b><p>The share of positive Steam reviews, and what players say they loved or disliked.</p></div>
+    <div><b>Choices</b><p>Optional, anonymous statistics on story choices ("62% of players spent the memory"). Useful for design and fun to share with fans. No personal data.</p></div>
+  </div>
+
+  <h3 style="margin-top:32px">The go/no-go gates</h3>
+  <p class="muted">Starting targets for the first three months after each release. We'll adjust them as we learn.</p>
+  <div class="tbl gates"><table>
+    <thead><tr><th>After</th><th>Measure</th><th class="go">Go bigger</th><th class="fix">Fix and retry</th><th class="stop">Rethink</th></tr></thead>
+    <tbody>
+      <tr><td>Chapter 1 (free)</td><td>Players<br>Completion<br>Chapter 2 wishlists<br>Positive reviews</td><td class="num">25,000+<br>45%+<br>5,000+<br>80%+</td><td class="num">5,000–25,000<br>25–45%<br>1,000–5,000<br>65–80%</td><td class="num">Under 5,000<br>Under 25%<br>Under 1,000<br>Under 65%</td></tr>
+      <tr><td>Part One (complete)</td><td>Copies sold<br>Part Two wishlists<br>Mailing list</td><td class="num">20,000+<br>30,000+<br>10,000+</td><td class="num">5,000–20,000<br>8,000–30,000<br>2,000–10,000</td><td class="num">Under 5,000<br>Under 8,000<br>Under 2,000</td></tr>
+      <tr><td>Part Two</td><td>Copies sold<br>Part Three wishlists</td><td class="num">250,000+<br>150,000+</td><td class="num">60,000–250,000<br>40,000–150,000</td><td class="num">Under 60,000<br>Under 40,000</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="plain">
+    <li><b>Go bigger:</b> start the next part at full planned size, and use these numbers to pitch investors and publishers.</li>
+    <li><b>Fix and retry:</b> the story has an audience but something is holding it back. Look at where players quit, improve it, push marketing, then decide.</li>
+    <li><b>Rethink:</b> change the format (a shorter story, a different art style, mobile first) before spending more.</li>
+  </ul>
+</section>
+
+<section class="col">
+  <p class="eyebrow">Between the parts</p>
+  <h2>Keeping the audience warm</h2>
+  <p>Gaps between parts are where most series lose their players. LETHE fills them with material that deepens the world without spoiling what's next.</p>
+  <ul class="plain">
+    <li><b>The "Erased" video series:</b> one episode per layer's real history, then more.</li>
+    <li><b>Prequel fiction about the Sealers,</b> set centuries before Nysa. It reveals nothing about the main mystery.</li>
+    <li><b>Small free side stories:</b> for example 30 minutes as Geta in the Court, or one night of Tomas's work.</li>
+    <li><b>Star-map theories:</b> fans will try to predict where the next star is. Never confirm or deny.</li>
+  </ul>
+</section>
+
+<section class="col">
+  <p class="eyebrow">Other versions</p>
+  <h2>Beyond the main story</h2>
+  <p>New platforms and new ways to play come only after the main story proves itself.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Version</th><th>What it is</th><th>When</th></tr></thead>
+    <tbody>
+      <tr><td>PC</td><td>The main story game on Steam and itch.io</td><td>Part One</td></tr>
+      <tr><td>Consoles</td><td>PlayStation, Xbox, Switch 2</td><td>After Part One, if it passes its gate</td></tr>
+      <tr><td>Mobile</td><td>Part One adapted for phones, a big market for story games</td><td>After Part One, if it passes its gate</td></tr>
+      <tr><td>Expeditions</td><td>Online co-op: explore the Grey, name places, find the Sealer among you</td><td>After Part Two, with a bigger team</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="col">
+  <p class="eyebrow">Rough timeline</p>
+  <h2>From now to the finale</h2>
+  <div class="road">
+    <div><time>Months 0–2</time><b>Prepare</b><p>Chapter 1 script, character designs, chisel prototype, first "Erased" videos.</p></div>
+    <div><time>Months 2–6</time><b>Build Chapter 1</b><p>Made in Godot. Steam page live early to collect wishlists.</p></div>
+    <div><time>Month 6–7</time><b>Release Chapter 1</b><p>Free. Measure for three months.</p></div>
+    <div><time>Months 7–14</time><b>Chapters 2 and 3</b><p>Released a few months apart. Part One complete.</p></div>
+    <div><time>Years 2–3</time><b>Part Two</b><p>Chapters 4–6, funded by Part One's results.</p></div>
+    <div><time>Years 4–6</time><b>Part Three</b><p>Chapter 7, the finale, at full scale.</p></div>
+  </div>
+  <div class="note"><strong>All targets and timings are starting estimates.</strong> They assume part-time work with freelance help, and they'll change once we have real data from Chapter 1.</div>
+</section>
+
+<footer>LETHE · release map v0.2 · 26 October 2026 · private until each part is released</footer>
+</main>
+</div>
