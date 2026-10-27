@@ -1,7 +1,7 @@
 # LETHE · Chapter 1 · *The Stars on the Ceiling*
 
 **Full script: novel prose + game beats**
-**Draft v0.1** · Scenes 1–2 of 18 · Follows `chapter-01-scene-list.md`
+**Draft v0.2** · Scenes 1–3 of 18 · Follows `chapter-01-scene-list.md`
 
 ---
 
@@ -371,7 +371,209 @@ The flight booking is a real on-screen sequence the player completes (pick the d
 
 ---
 
-*End of Scene 2. Next: Part B, Chandsar · Scene 3, "The Road Up."*
+*End of Scene 2.*
+
+---
+---
+
+## PART B · HOME: CHANDSAR
+
+---
+
+### SCENE 3 · NOW · "The Road Up"
+
+> **Saturday 13 June 2026 · 5:30 am to 3:10 pm**
+> Islamabad International Airport, then north: the Hazara Motorway to Mansehra, the N-15 through Balakot, Kaghan and Naran, and on to Chandsar
+> 31 °C and hazy at dawn in Islamabad, 39 °C by ten. 24 °C in Balakot. 15 °C in Naran, snow on every peak.
+
+The arrivals hall at Islamabad smelled of floor polish, jet fuel and jasmine.
+
+The jasmine came from the garlands. Even at half past five in the morning there was a crowd pressed against the steel barrier: whole families in their good clothes, small boys asleep on their fathers' shoulders, an old woman in a white chador holding a garland of jasmine and red roses in both hands as if it might escape. Every time the frosted doors slid open, the crowd leaned forward together like a field in the wind, and every time it was not their person, it leaned back.
+
+Nysa came through with her one checked bag and her backpack and her lavender scarf, and the heat met her at the doors like a wall. Thirty-one degrees before sunrise. The sky over the car park was not dark and not light but a thick milky orange, the colour of weak tea with too much milk in it, and the air tasted of dust and diesel and, very faintly, of somebody's woodsmoke from the villages beyond the airport fence.
+
+She had slept perhaps two hours on the plane. She had spent the rest of the night with her forehead against the window of seat 41K, watching for the mountains. They had come at dawn somewhere over the border: a long jagged line of white along the northern horizon, catching the first light while everything below was still in shadow, pink and then gold and then too bright to look at. She had cried a little then, for no reason she was prepared to examine, and the man in 41J had politely pretended to be asleep.
+
+Her father was leaning against the car.
+
+She saw him before he saw her. He was standing under the one working light in the pick-up lane with his arms folded and his ankles crossed, looking at his phone, and he looked, as he always did, slightly too good for the place he was standing in. Alex Ali was fifty-five and had never once in his life looked it. He was tall, taller than almost anyone around him, and he wore his long black hair, silvering now at the temples, combed straight back and tied at the nape of his neck the way he had worn it at twenty. His beard was full and neatly kept, with a streak of grey at the chin that her mother called *distinguished* and he called *the department*. He wore a plain white kurta with the sleeves rolled to the elbow, grey trousers, old leather sandals and the steel wristwatch he had been given when he finished his doctorate, and he was the only man in the car park who did not look hot.
+
+Behind him was the Corolla.
+
+It was a white 2004 Toyota Corolla, and it was the oldest member of the family who could still be said to work. Its paint had gone chalky on the roof. There was a long scrape down the passenger side from a goat-related incident in 2009 that nobody discussed. From the rear-view mirror hung a string of prayer beads in pale turquoise stones, swinging gently even when the car was parked, as if the car were breathing.
+
+Then he looked up, and saw her, and his whole face broke open.
+
+It was the thing she had forgotten, every time, about her father: the size of his smile. It took over his face completely. His eyes creased shut, the beard lifted, and he looked for a moment exactly like the man in the photograph at the lake with a nine-year-old girl on his shoulders, laughing so hard he couldn't see.
+
+"*There* she is," he said, and came across the lane with his arms already open, and she let go of the bag.
+
+He smelled of sandalwood soap and car air-freshener and very faintly of chalk, which was impossible, because he had not taught in a classroom with a blackboard for ten years.
+
+---
+
+▸ **PLAY · Arrival**
+
+A short walk-and-talk from the arrivals doors to the car. The player can't skip the hug; holding any button makes it last longer.
+
+At the car, Abbu takes a small packet out of his kurta pocket: a silver coin wrapped in a strip of green cloth and sewn shut. He ties it around her right upper arm, over her sleeve, with a neat double knot, without explaining it. *"Your mother. She'd never forgive me."* The player can **[Let him]** or **[Roll her eyes, then let him]**. Either way the cloth stays on her arm for the whole of Part B. (It is an *imam zamin*, a travel blessing. It is never named on screen.)
+
+If the player chose the **window seat** in Scene 2, Nysa says: *"I saw the mountains from the plane. All of them, at once."* Abbu: *"Then you've seen more of this country than most of the people living in it."*
+
+---
+
+They were out of the city before six.
+
+Abbu drove the way he did everything: unhurriedly, with total confidence and one hand. The motorway north was new and wide and almost empty at this hour, a smooth grey ribbon running between low brown hills, and the Corolla sat in the slow lane at exactly a hundred kilometres an hour, rattling faintly at the dashboard like a cup in a saucer. The air conditioner worked on one setting, which was *loud*. Abbu turned it off after ten minutes and wound the windows down, and the hot wind came in smelling of dry grass and eucalyptus.
+
+"How's the museum?" he said.
+
+"Good. Busy. We've got an exhibition opening."
+
+"About?"
+
+She hesitated. "People who were removed from history. Painted out. Erased."
+
+He glanced at her. "Cheerful."
+
+"It's actually very popular."
+
+"That's because nobody thinks it'll happen to them." He overtook a donkey cart with great courtesy. "Your mother sent you a list, by the way. It's in the glovebox. It's two pages."
+
+---
+
+The first painted truck came at them out of the sun near Hasan Abdal.
+
+It was a Bedford, older than her father, and every square centimetre of it had been decorated. The wooden doors of the cab were carved and painted in red and green and gold. Along the sides ran painted panels: a snow-capped mountain over a blue lake, a white horse with wings, a pair of enormous kohl-rimmed eyes, a jet fighter, a bunch of roses, and, in the middle, a portrait of a woman in a red dupatta so beautiful and so badly painted that Nysa laughed out loud. Hundreds of little chains hung from the front bumper and rang like bells as it passed. Across the back, in curly painted script, it said something in Urdu that her father translated without being asked: *Look at me with envy, but drive safely.*
+
+After that there were dozens. By Abbottabad she had stopped counting.
+
+The motorway ended at Mansehra and they turned onto the old road, the N-15, and everything got narrower and greener and louder. The hills became mountains in the space of an hour. Pine forests came down to the road on both sides, and the air through the open window changed: cooler, wetter, with a sharp resin smell, and under it something cold and mineral that she recognised before she could name it. The river.
+
+They heard the Kunhar before they saw it. Then the road swung round a bend and there it was below them, wide and fast and the colour of jade mixed with milk, grey-green with snowmelt and rock flour, throwing itself over boulders the size of houses. The noise filled the car. It never stopped, from that moment, for the rest of the day.
+
+---
+
+▸ **PLAY · The Drive**
+
+The drive is a **playable car journey** with Nysa in the passenger seat. The player can look around freely, lean out of the window, and choose conversation topics when they appear. Each topic unlocks one memory card for the journal (the memory system that the chisel will later spend). This is deliberate: **the game gives the player memories here so that it can take them away later.**
+
+| Topic | Abbu's answer | Memory card unlocked |
+|---|---|---|
+| **The house** | Tired, fond. "Forty years of winters. I'll miss the stove. I won't miss the roof." | *The green tin roof in the rain* |
+| **His new job** | Proud, embarrassed. "They gave me an office with a window. I don't know what to do with a window." | *Abbu marking papers by lamplight* |
+| **Ammi** | Laughing. "She has cooked for eleven people. You are one person." | *Ammi's parathas on the tawa* |
+| **The lake trip** | See below. Always available. | *Saiful Muluk, August 2010* |
+
+---
+
+They stopped at Balakot at nine.
+
+The town sat in the bottom of the valley where the Kunhar widened, and it looked, at first, like any mountain bazaar: a single long street of open-fronted shops with blue and green shutters, crates of apricots and cherries stacked on the pavement, a tyre shop, a pharmacy, a man selling plastic buckets in eleven colours. But the buildings were all too new. Almost none of them were more than twenty years old. On the hillside above the town, a few broken concrete shells had been left standing among the pines, roofless, their windows full of sky.
+
+On the eighth of October 2005, at eight fifty in the morning, an earthquake had destroyed almost all of Balakot in less than a minute. Nysa had been four. She didn't remember it. Her parents did, and never talked about it, and when they drove through the town they always went quiet in the same place, by the memorial on the river bank, the way people go quiet passing a hospital.
+
+They went quiet there now.
+
+The chai stall was on the river side of the road, built half out over the water on stilts: a corrugated iron roof, four wooden benches, a charpoy with a faded red blanket on it, and a boy of about twelve tending a blackened kettle on a gas ring with the seriousness of a surgeon. The tea came in thick glasses, milky and sweet and boiled with cardamom until it was the colour of caramel. There were pakoras in a newspaper cone, too hot to hold. The river roared under the floorboards. Through the gaps between the planks, Nysa could see it going past, grey-green and furious, a metre below her sandals.
+
+Her father blew on his tea and watched the water.
+
+---
+
+She had rehearsed this. On the plane, in the dark, she had said it to the window over and over until it sounded casual.
+
+"Abbu. Do you remember the trip to Saiful Muluk?"
+
+"Of course." His face softened at once. "August. You were nine. The jeep nearly went off the edge twice, and your mother made me promise in writing never to take her again."
+
+"Who was there?"
+
+He looked at her, amused. "Who was there? The three of us. Who else would be there?"
+
+She held her glass very carefully.
+
+"You got so sunburned," he said, smiling into the river. "On your nose. You sat on my shoulders the whole time because the stones hurt your feet, and you held my ears like a steering wheel. I couldn't hear for a week." He laughed. "And there was a man selling plastic telescopes at the lake, do you remember? Terrible things. Blue plastic. You couldn't see anything through them except your own eyelashes. I nearly bought you one."
+
+"Did you?"
+
+He frowned slightly, as if something had snagged. "No. No, I don't think I did. You didn't want it. You never cared about the stars." He shook his head and drank his tea. "That was strange, actually. I always thought you would."
+
+The river went on under the floor.
+
+Nysa put her hand on her chest, on the place where the ring hung on its chain under her T-shirt, and pressed until she could feel the edge of the stone.
+
+---
+
+▸ **PLAY · The Lake Trip**
+
+This is the emotional core of the scene, and the **one conversation the player can't skip**. Three choices appear after *"Who else would be there?"*:
+
+1. **[Push]** "Abbu, there were four of us." → He laughs, gently, and says, *"Four? Was your mother pregnant with someone I don't know about?"* The joke lands like a slap. Nysa: *"...No. Never mind."* (Unlocks nothing. The game remembers that you tried; Abbu mentions it once in Scene 8.)
+2. **[Ask about the telescope]** (plays as written above) → Unlocks the memory card *Saiful Muluk, August 2010* with **four** figures in it. The fourth is blurred, as if he moved when the photo was taken.
+3. **[Say nothing]** → Abbu fills the silence with the telescope story anyway, but it ends at *"I nearly bought you one,"* without the frown. Nysa looks at the river. The memory card is unlocked with **three** figures and an empty space.
+
+**Design note:** whichever you choose, Abbu almost reaches the truth (the blue telescope) and slides past it. This is how erasure looks from the inside: not a blank, but a memory that bends round a hole.
+
+---
+
+North of Balakot the valley closed in.
+
+The road clung to the left bank of the Kunhar, cut into the cliff, with a drop on the right that the Corolla took with one wheel on the gravel. Waterfalls came down the rock face in white threads and crossed the road in shallow streams that the car splashed through. Above Kawai the pines thinned and the mountains came out from behind them, enormous and close, grey rock streaked with old snow, and the sky above them turned from milky to a hard deep blue.
+
+Near Kaghan village they came round a bend and stopped behind a line of eleven jeeps and a minibus with forty people and a goat on its roof. A landslide had come down in the night. Half the road was buried under a fan of grey rubble and splintered pine, and a yellow excavator was working at it with slow, careful bites while a man in a high-visibility vest and a Peshawari cap waved a red flag at nobody in particular. Drivers got out and smoked and stood at the edge of the drop, looking at the river. Children ran along the line of cars selling corn on the cob roasted black over charcoal.
+
+They waited forty minutes. Abbu bought two cobs, rubbed with lemon and chilli, and they ate them sitting on the Corolla's bonnet, in the sun, in the thin cold air, with the snowmelt going past below.
+
+It was while she was getting back into the car that Nysa saw the star.
+
+---
+
+She had opened the rear door to put the corn husks in a bag in the back seat. And there, on the inside of the rear window, low down in the corner by the door, where a child sitting on that side of the car would have had it right in front of their face, was a small plastic star.
+
+It was the cheap glow-in-the-dark kind that came twenty to a packet in the Naran bazaar. Five points, about the size of a thumbnail. It had been stuck there a long time: the adhesive had gone yellow and crept out round the edges, and the plastic itself had faded in fifteen summers of sun to the colour of old ivory. Somebody had stuck it there carefully, squarely, and then, with a ballpoint pen, drawn a tiny circle round it on the glass, the way you would mark a star on a map.
+
+She had sat on the other side. Always the other side. *He* had sat on this side, because it was the side that faced the river on the way up, and he had always said the river side was the science side.
+
+She looked at the front of the car. Her father was settling himself behind the wheel, adjusting the mirror. The turquoise beads swung.
+
+"Abbu," she said. "How long has this star been on the window?"
+
+He turned round, looked where she was pointing, straight at it, for a full second.
+
+"What star, *beta*?" he said kindly. "Come on, they've cleared the road."
+
+---
+
+▸ **PLAY · The Star**
+
+The star is **optional and easy to miss**. It only appears if the player opens the rear door during the landslide stop, which the game nudges toward with the corn husks but never forces.
+
+- **If found:** Nysa photographs it with her phone. The photo appears in her journal with the caption *"Things stay."* It also changes one line of dialogue in Scene 4: when she sees the stars on the store-room ceiling, she whispers *"Same as the car."*
+- **If missed:** the star can be found again in Part Two, in a different context. Nothing is lost.
+- Abbu's eyes **slide past it** on screen: the camera holds on his face as he looks directly at it and doesn't see it. This is the first time the player sees Rule No. 1 happen to somebody else.
+
+---
+
+Naran came at half past one: a town of hotels in its high, green valley, half of them still shuttered from the winter, the other half hung with banners for trout, for jeep safaris to the lake, for HOT SHOWER and WIFI and FAMILY ROOMS. Tourist jeeps stood in rows with their bonnets open. The air was 15 °C and smelled of snow, diesel and frying trout, and she put her scarf back on, and for the first time all day it felt like the right decision.
+
+Beyond Naran the road went on, rougher and emptier, climbing into the upper valley. The last of the trees fell away. The mountains stood back on both sides and the valley floor opened into wide pastures where the snow had only just gone, the grass flattened and pale and studded with tiny yellow flowers. Herders' stone huts stood with their doors open. A boy on a pony watched them pass without moving anything except his eyes.
+
+And then, at ten past three, they came over a low rise and there it was below them, at the far end of the pasture: a cluster of stone houses with green and blue tin roofs, a few poplars, a thread of smoke from a chimney, and behind the largest of the houses, where a small round lake should have caught the sky, a grey square of concrete and rusted steel.
+
+Chandsar.
+
+Abbu slowed down without being asked. Neither of them said anything. The Corolla rolled the last half kilometre on the gravel with its windows down, and the only sounds were the tyres, the wind in the pasture, and very far behind them now, almost too faint to hear, the river.
+
+On the roof of the house a woman in a dark red shawl was already waving with both arms.
+
+▸ **ART** · The scene's palette moves with the altitude: **orange haze** at the airport, **dusty gold** on the motorway, **jade and pine** along the Kunhar, **hard blue and white** above Naran. By Chandsar the colours should be cold and clean, so that the warm light inside the house in Scene 4 feels like a fire.
+
+▸ **SOUND** · The river is the score. It enters at the first bend after Mansehra and never stops until the last rise before Chandsar, where it fades so slowly that players should only notice it's gone when the silence lands. Abbu hums under his breath while driving (an old ghazal, never identified). Eesa's theme plays **once**, on solo flute, when the star on the window is found, and not at all if it isn't.
+
+---
+
+*End of Scene 3. Next: Scene 4, "The Store Room."*
 
 ---
 
