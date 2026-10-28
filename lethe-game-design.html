@@ -79,6 +79,14 @@ td.yr { font-family: var(--mono); font-size: 13px; white-space: nowrap; color: v
 .rules li::before { content: ""; position: absolute; left: 0; top: .7em; width: 8px; height: 1px; background: var(--violet); }
 .note { background: var(--panel2); border-radius: 4px; padding: 16px 18px; max-width: 72ch; font-size: 15px; }
 .note b { color: var(--violet); font-weight: 600; }
+.gallery { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 24px; }
+.gallery figure { margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.gallery figure.wide { grid-column: 1 / -1; }
+.gallery img { width: 100%; display: block; border-radius: 3px; background: var(--panel); }
+.gallery .tall img { aspect-ratio: 16 / 9; object-fit: cover; object-position: center 20%; }
+.gallery figcaption { font-size: 14px; color: var(--muted); max-width: 70ch; }
+.gallery figcaption b { color: var(--fg); font-family: var(--display); font-weight: 400; font-size: 18px; display: block; }
+@media (max-width: 600px) { .gallery { grid-template-columns: minmax(0,1fr); } }
 footer { border-top: 1px solid var(--line); padding-top: 20px; color: var(--muted); font-size: 14px; max-width: 72ch; }
 
 @media (max-width: 860px) {
@@ -103,6 +111,20 @@ footer { border-top: 1px solid var(--line); padding-top: 20px; color: var(--mute
       <span class="pill">Part One: 12–15 hours</span>
     </div>
   </header>
+
+  <!-- concept art -->
+  <section>
+    <div class="sec-head"><span class="no">00</span><h2>Concept art</h2></div>
+    <p class="intro">First AI concept pictures for mood and direction. A human artist will design the final versions from these and the descriptions below.</p>
+    <div class="gallery">
+      <figure class="wide"><img src="concepts/combat-roanoke.jpg" alt="Nysa fighting Hollows and a Smudge in the Roanoke fog"><figcaption><b>The fight in the fog · Chapter 1</b>Nysa breaks a Hollow into ash with the Mahl Stick while her UV Lantern catches a Smudge mid-lunge.</figcaption></figure>
+      <figure class="wide"><img src="concepts/weapons-nysa.jpg" alt="Concept sheet of the Mahl Stick, Brass Chisel and UV Lantern"><figcaption><b>Nysa's arsenal</b>The Mahl Stick with its bronze cap, the Brass Chisel with its engraved handle, and the UV Lantern revealing hidden writing.</figcaption></figure>
+      <figure><img src="concepts/enemies-grey-1.jpg" alt="Hollow, Smudge and Whitewash enemies"><figcaption><b>Hollow · Smudge · Whitewash</b>The three common creatures of the Grey.</figcaption></figure>
+      <figure><img src="concepts/enemies-grey-2.jpg" alt="Lethe Hound and Eraser enemies"><figcaption><b>Lethe Hound · Eraser</b>The hunter made of river water, and the elite that erases your screen.</figcaption></figure>
+      <figure class="tall"><img src="concepts/sealer-warden.jpg" alt="Sealer Warden in a stone mask with chisel-spear and chain"><figcaption><b>Sealer Warden</b>Stone mask with an erased name on the brow, chisel-spear and chain.</figcaption></figure>
+      <figure><img src="concepts/boss-bellringer.jpg" alt="The Bellringer boss over the Roanoke colony"><figcaption><b>The Bellringer · Chapter 1 boss</b>The colony's bell as its head; every ring is a shockwave of forgetting. (The post should read CROATOAN; the artist will fix it.)</figcaption></figure>
+    </div>
+  </section>
 
   <!-- 1 -->
   <section>
