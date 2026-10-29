@@ -596,7 +596,7 @@ def build():
     place_between("CROATOAN_Post", P, sm_l2, V(PX, PY, -60), V(PX + 3, PY - 2, 300), 126, mi_post, spin=40)        # stripped section
     place_between("CROATOAN_Post_Bark", P, sm_l1, V(PX + 3, PY - 2, 285), V(PX + 6, PY - 4, 700), 126, mi_dark, spin=90)  # bark left on above
     # Face the carving toward the approach and the camera (about 25° off the wall normal).
-    face = math.radians(6.0)
+    face = math.radians(-4.0)
     dec = actors.spawn_actor_from_class(unreal.DecalActor, V(PX - 95 * math.cos(face), PY - 95 * math.sin(face), 150),
                                         unreal.Rotator(90, 0, math.degrees(face)))
     dc = dec.decal

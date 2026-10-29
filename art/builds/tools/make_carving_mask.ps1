@@ -51,7 +51,7 @@ foreach ($n in $names) {
 
 # CROATOAN: letter by letter, hand-cut
 $letters = 'CROATOAN'.ToCharArray()
-$base = 228.0; $sx = 0.6
+$base = 228.0; $sx = 0.48
 $widths = foreach ($c in $letters) { $f = New-Object System.Drawing.Font('Times New Roman', $base, [System.Drawing.FontStyle]::Bold); ($g.MeasureString([string]$c, $f).Width - 40) * $sx }
 $total = ($widths | Measure-Object -Sum).Sum
 $x = $W / 2 - $total * 0.88 / 2
@@ -71,4 +71,5 @@ $g.Dispose()
 [Carve]::Finish($b, 5, 1590, 0.85)       # V-groove profile + chipped edges
 $b.Save("$out\T_CroatoanCarving_Mask.png", [System.Drawing.Imaging.ImageFormat]::Png); $b.Dispose()
 "carving written"
+
 

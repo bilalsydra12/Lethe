@@ -114,3 +114,17 @@ Differences from the reference, to fix in round 10 (final pass for now):
 New: CROATOAN cut by hand: each letter its own size, tilt and baseline, uneven spacing, V-grooves with chipped edges, wood grain inside the cuts (`tools/make_carving_mask.ps1`). The scene script is in `tools/build_beauty_gate.py`.
 
 Still to fix (round 11): the final N touches the post's edge; the cuts read lighter than in round 9.
+
+## Round 11 · 2026-10-29
+
+![round 11](2026-10-29_gate_round11.png)
+
+Darker cuts with grain; turning the carving moved the word left, but it was simply wider than the visible face: C at the left edge, N still clipped.
+
+## Round 12 · 2026-10-29 · first beauty pass done
+
+![round 12](2026-10-29_gate_round12_final.png)
+
+All eight letters of CROATOAN read: hand-cut Roman capitals, 1.5 m up the stripped right-hand post, in the violet beam, with the later names scratched round them. Word narrowed 20% to sit on the visible face.
+
+Agreed with the design session: this closes the first beauty pass. A second pass will come with Nysa (MetaHuman) in the shot. Known items for that pass: the warm glow behind the gap is still a little large; the left gatepost catches some violet; Nysa and her lantern replace the off-screen UV source.
