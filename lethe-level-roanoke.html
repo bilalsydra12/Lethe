@@ -68,6 +68,13 @@ figure.wide figcaption { font-size: 14px; color: var(--muted); max-width: 72ch; 
 .phase ul { margin: 6px 0 0; padding-left: 18px; font-size: 15px; }
 .note { background: var(--panel2); border-radius: 4px; padding: 16px 18px; max-width: 78ch; font-size: 15px; }
 .note b { color: var(--violet); }
+.gal { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.gal figure { margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.gal figure.full { grid-column: 1 / -1; }
+.gal img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; border-radius: 3px; background: var(--panel); }
+.gal figcaption { font-size: 15px; display: flex; flex-direction: column; gap: 4px; max-width: 72ch; }
+.gal .q { font-family: var(--mono); font-size: 12px; color: var(--gold); }
+@media (max-width: 600px) { .gal { grid-template-columns: minmax(0, 1fr); } }
 footer { border-top: 1px solid var(--line); padding-top: 20px; color: var(--muted); font-size: 14px; max-width: 78ch; }
 @media (max-width: 860px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .two, .cards { grid-template-columns: minmax(0, 1fr); } .phase { grid-template-columns: minmax(0, 1fr); } }
@@ -132,6 +139,18 @@ footer { border-top: 1px solid var(--line); padding-top: 20px; color: var(--mute
       </tbody>
     </table></div>
     <div class="note"><b>Our additions, clearly labelled:</b> the bell and the Bellringer, the fog, the lighthouse keepers and the ship (people who vanished in other centuries), and the colonists themselves still being there. The bell is a <b>ship's bell on a timber frame</b> inside the gate, not a church tower: nothing in the record mentions a tower.</div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">02c</span><h2>What it will look like</h2></div>
+    <p class="intro">Five key places, drawn to White's account. These are the targets for the Unreal build.</p>
+    <div class="gal">
+      <figure class="full"><img src="levels/croatoan-gate.jpg" alt="Nysa lights the carved word CROATOAN on the stripped right-hand gatepost of the palisade"><figcaption><span class="q">"at the right side of the entrance … 5. foote from the ground … CROATOAN without any crosse"</span>Step 3. The palisade of great trees, the barred entrance, and the post with its bark stripped. Around the real word, the names the forgotten have carved since. Eesa's star is somewhere on this post.</figcaption></figure>
+      <figure><img src="levels/cro-tree.jpg" alt="A tree at the top of a sandy bank carved C R O, with fire glowing through the woods"><figcaption><span class="q">"vpon a tree, in the very browe thereof … C R O" · "a great fire thorow the woods"</span>Step 2. The first clue, with Eleanor's fire glowing to the north.</figcaption></figure>
+      <figure><img src="levels/gate-yard.jpg" alt="The grassy gate yard with iron bars, lead pigs and small iron cannons in the weeds, and a bronze ship's bell on a timber frame"><figcaption><span class="q">"barres of Iron, two pigges of Lead, foure yron fowlers … ouergrowen with grasse and weedes"</span>The boss arena. The bell frame is our addition; everything in the grass is White's list.</figcaption></figure>
+      <figure><img src="levels/white-chests.jpg" alt="Dug-up chests with torn books, rain-ruined paintings and a rusted breastplate"><figcaption><span class="q">"bookes torne from the couers … pictures and Mappes rotten … armour almost eaten through with rust"</span>White's chests: the collectible map and paintings, and his armour.</figcaption></figure>
+      <figure><img src="levels/houses-vanish.jpg" alt="Split image: the remembered colony with lit houses on one side, the same lane empty with grass and iron on the other"><figcaption><span class="q">"We found the houses taken downe"</span>When the bell rings: for a few seconds the colony forgets itself, and you see it as White found it.</figcaption></figure>
+    </div>
   </section>
 
   <section>
