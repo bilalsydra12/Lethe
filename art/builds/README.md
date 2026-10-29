@@ -106,3 +106,11 @@ Fixed since round 8: flush bark band above the stripped section; gate bars reach
 Differences from the reference, to fix in round 10 (final pass for now):
 1. The last N is still clipped: turning the carving to -31° moved it the wrong way. Turn to about -12°.
 2. The letters look printed (design-session review): cut them by hand: each letter its own size, tilt and baseline, uneven spacing, V-grooves with chipped edges, wood grain visible inside the cuts.
+
+## Round 10 · 2026-10-29
+
+![round 10](2026-10-29_gate_round10.png)
+
+New: CROATOAN cut by hand: each letter its own size, tilt and baseline, uneven spacing, V-grooves with chipped edges, wood grain inside the cuts (`tools/make_carving_mask.ps1`). The scene script is in `tools/build_beauty_gate.py`.
+
+Still to fix (round 11): the final N touches the post's edge; the cuts read lighter than in round 9.
