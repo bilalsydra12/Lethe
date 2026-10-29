@@ -30,3 +30,15 @@ Differences from the reference, to fix in round 3:
 3. Fog leans mauve; the reference is colder blue-grey.
 4. Ground foreground is good (wet mud, reflections); grass and weeds barely read.
 5. Warm glow behind the gate is still larger than the reference's small lantern points.
+
+## Round 3 · 2026-10-29
+
+![round 3](2026-10-29_gate_round3.png)
+
+Fixed since round 2: the UV lantern is out of frame; colder fog; dimmer gate lantern.
+
+Differences from the reference, to fix in round 4:
+1. The UV beam reads as a wide, out-of-focus pink band across the frame; the reference has a tight violet-blue beam landing on the letters.
+2. The carving decal's width and height were swapped by the rotation, so CROATOAN is stretched about 2.5 m round the post and only a sliver shows.
+3. The stripped post doesn't read pale: nothing lights it from the front. The reference post is the palest, best-lit object.
+4. Grass, weeds and rocks still barely read.
