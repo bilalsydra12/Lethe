@@ -53,3 +53,20 @@ Differences from the reference, to fix in round 5:
 1. The UV beam renders red-orange instead of violet: the light colour channels were set in the wrong order.
 2. CROATOAN is too small in frame: the camera is ~13 m from the post, where the reference stands close. Move to ~8 m, keeping the bastion and gate in shot.
 3. Rocks, weeds and tall grass still to add.
+
+## Round 5 · 2026-10-29
+
+No image: the editor throttled itself to ~3 fps while it was not the front window and every capture timed out. Fixed in `Config/DefaultEditorPerProjectUserSettings.ini` (`bThrottleCPUWhenNotForeground=False`). Its changes (violet beam colour, closer camera) went into round 6.
+
+## Round 6 · 2026-10-29
+
+![round 6](2026-10-29_gate_round6.png)
+
+New since round 4 (design-session review applied): irregular axe-hewn wedge tips, some broken flat; trunks 25-45 cm x 3.5-4.5 m with random lean and spin, a few gaps; lashed cross-rails; the entrance rebuilt as a narrow gap between two great posts barred with heavy timbers (the CROATOAN post is now the right-hand post itself), bark left on above the stripped band; carved-normal on the letters; 8 more free Megascans (3 rocks, curbside weeds, nettle, dry grass, wheat grass, dead shrubs) crowding the wall foot; watch platform with its lantern in the fog, top left as in the reference.
+
+Differences from the reference, to fix in round 7:
+1. Camera too close and too low: the post fills the frame and is cropped; the flanker and gate are mostly out of shot. Go to 40 mm at ~8.6 m, eye height.
+2. Violet floods the rails and the left gatepost; the UV beam should be a tight spot on the letters only.
+3. CROATOAN barely reads: the violet glow washes out the dark cuts. Darker, deeper grooves; less UV emission.
+4. The bark band above the stripped section bulges like a cap; it should be flush.
+5. A floating lantern hook rod; the warm glow behind the right wall is too strong.
