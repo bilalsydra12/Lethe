@@ -42,3 +42,14 @@ Differences from the reference, to fix in round 4:
 2. The carving decal's width and height were swapped by the rotation, so CROATOAN is stretched about 2.5 m round the post and only a sliver shows.
 3. The stripped post doesn't read pale: nothing lights it from the front. The reference post is the palest, best-lit object.
 4. Grass, weeds and rocks still barely read.
+
+## Round 4 · 2026-10-29
+
+![round 4](2026-10-29_gate_round4.png)
+
+Fixed since round 3: the stripped post now reads as the palest object (cool fill from out of frame); CROATOAN is legible at 1.5 m; deeper focus.
+
+Differences from the reference, to fix in round 5:
+1. The UV beam renders red-orange instead of violet: the light colour channels were set in the wrong order.
+2. CROATOAN is too small in frame: the camera is ~13 m from the post, where the reference stands close. Move to ~8 m, keeping the bastion and gate in shot.
+3. Rocks, weeds and tall grass still to add.
