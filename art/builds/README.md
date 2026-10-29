@@ -70,3 +70,16 @@ Differences from the reference, to fix in round 7:
 3. CROATOAN barely reads: the violet glow washes out the dark cuts. Darker, deeper grooves; less UV emission.
 4. The bark band above the stripped section bulges like a cap; it should be flush.
 5. A floating lantern hook rod; the warm glow behind the right wall is too strong.
+
+## Round 7 · 2026-10-29
+
+![round 7](2026-10-29_gate_round7.png)
+
+Fixed since round 6: 40 mm framing with the watch platform, flanker, barred gap and post all in shot; the UV beam is a tight spot; the later names (MARGERY HARVIE, ROGER BAYLYE, THOMAS WARNER…) read on the post.
+
+Differences from the reference, to fix in round 8 (with the design session's round 6 review):
+1. CROATOAN shows only "ROATO": it wraps past the visible face, and a gate bar crosses the 1.5 m line. Turn the carving to face the camera, use condensed Roman capitals (~11 cm) on a wider post, move the bars clear.
+2. The cuts read lavender, not dark: remove the UV glow from the grooves.
+3. The stripped band reads as white plaster; it should be cream-to-tan wood with grain.
+4. Palisade: thicker trunks (35-55 cm) set tight with no daylight; rails behind the trunks, not in front.
+5. Orange haze behind the wall; the reference is a cool blue-grey night with small warm points.
