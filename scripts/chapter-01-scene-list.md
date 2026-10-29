@@ -37,6 +37,17 @@ The family photograph: **Lake Saiful Muluk, August 2010.** All four in jackets, 
 
 ---
 
+## COLD OPEN
+
+### Scene 0 · FLASH-FORWARD · "The Bell"
+- **When:** 0:00 to about 0:07 of play. Story time: 3 July 2026, inside Lethe, about four hours after the door.
+- **Where:** Layer 1, The Vanished: the fog colony of Roanoke, 1590.
+- **What happens:** Nysa runs through the fog colony, fights Hollows and a Smudge, faces the Bellringer, and is forced to spend the memory "The night Eesa showed me Saturn" to crack the bell. Smash cut to white: **SIX WEEKS EARLIER.**
+- **Player does:** chase, first fight (light, heavy, parry, Lantern), survive the bell's rings (which take away buttons), hold to spend a memory.
+- **Pays off in:** Scene 18, where the same moment happens for real.
+
+---
+
 ## PART A · New York
 
 ### Scene 1 · NOW · "The Painted-Over Child"
@@ -118,7 +129,7 @@ The family photograph: **Lake Saiful Muluk, August 2010.** All four in jackets, 
 - **Weather:** bright and cold, a strong wind, snow on **Malika Parbat** in the distance.
 - **Who:** Nysa; **Baba Fazal**, about 80, who sells tea from a kettle on a gas burner by the road.
 - **What happens:** Abbu says the lake "was always a marsh." Baba Fazal tells her the old story of **Saiful Muluk**: the prince who fell in love with a fairy princess at the lake, and how the fairies come down to bathe on full-moon nights. "Every lake up here has a door," he says, laughing. In the pit, a **single puddle reflects stars in daylight**. Near it is a stone with fresh chisel marks.
-- **Player does:** explores the site. Touching the puddle triggers the memory of Scene 7.
+- **Player does:** explores the site. Touching the puddle triggers the memory of Scene 7. **Optional stealth:** two men in grey coats are surveying the pit with a tripod; the player can sneak close enough to photograph their clipboard (a Lindqvist Institute logo) without being seen. Spotted, they politely leave, and the clue is lost.
 - **Feeling:** anger. Someone did this on purpose.
 - **Myth:** the Saiful Muluk legend (real folklore of the Kaghan Valley).
 
@@ -184,7 +195,7 @@ The family photograph: **Lake Saiful Muluk, August 2010.** All four in jackets, 
 ### Scene 16 · "The Shoal of Names"
 - **Where:** grey shallows under a white sky. Names float on the water like leaves.
 - **Who:** an old woman sitting on an upturned boat, offering a bowl of soup to the newly lost: *"Drink, and it won't hurt any more."* (Inspired by Meng Po of Chinese tradition.)
-- **What happens:** Nysa refuses the soup. A creature of the Grey rises. She **spends her first memory**, "The night Eesa showed me Saturn", and violet light tears through it. Her journal page about that night scratches itself out. Then she **calls Eesa's name across the water**, as a Roman general once called his soldiers across the Limia, and the water parts to show the way down.
+- **What happens:** Nysa refuses the soup. A creature of the Grey rises. She **spends her first memory**, "Ammi's parathas on the tawa" (unlocked in Scene 3), and violet light tears through it. ("The night Eesa showed me Saturn" is saved for the Bellringer: it's the memory spent in the cold open, Scene 0, and again for real in Scene 18.) Her journal page about that night scratches itself out. Then she **calls Eesa's name across the water**, as a Roman general once called his soldiers across the Limia, and the water parts to show the way down.
 - **Player does:** the first chisel use; the name-calling mechanic.
 
 ### Scene 17 · THEN · "Alkaid"
@@ -196,6 +207,7 @@ The family photograph: **Lake Saiful Muluk, August 2010.** All four in jackets, 
 ### Scene 18 · NOW · "The Vanished" (Layer 1 · 1590 · 436 years ago)
 - **Where:** a palisade colony in endless fog: lanterns, open doors, tables still set, a bell that never stops. Everyone who vanished without a trace lives here: colonists in 1580s wool, a lighthouse keeper still in oilskins, a woman in a 1920s coat. All of them whisper their own names so they won't forget.
 - **What happens:** Nysa searches the post, exactly where the player carved the star as Eesa. **The star is fresh. The wood is still pale.** He was here. At the colony well she drops a lantern in, and it falls for a very long time.
+- **Gameplay (about 75 minutes):** the colony is a semi-open level with three districts. Find the **matchlock caliver** (relic weapon) in the armoury; three combat encounters; three optional lost names to return (side quests that give back memories); Eesa's star puzzle at the post; a stealth approach to the bell tower past Lethe Hounds; then **the Bellringer**, for real. At its climax the cold-open moment replays, and Nysa spends "The night Eesa showed me Saturn".
 - **End of Chapter 1.** End screen: *"Will you remember them?"*
 
 ---

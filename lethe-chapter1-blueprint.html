@@ -1,0 +1,286 @@
+<title>LETHE Chapter 1 Blueprint</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a production blueprint. Big pictures first, then the world map, the arsenal, and a full-width tension graph read like a film strip of play. */
+:root {
+  --bg: #121117;
+  --panel: #1b1a22;
+  --panel2: #23212c;
+  --fg: #ece8f2;
+  --muted: #a39cb3;
+  --line: #2e2b3a;
+  --violet: #b9a2ea;  /* clues, Nysa */
+  --blue: #8fb4ec;    /* stealth, Eesa */
+  --ember: #e7a465;   /* combat */
+  --red: #e2625a;     /* boss */
+  --green: #8fd19e;   /* puzzles */
+  --teal: #6fc6c0;    /* exploration */
+  --grey: #8d8a96;    /* story */
+  --display: "Marcellus", "Cormorant Garamond", Georgia, serif;
+  --body: "Literata", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.65; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 48px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 60px; }
+header { display: flex; flex-direction: column; gap: 14px; max-width: 70ch; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--violet); }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(36px, 6vw, 62px); line-height: 1.05; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 400; font-size: clamp(26px, 4vw, 36px); margin: 0; line-height: 1.15; text-wrap: balance; }
+h3 { font-family: var(--display); font-weight: 400; font-size: 21px; margin: 0; line-height: 1.25; }
+p { margin: 0; }
+.lede { color: var(--muted); font-size: 18px; }
+section { display: flex; flex-direction: column; gap: 20px; }
+.intro { max-width: 70ch; color: var(--muted); }
+.intro b { color: var(--fg); font-weight: 600; }
+.sec-head { display: flex; gap: 16px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 20px; flex-wrap: wrap; }
+.sec-head .no { font-family: var(--mono); font-size: 13px; letter-spacing: .1em; color: var(--violet); }
+
+.frames { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.frame { margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.frame .shot { position: relative; }
+.frame img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; border-radius: 3px; background: var(--panel); }
+.frame .tag { position: absolute; top: 10px; left: 10px; font-family: var(--mono); font-size: 12px; background: rgba(18,17,23,.8); padding: 3px 8px; border-radius: 2px; }
+.frame figcaption { font-size: 15px; display: flex; flex-direction: column; gap: 4px; }
+.frame .t { font-family: var(--mono); font-size: 12px; color: var(--ember); letter-spacing: .06em; text-transform: uppercase; }
+
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--panel); }
+tr:last-child td { border-bottom: 0; }
+td.k { font-family: var(--mono); font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--muted); }
+td b { font-weight: 600; }
+
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.card { background: var(--panel); border-radius: 4px; padding: 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; border-top: 2px solid var(--line); }
+.card p { font-size: 15px; }
+.card .kind { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.card.c-v { border-top-color: var(--violet); } .card.c-b { border-top-color: var(--blue); } .card.c-e { border-top-color: var(--ember); } .card.c-g { border-top-color: var(--green); } .card.c-r { border-top-color: var(--red); } .card.c-t { border-top-color: var(--teal); }
+
+.chart { background: var(--panel); border-radius: 4px; padding: 16px; overflow-x: auto; }
+.chart svg { display: block; min-width: 900px; width: 100%; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.pill { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.pc { color: var(--ember); } .pb { color: var(--red); } .ps { color: var(--blue); } .pp { color: var(--green); } .pk { color: var(--violet); } .pt { color: var(--grey); } .pe { color: var(--teal); }
+
+.note { background: var(--panel2); border-radius: 4px; padding: 16px 18px; max-width: 76ch; font-size: 15px; }
+.note b { color: var(--violet); }
+footer { border-top: 1px solid var(--line); padding-top: 20px; color: var(--muted); font-size: 14px; max-width: 76ch; }
+
+@media (max-width: 860px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .frames, .cards, .cards.two { grid-template-columns: minmax(0, 1fr); } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">LETHE · Production blueprint · v0.1 · 30 October 2026</span>
+    <h1>Chapter 1 Blueprint</h1>
+    <p class="lede">How the first five minutes grab the player, how the world is built to be played for weeks rather than watched for hours, and every beat of Chapter 1 on one tension graph.</p>
+  </header>
+
+  <!-- 1 cold open -->
+  <section>
+    <div class="sec-head"><span class="no">01</span><h2>The cold open: the first seven minutes</h2></div>
+    <p class="intro">The game starts in the middle of the danger, six weeks into the story. The player runs, fights, faces a boss and pays a memory before they know who Nysa is. Then: <b>SIX WEEKS EARLIER.</b> The full screenplay is Scene 0 in the Chapter 1 script.</p>
+    <div class="frames">
+      <figure class="frame"><div class="shot"><img src="ch01/s0-1.jpg" alt="Nysa running through the fog colony with staff and violet torch as Hollows close in"><span class="tag">0A</span></div><figcaption><span class="t">0:30 · The chase</span>Control in 30 seconds. Sprint, vault, slide, and sweep the Lantern to find what's hiding in the fog. The bell tower is always ahead, so nobody needs a map.</figcaption></figure>
+      <figure class="frame"><div class="shot"><img src="ch01/s0-2.jpg" alt="Nysa blocks a Hollow's strike with her staff in violet sparks"><span class="tag">0B</span></div><figcaption><span class="t">2:30 · The square</span>Three waves teach light, heavy, parry and the Lantern. When a Hollow grabs her, a memory card flickers: the player learns what's at stake without being told.</figcaption></figure>
+      <figure class="frame"><div class="shot"><img src="ch01/s0-3.jpg" alt="The Bellringer rises over the palisade, a shockwave rippling from its bell"><span class="tag">0C</span></div><figcaption><span class="t">4:30 · The ring</span>The Bellringer rises. Each ring makes the game forget something: the dodge button stops working, the sound drops out. Players will talk about this.</figcaption></figure>
+      <figure class="frame"><div class="shot"><img src="ch01/s0-4.jpg" alt="Nysa kneels in tears with a blazing chisel as a memory of Eesa and her burns away"><span class="tag">0D</span></div><figcaption><span class="t">5:40 · The price</span>One memory offered, no choice: "The night Eesa showed me Saturn". Hold to spend. It burns like a photograph, and Eesa's voice speaks from inside it. White. <b>Six weeks earlier.</b></figcaption></figure>
+    </div>
+  </section>
+
+  <!-- 2 size -->
+  <section>
+    <div class="sec-head"><span class="no">02</span><h2>How big: a game played for weeks</h2></div>
+    <p class="intro">Story games that people play for days give them a main path they can't stop following, and far more to find off it. LETHE is planned at that scale.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Game</th><th>Main story</th><th>Everything</th><th>What keeps people playing</th></tr></thead>
+      <tbody>
+        <tr><td>The Last of Us Part I</td><td class="k">≈ 15 h</td><td class="k">≈ 25 h</td><td>Story, tension, scavenging</td></tr>
+        <tr><td>God of War (2018)</td><td class="k">≈ 21 h</td><td class="k">≈ 50 h</td><td>A world that opens up, gear, optional bosses, secrets</td></tr>
+        <tr><td>Black Myth: Wukong</td><td class="k">≈ 37 h</td><td class="k">≈ 60 h</td><td>Boss after boss, hidden areas, builds</td></tr>
+        <tr><td><b>LETHE · Part One</b> (Chapters 1–3)</td><td class="k"><b>≈ 20–25 h</b></td><td class="k"><b>≈ 40 h</b></td><td>The mystery, memories you can't get back, cross-time puzzles, secrets in every layer</td></tr>
+        <tr><td><b>LETHE · the whole saga</b> (Parts One to Three)</td><td class="k"><b>≈ 70–90 h</b></td><td class="k"><b>≈ 140 h+</b></td><td>Plus New Game+ with memories carried over, and different endings</td></tr>
+      </tbody>
+    </table></div>
+    <p class="intro" style="font-size:14px">Other games' play times are approximate community averages.</p>
+  </section>
+
+  <!-- 3 world structure -->
+  <section>
+    <div class="sec-head"><span class="no">03</span><h2>The shape of the world</h2></div>
+    <p class="intro">Lethe isn't a corridor. Each layer is a <b>large explorable region</b> with a main path and several optional areas. They are all connected through a hub, and the tools you earn later open places you couldn't reach before. Players will go back.</p>
+    <div class="chart" role="img" aria-label="Map of Lethe's structure: the Shoal hub at the top connects down to seven layers, each with optional areas and gates that need later tools">
+      <svg viewBox="0 0 1000 380">
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5a566a"/></marker></defs>
+        <rect x="380" y="16" width="240" height="56" rx="6" fill="#23212c" stroke="#b9a2ea"/>
+        <text x="500" y="42" text-anchor="middle" fill="#ece8f2" font-family="Marcellus, Georgia, serif" font-size="19">The Shoal of Names</text>
+        <text x="500" y="62" text-anchor="middle" fill="#a39cb3" font-family="IBM Plex Mono, monospace" font-size="11">HUB · return any time · rest, upgrade, side stories</text>
+        <g font-family="IBM Plex Mono, monospace" font-size="11">
+          <g transform="translate(20,130)"><rect width="120" height="64" rx="5" fill="#1b1a22" stroke="#e7a465"/><text x="60" y="26" text-anchor="middle" fill="#ece8f2" font-family="Marcellus, Georgia, serif" font-size="15">1 · Roanoke</text><text x="60" y="46" text-anchor="middle" fill="#a39cb3">1590</text></g>
+          <g transform="translate(160,130)"><rect width="120" height="64" rx="5" fill="#1b1a22" stroke="#e7a465"/><text x="60" y="26" text-anchor="middle" fill="#ece8f2" font-family="Marcellus, Georgia, serif" font-size="15">2 · Baghdad</text><text x="60" y="46" text-anchor="middle" fill="#a39cb3">1258</text></g>
+          <g transform="translate(300,130)"><rect width="120" height="64" rx="5" fill="#1b1a22" stroke="#e7a465"/><text x="60" y="26" text-anchor="middle" fill="#ece8f2" font-family="Marcellus, Georgia, serif" font-size="15">3 · Rome</text><text x="60" y="46" text-anchor="middle" fill="#a39cb3">AD 211</text></g>
+          <g transform="translate(440,130)"><rect width="120" height="64" rx="5" fill="#1b1a22" stroke="#8fb4ec"/><text x="60" y="26" text-anchor="middle" fill="#ece8f2" font-family="Marcellus, Georgia, serif" font-size="15">4 · Alexandria</text><text x="60" y="46" text-anchor="middle" fill="#a39cb3">48 BC</text></g>
+          <g transform="translate(580,130)"><rect width="120" height="64" rx="5" fill="#1b1a22" stroke="#8fb4ec"/><text x="60" y="26" text-anchor="middle" fill="#ece8f2" font-family="Marcellus, Georgia, serif" font-size="15">5 · Hattusa</text><text x="60" y="46" text-anchor="middle" fill="#a39cb3">c. 1177 BC</text></g>
+          <g transform="translate(720,130)"><rect width="120" height="64" rx="5" fill="#1b1a22" stroke="#8fb4ec"/><text x="60" y="26" text-anchor="middle" fill="#ece8f2" font-family="Marcellus, Georgia, serif" font-size="15">6 · Amarna</text><text x="60" y="46" text-anchor="middle" fill="#a39cb3">c. 1336 BC</text></g>
+          <g transform="translate(860,130)"><rect width="120" height="64" rx="5" fill="#1b1a22" stroke="#e2625a"/><text x="60" y="26" text-anchor="middle" fill="#ece8f2" font-family="Marcellus, Georgia, serif" font-size="15">7 · First Door</text><text x="60" y="46" text-anchor="middle" fill="#a39cb3">c. 9500 BC</text></g>
+          <path d="M440 72 L80 128" stroke="#5a566a" fill="none" marker-end="url(#ar)"/><path d="M465 72 L220 128" stroke="#5a566a" fill="none" marker-end="url(#ar)"/><path d="M490 72 L360 128" stroke="#5a566a" fill="none" marker-end="url(#ar)"/><path d="M500 72 L500 128" stroke="#5a566a" fill="none" marker-end="url(#ar)"/><path d="M515 72 L640 128" stroke="#5a566a" fill="none" marker-end="url(#ar)"/><path d="M535 72 L780 128" stroke="#5a566a" fill="none" marker-end="url(#ar)"/><path d="M560 72 L920 128" stroke="#5a566a" fill="none" marker-end="url(#ar)" stroke-dasharray="4 4"/>
+          <g fill="#a39cb3">
+            <text x="20" y="226">+ 4 optional areas</text><text x="160" y="226">+ 5 optional areas</text><text x="300" y="226">+ 5 optional areas</text><text x="440" y="226">+ 5 optional areas</text><text x="580" y="226">+ 5 optional areas</text><text x="720" y="226">+ 4 optional areas</text><text x="860" y="226">Part Three</text>
+          </g>
+          <rect x="20" y="256" width="960" height="108" rx="6" fill="#23212c"/>
+          <text x="40" y="284" fill="#b9a2ea">GATES THAT BRING YOU BACK</text>
+          <text x="40" y="308" fill="#ece8f2">Lantern: Focus (Ch. 2) reveals hidden doors in Roanoke  ·  Chisel: Shatter (Ch. 3) breaks Sealer vaults in Baghdad</text>
+          <text x="40" y="330" fill="#ece8f2">Astrolabe (Eesa, Ch. 2) opens star doors across every layer  ·  Voice: Chorus (10 names) wakes the sleeping ships at Roanoke</text>
+          <text x="40" y="352" fill="#a39cb3">Anchors you carve become fast-travel points. Relic weapons wait on racks at anchors when you come back to their layer.</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 4 paths and choices -->
+  <section>
+    <div class="sec-head"><span class="no">04</span><h2>Different directions: paths and choices</h2></div>
+    <div class="cards">
+      <article class="card c-t"><span class="kind">In every level</span><h3>Three ways through</h3><p>Most areas can be crossed by <b>fighting</b> (loud, costly), <b>stealth</b> (slow, safe), or <b>climbing</b> (hidden routes for players who look up). Each way finds different things.</p></article>
+      <article class="card c-v"><span class="kind">In every layer</span><h3>Whose side are you on?</h3><p>The forgotten disagree. At Roanoke, some colonists want to stay in the fog and forget; others want to be found. Who you help decides who fights beside you later, and what you learn.</p></article>
+      <article class="card c-v"><span class="kind">All game</span><h3>Which memory to spend</h3><p>Every spent memory is gone for good and changes later scenes. No two players reach Eesa remembering the same things.</p></article>
+      <article class="card c-b"><span class="kind">As Eesa</span><h3>The past changes the present</h3><p>Where Eesa carves, hides or breaks something, fifteen years later Nysa finds the result. Some puzzles can only be solved by going back as him.</p></article>
+      <article class="card c-r"><span class="kind">The end</span><h3>Three endings and a secret one</h3><p>Decided by the memories you kept, the names you returned and the allies you made. The secret ending needs all seven of Eesa's stars in every layer.</p></article>
+      <article class="card c-g"><span class="kind">After the end</span><h3>New Game+</h3><p>Play again keeping one memory you lost. Characters notice. New lines, new secrets, one new scene.</p></article>
+    </div>
+  </section>
+
+  <!-- 5 arsenal and unlocks -->
+  <section>
+    <div class="sec-head"><span class="no">05</span><h2>The arsenal: what you earn, and what it takes</h2></div>
+    <p class="intro">The strongest tools are locked behind progress. Players see them early, so they know what they're working towards. Before every major fight they choose a <b>loadout</b>: one relic weapon, one chisel technique and their keepsakes.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Tool</th><th>Tier</th><th>What it does</th><th>How you unlock it</th></tr></thead>
+      <tbody>
+        <tr><td><b>Mahl Stick</b></td><td class="k">I · Ash</td><td>Light and heavy strikes, parry</td><td>Start (cold open; Scene 16)</td></tr>
+        <tr><td></td><td class="k">II · Bronze-shod</td><td>Heavier hits, staggers Whitewash</td><td>Ch. 1: colony forge, 3 bronze fittings found in Roanoke</td></tr>
+        <tr><td></td><td class="k">III · Iron core</td><td>Breaks Bronze Host shields, new spin combo</td><td>Ch. 5: Hittite iron, after the Great Forgetting</td></tr>
+        <tr><td><b>Brass Chisel</b></td><td class="k">Carve</td><td>Breaks armour in one blow (costs a small memory)</td><td>Scene 16</td></tr>
+        <tr><td></td><td class="k">Anchor</td><td>Carve a name into a place: checkpoint, fast travel</td><td>Beat the Bellringer</td></tr>
+        <tr><td></td><td class="k">Unname</td><td>Strip a creature's name; it falls apart</td><td>Return 5 lost names</td></tr>
+        <tr><td></td><td class="k">Shatter</td><td>Opens sealed Sealer vaults</td><td>Beat the Drowned Scribe (Ch. 2)</td></tr>
+        <tr><td><b>UV Lantern</b></td><td class="k">Beam · Focus · Flare</td><td>Reveal; then a burning beam; then a blinding burst</td><td>Start · Ch. 2 · optional Roanoke vault</td></tr>
+        <tr><td><b>Voice</b></td><td class="k">Call · Chorus · Command</td><td>One ally; then a crowd; then turn a Hollow against its own</td><td>Scene 16 · 10 names · Ch. 3 Bleed</td></tr>
+        <tr><td><b>Relic weapons</b></td><td class="k">Found · Mastered</td><td>One period weapon per layer; a mastered version for experts</td><td>Found on the main path · Mastered by beating that layer's Warden's Trial</td></tr>
+        <tr><td><b>Keepsakes</b></td><td class="k">2 → 5 slots</td><td>Small objects of the forgotten, each a passive perk (longer parry window, faster Lantern recharge, quieter steps)</td><td>Side quests and secrets; slots unlock as you return names</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- 6 getting stuck -->
+  <section>
+    <div class="sec-head"><span class="no">06</span><h2>Where players get stuck, and want to</h2></div>
+    <div class="cards">
+      <article class="card c-g"><span class="kind">Optional</span><h3>Sealed Vaults</h3><p>One or two per layer. Hard puzzle rooms the Sealers built to hide what they erased. The reward is lore and a rare keepsake.</p></article>
+      <article class="card c-e"><span class="kind">Optional</span><h3>Warden's Trials</h3><p>Combat arenas with ranked challenges ("no damage", "Lantern only"). Beating one masters that layer's relic weapon.</p></article>
+      <article class="card c-v"><span class="kind">Collectible</span><h3>Eesa's 49 stars</h3><p>Seven hidden stars in each layer, each with a line from his notebook. All 49 unlock the secret ending.</p></article>
+      <article class="card c-r"><span class="kind">Mandatory</span><h3>The Wardens</h3><p>One boss per chapter. Each breaks the game's rules in its own way, so it has to be learned. Many players will die several times. That's intended.</p></article>
+      <article class="card c-b"><span class="kind">Mandatory</span><h3>Cross-time puzzles</h3><p>The ones players argue about online: the answer is fifteen years in the past.</p></article>
+      <article class="card c-t"><span class="kind">Safety net</span><h3>The hint ladder</h3><p>Stuck too long? Eesa's notebook gets more specific, one line at a time. Nobody quits for good.</p></article>
+    </div>
+  </section>
+
+  <!-- 7 pacing chart -->
+  <section>
+    <div class="sec-head"><span class="no">07</span><h2>Chapter 1 pacing chart</h2></div>
+    <p class="intro">Tension over time on the main path. The rule a studio follows: <b>never more than about ten minutes without something new</b>, whether a clue, a mechanic, a fight or a twist. Main path ≈ 4 h 30 min; with optional content ≈ 6 to 7 h.</p>
+    <div class="legend">
+      <span><i style="background:var(--ember)"></i>Combat</span><span><i style="background:var(--red)"></i>Boss</span><span><i style="background:var(--blue)"></i>Stealth / escape</span><span><i style="background:var(--green)"></i>Puzzle</span><span><i style="background:var(--violet)"></i>Clue / discovery</span><span><i style="background:var(--teal)"></i>Exploration</span><span><i style="background:var(--grey)"></i>Story</span>
+    </div>
+    <div class="chart" id="pace" role="img" aria-label="Tension graph of Chapter 1 from minute 0 to 270, starting high with the cold open, dipping in New York, rising through the clinic escape and the door, and peaking at the Bellringer"></div>
+
+    <div class="tbl"><table>
+      <thead><tr><th>Time</th><th>Scene</th><th>Type</th><th>What the player does</th><th>New this beat</th></tr></thead>
+      <tbody id="beats"></tbody>
+    </table></div>
+  </section>
+
+  <footer>Draft v0.1 for discussion. Next document: the Roanoke level design (top-down map, every fight, the stars, the vault, and the Bellringer fight step by step). Companion pages: Bible, Lore, Game Design, Storyboard. The cold open screenplay is Scene 0 in scripts/chapter-01-script.md.</footer>
+</div>
+
+<script>
+(function () {
+  const C = { c: "#e7a465", b: "#e2625a", s: "#8fb4ec", p: "#8fd19e", k: "#b9a2ea", e: "#6fc6c0", t: "#8d8a96" };
+  const N = { c: "Combat", b: "Boss", s: "Stealth", p: "Puzzle", k: "Clue", e: "Explore", t: "Story" };
+  const P = { c: "pc", b: "pb", s: "ps", p: "pp", k: "pk", e: "pe", t: "pt" };
+  // [minute, tension 0-10, type, short label, scene, what the player does, new]
+  const B = [
+    [0, 8, "c", "Cold open", "0 · The Bell", "Chase through the fog colony; first fight", "Movement, staff, parry, Lantern"],
+    [5, 10, "b", "Bellringer", "0 · The Bell", "Survive the rings; spend Saturn", "Memories as the price"],
+    [8, 3, "t", "Six weeks earlier", "1", "The museum studio", "Nysa, the world"],
+    [14, 4, "p", "Cleaning", "1", "Swab and UV the painting", "Precision; UV"],
+    [18, 6, "k", "Painted-out child", "1", "Reveal the hidden boy", "The theme: erasure"],
+    [24, 3, "t", "Ammi's call", "1", "Video call choices", "The store room"],
+    [30, 4, "k", "Four faces", "2", "Explore the apartment; the rocket", "Rule No. 1: things stay"],
+    [42, 3, "e", "The road up", "3", "Car journey conversations", "Memory cards"],
+    [50, 5, "k", "Star on the window", "3", "Optional find at the landslide", "Optional secrets"],
+    [58, 6, "k", "Ceiling stars", "4", "Switch off the light", "The seven stars"],
+    [64, 6, "k", "Notebook", "5", "Read Eesa's dream journal", "Collectible pages"],
+    [72, 6, "p", "THEN: blood moon", "6", "Play as Eesa: telescope, the lake", "The THEN timeline"],
+    [80, 7, "t", "He walks in", "7", "The memory at the window", "The defining loss"],
+    [90, 6, "s", "Surveyors", "8", "Optional stealth at the drained lake", "Stealth; the Sealers exist"],
+    [98, 6, "k", "First dream", "9", "Playable dream: fog, a bell", "Dreams as levels"],
+    [110, 5, "p", "Dream board", "10", "Match dreams to real places", "Research puzzles"],
+    [120, 6, "t", "Dr. Vey", "11", "Dialogue; search his office", "Tomas; the springs at Lebadea"],
+    [132, 9, "s", "Clinic escape", "12", "Stealth escape at night; take the chisel", "The Brass Chisel"],
+    [142, 4, "t", "To Turkey", "13", "The dig asks for her", "A new country"],
+    [150, 5, "e", "Şanlıurfa", "14", "The fish pools at dusk", "Calm before the door"],
+    [160, 7, "e", "The trench", "15", "Climb and clean the door", "Climbing"],
+    [168, 9, "s", "The door opens", "15", "Tomas arrives; flood escape", "Set piece; choice"],
+    [176, 8, "c", "Shoal of Names", "16", "First real fight; first spent memory", "Carve; Call"],
+    [182, 6, "p", "THEN: Alkaid", "17", "Eesa chooses where to carve", "Cross-time puzzles"],
+    [192, 6, "e", "Roanoke", "18", "Explore three districts of the colony", "A semi-open level"],
+    [204, 7, "c", "Armoury fight", "18", "Find the caliver; first relic fight", "Relic weapons"],
+    [216, 6, "k", "Lost names", "18", "Optional: return three names", "Side quests; Keepsakes"],
+    [228, 8, "c", "The lane", "18", "Hollows, Smudges, first Whitewash", "Armoured enemies"],
+    [238, 7, "p", "Eesa's star", "18", "Find the star where you carved it", "The pay-off"],
+    [248, 8, "s", "Tower approach", "18", "Stealth past Lethe Hounds", "Hounds hunt by sound"],
+    [260, 10, "b", "Bellringer", "18", "Boss fight; Saturn, for real", "Anchor technique"],
+    [270, 7, "t", "The well", "18", "Drop the lantern into the well", "Cliffhanger"]
+  ];
+
+  // chart
+  const W = 1000, H = 300, L = 46, R = 980, T = 24, Bm = 250, maxM = 270;
+  const x = (m) => L + (m / maxM) * (R - L), y = (v) => Bm - (v / 10) * (Bm - T);
+  let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  for (let v = 0; v <= 10; v += 5) s += `<line x1="${L}" x2="${R}" y1="${y(v)}" y2="${y(v)}" stroke="#2e2b3a"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end" fill="#a39cb3" font-family="IBM Plex Mono, monospace" font-size="11">${v}</text>`;
+  for (let m = 0; m <= maxM; m += 30) { const h = Math.floor(m / 60), mm = String(m % 60).padStart(2, "0"); s += `<line x1="${x(m)}" x2="${x(m)}" y1="${Bm}" y2="${Bm + 5}" stroke="#5a566a"/><text x="${x(m)}" y="${Bm + 20}" text-anchor="middle" fill="#a39cb3" font-family="IBM Plex Mono, monospace" font-size="11">${h}:${mm}</text>`; }
+  s += `<text x="${L}" y="14" fill="#a39cb3" font-family="IBM Plex Mono, monospace" font-size="11">TENSION</text><text x="${R}" y="${H - 4}" text-anchor="end" fill="#a39cb3" font-family="IBM Plex Mono, monospace" font-size="11">PLAY TIME (H:MM)</text>`;
+  // acts
+  [[8, "NEW YORK"], [36, "CHANDSAR"], [104, "THE WATCHERS"], [146, "TURKEY"], [172, "LETHE"]].forEach(([m, t]) => { s += `<line x1="${x(m)}" x2="${x(m)}" y1="${T}" y2="${Bm}" stroke="#2e2b3a" stroke-dasharray="3 4"/><text x="${x(m) + 4}" y="${T + 10}" fill="#6d6880" font-family="IBM Plex Mono, monospace" font-size="10">${t}</text>`; });
+  const pts = B.map((b) => `${x(b[0]).toFixed(1)},${y(b[1]).toFixed(1)}`).join(" ");
+  s += `<polygon points="${x(0)},${Bm} ${pts} ${x(maxM)},${Bm}" fill="rgba(185,162,234,.10)"/>`;
+  s += `<polyline points="${pts}" fill="none" stroke="#b9a2ea" stroke-width="2" stroke-linejoin="round"/>`;
+  B.forEach((b, i) => {
+    const cx = x(b[0]), cy = y(b[1]);
+    s += `<circle cx="${cx}" cy="${cy}" r="${b[2] === "b" ? 7 : 5}" fill="${C[b[2]]}" stroke="#121117" stroke-width="2"><title>${b[3]} · ${N[b[2]]}</title></circle>`;
+    if (b[1] >= 9 || i % 3 === 0) s += `<text x="${cx}" y="${cy - 12}" text-anchor="middle" fill="#ece8f2" font-family="IBM Plex Mono, monospace" font-size="10">${b[3]}</text>`;
+  });
+  s += `</svg>`;
+  document.getElementById("pace").innerHTML = s;
+
+  // table
+  const tb = document.getElementById("beats");
+  B.forEach((b) => {
+    const tr = document.createElement("tr");
+    const h = Math.floor(b[0] / 60), mm = String(b[0] % 60).padStart(2, "0");
+    tr.innerHTML = `<td class="k">${h}:${mm}</td><td class="k">${b[4]}</td><td><span class="pill ${P[b[2]]}">${N[b[2]]}</span></td><td></td><td></td>`;
+    tr.children[3].textContent = b[5];
+    tr.children[4].textContent = b[6];
+    tb.appendChild(tr);
+  });
+})();
+</script>

@@ -1,7 +1,7 @@
 # LETHE · Chapter 1 · *The Stars on the Ceiling*
 
 **Full script: novel prose + game beats**
-**Draft v0.2** · Scenes 1–3 of 18 · Follows `chapter-01-scene-list.md`
+**Draft v0.3** · Cold open + Scenes 1–3 of 18 · Follows `chapter-01-scene-list.md`
 
 ---
 
@@ -11,6 +11,164 @@
 - **Game beats** appear in boxes marked **▸ PLAY**. They say what the player controls, what they can touch, and what the game teaches at that moment.
 - **Art notes** (▸ ART) and **sound notes** (▸ SOUND) are for the artists and the composer.
 - Everything in *italics inside dialogue* is Urdu or another language, with the meaning given right after the first time it appears.
+
+---
+
+## COLD OPEN
+
+---
+
+### SCENE 0 · FLASH-FORWARD · "The Bell"
+
+> **Layer 1 · The Vanished · Roanoke, 1590** (story time: Friday 3 July 2026, about four hours after Nysa goes through the door)
+> No sky. White fog lit from inside. A bell that never stops. The cold of a sea that isn't there.
+> **Play time:** 0:00 to about 0:07. The player is in control within 30 seconds.
+> **Purpose:** hook the player with the game's core in the first five minutes: movement, combat, the Lantern, a boss, and the price of a memory. Then take it all away.
+
+**Screenplay format.** Shots and lines are for the cinematics team and voice actors; ▸ PLAY boxes are what the player controls.
+
+---
+
+FADE IN ON BLACK.
+
+A bell. One slow stroke. It doesn't fade; it hangs in the dark.
+
+Breathing, close to the microphone. A woman, running, trying not to make a sound.
+
+A second stroke. Under it, very faint, many voices whispering. Each says a different name, over and over, the way you'd hold on to a railing.
+
+> **WHISPERS (O.S.)**
+> *...Eleanor Dare... Eleanor Dare...* / *...Ananias... Ananias...* / *...Thomas Topan...*
+
+**EXT. THE VANISHED · COLONY LANE · NO TIME**
+
+White. Then shapes come out of it: the sharpened tops of a log palisade, a thatched roof, a lantern on a post swinging in a wind we can't feel.
+
+**NYSA** (25) runs out of the fog straight at the camera, and past it. Mud to her shins. Her charcoal coat soaked dark. The lavender scarf, torn. In her right hand, the **Mahl Stick**, its bronze cap already dented. In her left, the **UV Lantern**, its violet beam swinging.
+
+The camera swings round behind her and settles at her shoulder. **The player has control.**
+
+---
+
+▸ **PLAY · The Chase** (about 0:30 to 2:30)
+
+- Run down the colony lane. Doors hang open on either side. Inside: tables set for dinner, bread gone grey, chairs pushed back as if everyone stood up at once.
+- **Teaches:** sprint, vault (a fallen cart), slide (under a half-collapsed porch), and the Lantern (a dark gap in the fog where a shape is waiting: sweep the beam and a **Smudge** flinches out of the way).
+- The bell tower is always visible ahead, so the player never needs a map.
+- **No health bar, no menus yet.** The screen shows only the picture. Every instruction is one word in the corner, then gone.
+
+---
+
+The lane ends in a small square: a well with a wooden roof, a cross of two beams, an overturned handcart. Nysa skids to a stop.
+
+They come out of the fog on three sides. **HOLLOWS**: men and women in clothes from four centuries, skin the grey of old ash, faces worn smooth like coins. Their mouths keep moving. They are whispering their own names.
+
+> **NYSA** *(breathless, to herself)*
+> Okay. Okay. Like you practised.
+
+She sets her feet and lifts the staff.
+
+---
+
+▸ **PLAY · The Square** (about 2:30 to 4:30)
+
+The first fight. Built to make the player feel capable straight away.
+
+| Wave | Enemies | What it teaches |
+|---|---|---|
+| 1 | 2 Hollows | Light and heavy strikes. A Hollow breaks into ash after three or four hits. |
+| 2 | 2 Hollows + 1 Smudge | **Parry** (a Hollow's grab flashes white: parry it). The Smudge is invisible until the Lantern catches it. |
+| 3 | 3 Hollows from different sides | Movement and crowd control: don't let them surround you. |
+
+- If a Hollow grabs her, a memory card flickers at the edge of the screen: *it's trying to take one.* Break free with a button prompt. (The player learns, without being told, that memories are what's at stake.)
+- **The player cannot die here.** If Nysa's health runs out, she staggers and the fight continues. The cold open exists to impress, not to punish.
+
+---
+
+The last Hollow comes apart in a cloud of grey ash. Silence.
+
+Not silence. The bell has stopped.
+
+Nysa looks up. Every Hollow in the fog around the square has gone still and turned the same way: toward the bell tower.
+
+The tower moves.
+
+**THE BELLRINGER** rises out of the fog behind the palisade. It is made of the colony itself: timber from the houses, rope from the ship, sailcloth hanging off it like skin. It is five times her height. Where its head should be, the colony's great bronze bell hangs from its shoulders, green with age and cracked down one side.
+
+It swings.
+
+The ring is not a sound. It's a wave: a ripple that bends the fog, knocks the lanterns off their posts, and goes **through the screen.**
+
+---
+
+▸ **PLAY · The Ring** (about 4:30 to 5:40)
+
+The rule-breaking moment players will talk about:
+
+- When the bell rings, **the game forgets something.** The first ring removes the **dodge** button: pressing it does nothing, and the icon in the corner fades out. Ten seconds later it comes back.
+- The second ring blurs the screen edges and drops the sound out, except the bell.
+- The player has to survive two rings by running between the bell's sweeps toward the post in the middle of the square, the one carved with a word: **CROATOAN**.
+- They reach it on the third ring. It knocks Nysa flat.
+
+---
+
+**CLOSE ON NYSA**, on her back in the mud. The Lantern rolls away, its beam pointing straight up into the fog. Above her, the bell swings back for a fourth stroke. Everything goes slow.
+
+She reaches into her coat and pulls out the **Brass Chisel**. It's already warm. It knows what she's going to ask.
+
+> **NYSA** *(quietly)*
+> Not that one.
+
+A card appears on screen, the only memory she is offered:
+
+> **SPEND A MEMORY**
+> *The night Eesa showed me Saturn*
+
+> **NYSA**
+> Please. Not that one.
+
+---
+
+▸ **PLAY · The Price** (about 5:40 to 6:30)
+
+- One button: **hold to spend.** The player can't choose another memory and can't refuse. If they don't press, the bell's swing keeps coming, slower and slower, until they do. The game makes them do it.
+- As they hold, the memory **plays in front of her chest like a photograph catching fire**: a boy with round glasses on a flat roof at night, aiming a blue plastic telescope; a little girl in pink pyjamas beside him, looking up.
+- From inside the burning picture, a boy's voice, warm, close:
+
+> **EESA (V.O.)** *(age 13, from the memory)*
+> See it? The one with the rings. That's Saturn, choti. Don't blink.
+
+- The picture burns to the edges. Violet fire runs down her arm into the chisel. Nysa drives it into the base of the CROATOAN post.
+
+---
+
+Violet light explodes outward through the square, the fog, the palisade. The Bellringer's next stroke stops halfway. The bell cracks open from top to bottom with a sound like a mountain splitting.
+
+White.
+
+Total silence.
+
+Then, in the white, a single line of text:
+
+> **SIX WEEKS EARLIER**
+
+CUT TO:
+
+**INT. ELLERY MUSEUM · CONSERVATION STUDIO · EVENING.** North light. The smell of solvent and coffee. A swab rolling slowly across a painted curtain. (Scene 1 begins.)
+
+---
+
+▸ **DESIGN NOTES · Scene 0**
+
+- **Why a flash-forward:** the player has held the weapons, seen the enemies and a boss, and felt the price of a memory in the first seven minutes. The quiet opening hour in New York and Chandsar then plays as a mystery: *how does she get from here to there?*
+- **The pay-off:** this exact moment returns at the end of Chapter 1, in the real Bellringer fight in Scene 18. By then the player has *lived* the Saturn memory in Scene 6, so spending it the second time hurts far more. This is the "the beginning was the end" structure players love to discover.
+- **Consistency fix:** because Saturn is spent here, the first memory Nysa spends in Scene 16 (the Shoal of Names) changes to *Ammi's parathas on the tawa*, a memory unlocked during the drive in Scene 3. Updated in the scene list.
+- **What the cold open never shows:** Eesa's face as an adult, the well, or Tomas. It reveals the game, not the story.
+- **Length:** about 7 minutes. The player holds the controller for about 6 of them.
+
+▸ **ART** · Storyboard frames 0A to 0D in `art/storyboards/ch01/s0-1.jpg` to `s0-4.jpg`.
+
+▸ **SOUND** · No music until the Bellringer rises. The bell is the score: its pitch is a low A, the same note that Eesa's theme starts on. When the memory burns, Eesa's theme plays for the first time in the game, then cuts to silence at the white.
 
 ---
 
