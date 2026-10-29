@@ -96,3 +96,13 @@ Differences from the reference, to fix in round 9:
 3. Gate bars stop short of the post.
 4. The bark band above the stripped section still bulges like a cap (the scan used has a knot there).
 5. Warm glow behind the gap still a little large.
+
+## Round 9 · 2026-10-29
+
+![round 9](2026-10-29_gate_round9.png)
+
+Fixed since round 8: flush bark band above the stripped section; gate bars reach the post; tight UV spot; smaller warm glow behind the gap.
+
+Differences from the reference, to fix in round 10 (final pass for now):
+1. The last N is still clipped: turning the carving to -31° moved it the wrong way. Turn to about -12°.
+2. The letters look printed (design-session review): cut them by hand: each letter its own size, tilt and baseline, uneven spacing, V-grooves with chipped edges, wood grain visible inside the cuts.
