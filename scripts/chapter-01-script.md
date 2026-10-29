@@ -38,7 +38,7 @@ Breathing, close to the microphone. A woman, running, trying not to make a sound
 A second stroke. Under it, very faint, many voices whispering. Each says a different name, over and over, the way you'd hold on to a railing.
 
 > **WHISPERS (O.S.)**
-> *...Eleanor Dare... Eleanor Dare...* / *...Ananias... Ananias...* / *...Thomas Topan...*
+> *...Eleanor Dare... Eleanor Dare...* / *...Ananias... Ananias...* / *...Virginia... Virginia...*
 
 **EXT. THE VANISHED · COLONY LANE · NO TIME**
 

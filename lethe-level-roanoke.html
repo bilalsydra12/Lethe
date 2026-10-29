@@ -1,0 +1,295 @@
+<title>LETHE Roanoke Level</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a level design document. Establishing art, then the top-down map as the centrepiece, then the path, fights, secrets and boss in order of play. */
+:root {
+  --bg: #121117; --panel: #1b1a22; --panel2: #23212c; --fg: #ece8f2; --muted: #a39cb3; --line: #2e2b3a;
+  --violet: #b9a2ea; --blue: #8fb4ec; --ember: #e7a465; --red: #e2625a; --green: #8fd19e; --teal: #6fc6c0; --gold: #e9cf7a;
+  --display: "Marcellus", "Cormorant Garamond", Georgia, serif;
+  --body: "Literata", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.65; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 48px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 60px; }
+header { display: flex; flex-direction: column; gap: 14px; }
+header .txt { max-width: 70ch; display: flex; flex-direction: column; gap: 14px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--violet); }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(36px, 6vw, 62px); line-height: 1.05; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 400; font-size: clamp(26px, 4vw, 36px); margin: 0; line-height: 1.15; text-wrap: balance; }
+h3 { font-family: var(--display); font-weight: 400; font-size: 21px; margin: 0; line-height: 1.25; }
+p { margin: 0; }
+.lede { color: var(--muted); font-size: 18px; }
+.hero { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 3px; display: block; background: var(--panel); }
+section { display: flex; flex-direction: column; gap: 20px; }
+.intro { max-width: 72ch; color: var(--muted); }
+.intro b { color: var(--fg); font-weight: 600; }
+.sec-head { display: flex; gap: 16px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 20px; flex-wrap: wrap; }
+.sec-head .no { font-family: var(--mono); font-size: 13px; letter-spacing: .1em; color: var(--violet); }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.facts div { background: var(--panel); border-radius: 4px; padding: 14px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.facts span { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.facts b { font-weight: 600; font-size: 15px; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.box { background: var(--panel); border-radius: 4px; padding: 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.box .kind { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.box.real { border-top: 2px solid var(--gold); } .box.ours { border-top: 2px solid var(--violet); }
+.box p { font-size: 15px; }
+.map { background: #0b0f17; border-radius: 4px; padding: 12px; overflow-x: auto; }
+.map svg { display: block; min-width: 860px; width: 100%; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 12px; height: 12px; display: inline-block; border-radius: 50%; }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 14px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--panel); }
+tr:last-child td { border-bottom: 0; }
+td.k { font-family: var(--mono); font-size: 13px; white-space: nowrap; color: var(--muted); font-variant-numeric: tabular-nums; }
+td b { font-weight: 600; }
+.pill { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.pc { color: var(--ember); } .pb { color: var(--red); } .ps { color: var(--blue); } .pp { color: var(--green); }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--panel); border-radius: 4px; padding: 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; border-top: 2px solid var(--teal); }
+.card .kind { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.card p { font-size: 15px; }
+.card dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 14px; }
+.card dt { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; padding-top: 3px; }
+.card dd { margin: 0; }
+figure.wide { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+figure.wide figcaption { font-size: 14px; color: var(--muted); max-width: 72ch; }
+.phase { display: grid; grid-template-columns: 150px minmax(0, 1fr); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.phase > div { padding: 16px 18px; border-bottom: 1px solid var(--line); min-width: 0; }
+.phase > div:nth-last-child(-n+2) { border-bottom: 0; }
+.phase .ph { background: var(--panel); font-family: var(--mono); font-size: 12px; color: var(--red); letter-spacing: .06em; }
+.phase .ph b { display: block; font-family: var(--display); font-weight: 400; font-size: 20px; color: var(--fg); letter-spacing: 0; margin-top: 4px; }
+.phase ul { margin: 6px 0 0; padding-left: 18px; font-size: 15px; }
+.note { background: var(--panel2); border-radius: 4px; padding: 16px 18px; max-width: 78ch; font-size: 15px; }
+.note b { color: var(--violet); }
+footer { border-top: 1px solid var(--line); padding-top: 20px; color: var(--muted); font-size: 14px; max-width: 78ch; }
+@media (max-width: 860px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .two, .cards { grid-template-columns: minmax(0, 1fr); } .phase { grid-template-columns: minmax(0, 1fr); } }
+</style>
+
+<div class="wrap">
+  <header>
+    <img class="hero" src="levels/roanoke-aerial.jpg" alt="Aerial concept of the fog colony: a star-shaped palisade, lanes of thatched cottages, a bell tower, a lighthouse on a sand spit and a ghost ship offshore">
+    <div class="txt">
+      <span class="eyebrow">LETHE · Level design document · Chapter 1 · Layer 1 · v0.1</span>
+      <h1>Roanoke: The Vanished</h1>
+      <p class="lede">The first layer of Lethe: a palisade colony in endless fog, where everyone who vanished without a trace still lives, whispering their own names so they won't forget them.</p>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="no">01</span><h2>At a glance</h2></div>
+    <div class="facts">
+      <div><span>Year of the layer</span><b>1590 · 436 years ago</b></div>
+      <div><span>Main path</span><b>≈ 75 minutes</b></div>
+      <div><span>Optional content</span><b>≈ 60–90 minutes</b></div>
+      <div><span>Playable area</span><b>≈ 450 × 320 m</b></div>
+      <div><span>Light</span><b>Fog lit from inside; lanterns; no sky</b></div>
+      <div><span>Sound</span><b>The bell, whispered names, a sea you can't see</b></div>
+      <div><span>Language</span><b>Elizabethan English, a few Croatoan words</b></div>
+      <div><span>Eesa's star</span><b>Alkaid, the first of seven</b></div>
+      <div><span>New mechanics</span><b>Relic weapons, side stories, keepsakes, the forge, stealth vs. Hounds</b></div>
+      <div><span>Enemies</span><b>Hollows, Smudges, Whitewash, Lethe Hounds, the Fogbound</b></div>
+      <div><span>Relic weapon</span><b>Matchlock caliver</b></div>
+      <div><span>Warden</span><b>The Bellringer</b></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">02</span><h2>History card: what really happened</h2></div>
+    <div class="two">
+      <article class="box real"><span class="kind">Fact</span><h3>The Lost Colony</h3>
+        <p>In 1587 about 115 English men, women and children settled on Roanoke Island, in what is now North Carolina, led by John White. His granddaughter, <b>Virginia Dare</b>, was born there that August: the first English child born in the Americas. White sailed home for supplies, and war with Spain kept him away for three years.</p>
+        <p>When he returned in August 1590, on Virginia's third birthday, the colony was gone. The houses had been taken down and a palisade built. Carved into a gatepost was one word, <b>CROATOAN</b>, the name of a nearby island and its people. The colonists had agreed to carve a cross if they left in danger. There was no cross. Nobody has ever found them.</p>
+      </article>
+      <article class="box ours"><span class="kind">Our story</span><h3>Why they're here</h3>
+        <p>Roanoke is the <b>one Thin Place the Sealers failed to close in time.</b> The colonists followed their dreams through it and became the first layer of the forgotten. Since then, everyone who has vanished without a trace has washed up in this fog: sailors, lighthouse keepers, travellers from every century.</p>
+        <p>The colony looks the way the colonists remember it, not the way White found it: houses standing, tables set, as if everyone stood up at once. Because nobody living remembers them, time here doesn't move. A cut in wood stays fresh for four hundred years.</p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">03</span><h2>Top-down map</h2></div>
+    <p class="intro">The <b>violet line</b> is the main path, numbered in order. Everything else is optional. Most areas can be crossed by fighting, by stealth or by climbing.</p>
+    <div class="legend">
+      <span><i style="background:var(--violet)"></i>Main path</span><span><i style="background:var(--ember)"></i>Fight</span><span><i style="background:var(--red)"></i>Boss</span><span><i style="background:var(--blue)"></i>Stealth zone</span><span><i style="background:var(--gold)"></i>Eesa's star</span><span><i style="background:var(--teal)"></i>Side story</span><span><i style="background:var(--green)"></i>Vault / trial</span>
+    </div>
+    <div class="map" role="img" aria-label="Top-down map of the Roanoke level: the landing in the west, the star-shaped palisade in the centre with lanes, square, bell tower, armoury and chapel, the lighthouse on a sand spit to the north-west, the ghost ship offshore, and the stockade trial to the south.">
+      <svg viewBox="0 0 1000 640" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Mono, monospace">
+        <defs>
+          <radialGradient id="fog" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#1d222c"/><stop offset="1" stop-color="#0b0f17"/></radialGradient>
+          <symbol id="star" viewBox="-10 -10 20 20"><polygon points="0,-9 2.6,-3 9,-2.8 4,1.6 5.6,8.2 0,4.6 -5.6,8.2 -4,1.6 -9,-2.8 -2.6,-3" fill="#e9cf7a" stroke="#0b0f17" stroke-width="1"/></symbol>
+        </defs>
+        <rect width="1000" height="640" fill="url(#fog)"/>
+        <path d="M150 520 Q 100 390 200 300 Q 320 170 530 150 Q 770 130 885 265 Q 965 400 870 520 Q 710 620 490 605 Q 280 615 150 520 Z" fill="#23262b" stroke="#3a3f47"/>
+        <path d="M230 290 Q 170 200 100 105" stroke="#2e3238" stroke-width="26" fill="none" stroke-linecap="round"/>
+        <circle cx="95" cy="95" r="18" fill="#2b2f36" stroke="#6fc6c0" stroke-width="2"/>
+        <text x="120" y="80" fill="#6fc6c0" font-size="12">THE LIGHTHOUSE</text><text x="120" y="96" fill="#a39cb3" font-size="10">side story · keepers</text>
+        <line x1="190" y1="455" x2="95" y2="455" stroke="#5a4a3a" stroke-width="6"/>
+        <path d="M40 470 L 90 470 L 80 485 L 48 485 Z" fill="#2b2f36" stroke="#6fc6c0" stroke-width="2"/><line x1="56" y1="470" x2="56" y2="430" stroke="#6fc6c0"/><line x1="72" y1="470" x2="72" y2="436" stroke="#6fc6c0"/>
+        <text x="22" y="510" fill="#6fc6c0" font-size="12">THE SHIP</text><text x="22" y="525" fill="#a39cb3" font-size="10">gated: Chorus</text>
+        <polygon points="380,250 525,200 695,232 768,352 705,482 545,522 400,472 340,362" fill="#2a2d33" stroke="#7a6a52" stroke-width="5" stroke-linejoin="round"/>
+        <ellipse cx="640" cy="335" rx="70" ry="48" fill="rgba(143,180,236,.16)" stroke="#8fb4ec" stroke-dasharray="4 4"/>
+        <g fill="#3a3530" stroke="#5a5048">
+          <rect x="430" y="390" width="34" height="24"/><rect x="474" y="410" width="30" height="22"/><rect x="420" y="430" width="30" height="22"/><rect x="470" y="446" width="34" height="22"/>
+          <rect x="595" y="420" width="32" height="22"/><rect x="636" y="436" width="30" height="22"/><rect x="600" y="458" width="34" height="22"/>
+          <rect x="430" y="290" width="40" height="30"/>
+          <rect x="505" y="226" width="46" height="30"/>
+          <rect x="660" y="268" width="56" height="38"/>
+        </g>
+        <circle cx="560" cy="362" r="46" fill="#30302c" stroke="#5a5048"/>
+        <rect x="578" y="318" width="22" height="22" fill="#4a3a26" stroke="#e2625a" stroke-width="2"/>
+        <rect x="541" y="356" width="8" height="18" fill="#7a6a52"/>
+        <circle cx="566" cy="392" r="8" fill="#1a1d22" stroke="#7a6a52" stroke-width="2"/>
+        <g fill="#ece8f2" font-size="11">
+          <text x="196" y="440">LANDING</text>
+          <text x="300" y="352" fill="#a39cb3">MAIN GATE</text><text x="300" y="365" fill="#a39cb3" font-size="9">(barred)</text>
+          <text x="440" y="383">THE LANES</text>
+          <text x="420" y="285">DARE HOUSE</text>
+          <text x="500" y="220">CHAPEL</text>
+          <text x="664" y="262">ARMOURY · FORGE</text>
+          <text x="604" y="314" fill="#e2625a">BELL TOWER</text>
+          <text x="500" y="425">SQUARE · WELL</text>
+          <text x="598" y="502">THE LONG LANE</text>
+        </g>
+        <rect x="520" y="560" width="80" height="44" fill="#26302a" stroke="#8fd19e" stroke-width="2"/>
+        <text x="500" y="622" fill="#8fd19e" font-size="11">STOCKADE · WARDEN'S TRIAL</text>
+        <rect x="518" y="234" width="20" height="14" fill="none" stroke="#8fd19e" stroke-width="2"/>
+        <text x="558" y="252" fill="#8fd19e" font-size="10">vault below (Focus)</text>
+        <polyline points="200,455 300,420 352,380 330,440 405,474 455,425 545,368 680,290 705,312 640,440 640,340 560,362 586,404" fill="none" stroke="#b9a2ea" stroke-width="3" stroke-dasharray="7 5" stroke-linejoin="round"/>
+        <g font-size="11" font-weight="500" text-anchor="middle">
+          <circle cx="200" cy="455" r="11" fill="#b9a2ea"/><text x="200" y="459" fill="#121117">1</text>
+          <circle cx="352" cy="380" r="11" fill="#b9a2ea"/><text x="352" y="384" fill="#121117">2</text>
+          <circle cx="405" cy="474" r="11" fill="#b9a2ea"/><text x="405" y="478" fill="#121117">3</text>
+          <circle cx="455" cy="425" r="11" fill="#e7a465"/><text x="455" y="429" fill="#121117">4</text>
+          <circle cx="545" cy="368" r="11" fill="#b9a2ea"/><text x="545" y="372" fill="#121117">5</text>
+          <circle cx="680" cy="290" r="11" fill="#e7a465"/><text x="680" y="294" fill="#121117">6</text>
+          <circle cx="705" cy="312" r="11" fill="#b9a2ea"/><text x="705" y="316" fill="#121117">7</text>
+          <circle cx="640" cy="440" r="11" fill="#e7a465"/><text x="640" y="444" fill="#121117">8</text>
+          <circle cx="640" cy="340" r="11" fill="#8fb4ec"/><text x="640" y="344" fill="#121117">9</text>
+          <circle cx="560" cy="362" r="14" fill="#e2625a"/><text x="560" y="366" fill="#121117">10</text>
+          <circle cx="586" cy="404" r="11" fill="#b9a2ea"/><text x="586" y="408" fill="#121117">11</text>
+        </g>
+        <circle cx="250" cy="430" r="8" fill="#e7a465"/><text x="236" y="418" fill="#e7a465" font-size="10">E1</text>
+        <use href="#star" x="100" y="445" width="16" height="16"/>
+        <use href="#star" x="86" y="70" width="16" height="16"/>
+        <use href="#star" x="40" y="440" width="16" height="16"/>
+        <use href="#star" x="518" y="208" width="16" height="16"/>
+        <use href="#star" x="444" y="296" width="16" height="16"/>
+        <use href="#star" x="694" y="272" width="16" height="16"/>
+        <use href="#star" x="530" y="340" width="18" height="18"/>
+        <text x="760" y="600" fill="#a39cb3" font-size="10">≈ 50 m</text><line x1="760" y1="608" x2="810" y2="608" stroke="#a39cb3"/>
+        <text x="960" y="40" fill="#a39cb3" font-size="12" text-anchor="end">N ↑</text>
+      </svg>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">04</span><h2>The main path, step by step</h2></div>
+    <div class="tbl"><table>
+      <thead><tr><th>#</th><th>Time</th><th>Area</th><th>What happens</th><th>Objective on screen</th></tr></thead>
+      <tbody>
+        <tr><td class="k">1</td><td class="k">0:00</td><td>The Landing</td><td>Nysa wades out of grey water onto the beach after the Shoal. A broken pinnace, a cold signal fire. <span class="pill pc">E1</span> Two Hollows rise from the shallows: a gentle first fight. A lantern on the jetty shows the ship in the fog, unreachable for now.</td><td class="k">Find a way into the colony.</td></tr>
+        <tr><td class="k">2</td><td class="k">0:06</td><td>Main Gate</td><td>Barred from inside. On the gatepost, freshly carved: <b>CRO</b>. (In history, CRO was on a tree and CROATOAN on a post.) Whispering behind the logs: <i>"Don't let her in. She's remembered."</i></td><td class="k">Look for another way in.</td></tr>
+        <tr><td class="k">3</td><td class="k">0:09</td><td>The Breach</td><td>Three routes over the palisade: <b>climb</b> a collapsed section (hidden path, finds a star), <b>squeeze</b> through a drain (stealth, quiet), or <b>force</b> a loose log (loud, draws a third wave into fight 4).</td><td class="k">Get over the palisade.</td></tr>
+        <tr><td class="k">4</td><td class="k">0:14</td><td>The Lanes</td><td><span class="pill pc">E2</span> The first real fight inside. Houses with doors open and dinners on the tables. Colonists stand frozen in doorways, whispering. Two can be talked to: the side stories start here.</td><td class="k">Reach the centre of the colony.</td></tr>
+        <tr><td class="k">5</td><td class="k">0:24</td><td>The Square (first visit)</td><td>The CROATOAN post, covered in four hundred years of carvings and grey plaster. <span class="pill pp">Puzzle</span> Use the Lantern to find Eesa's star exactly where you carved it as him. The wood is pale and fresh. Then <b>the bell starts ringing</b>, and the whole colony wakes.</td><td class="k">Find his mark. → Get to the armoury.</td></tr>
+        <tr><td class="k">6</td><td class="k">0:34</td><td>Armoury</td><td><span class="pill pc">E3</span> The <b>matchlock caliver</b> hangs on a rack. As she lifts it, the Fogbound pour through the doors. The relic is learned under pressure: one shot, a long reload, holding a doorway.</td><td class="k">Hold the armoury.</td></tr>
+        <tr><td class="k">7</td><td class="k">0:42</td><td>Forge</td><td>Optional: with three bronze fittings found around the colony, upgrade the Mahl Stick to <b>Tier II</b>. The forge tutorial.</td><td class="k">(Optional) Upgrade at the forge.</td></tr>
+        <tr><td class="k">8</td><td class="k">0:46</td><td>The Long Lane</td><td><span class="pill pc">E4</span> The first <b>Whitewash</b>, whose plaster armour turns ordinary blows. Teaches heavy strikes and the chisel's Carve, at the cost of a small memory.</td><td class="k">Get to the bell tower.</td></tr>
+        <tr><td class="k">9</td><td class="k">0:55</td><td>Tower approach</td><td><span class="pill ps">Stealth</span> Three Lethe Hounds patrol open ground. They hunt by sound: walk on straw, not gravel; don't splash. Being caught means a fight on bad ground. Climb the tower's outside to cut the bell rope.</td><td class="k">Silence the bell.</td></tr>
+        <tr><td class="k">10</td><td class="k">1:02</td><td>The Square</td><td><span class="pill pb">Boss</span> Cutting the rope fails. The tower stands up: <b>the Bellringer.</b> At its climax the cold open replays, and this time the player knows what Saturn means.</td><td class="k">Survive.</td></tr>
+        <tr><td class="k">11</td><td class="k">1:15</td><td>The Well</td><td>The whispering stops for the first time. Nysa drops a lantern into the well. It falls, and falls, and doesn't land. <b>End of Chapter 1: "Will you remember them?"</b></td><td class="k">—</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">05</span><h2>Combat encounters</h2></div>
+    <div class="tbl"><table>
+      <thead><tr><th>Fight</th><th>Enemies</th><th>Arena</th><th>What it teaches</th><th>Twist</th></tr></thead>
+      <tbody>
+        <tr><td><b>E1 · The Landing</b></td><td>2 Hollows</td><td>Open beach; ankle-deep water</td><td>Refresher: light, heavy, parry</td><td>Dodging in the shallows is slower</td></tr>
+        <tr><td><b>E2 · The Lanes</b></td><td>4 Hollows, 1 Smudge, then 2 Hollows</td><td>Two narrow lanes joined by a garden; doors to duck through</td><td>Crowd control, doorways as choke points, the Lantern</td><td>Forcing the loose log at step 3 adds a third wave</td></tr>
+        <tr><td><b>E3 · The Armoury</b></td><td>The Fogbound: 3 waves of 3, carrying lanterns</td><td>One room, two doors, weapon racks</td><td>The caliver: one shot, then 4 seconds to reload</td><td>Shooting a Fogbound's lantern blinds everyone near it</td></tr>
+        <tr><td><b>E4 · The Long Lane</b></td><td>1 Whitewash, 4 Hollows, 1 Smudge</td><td>A muddy lane with a cart and a collapsed porch</td><td>Heavy strikes, chisel Carve, when to spend</td><td>Push the Whitewash through the rotten well-cover for an instant kill</td></tr>
+        <tr><td><b>E5 · Tower approach</b></td><td>3 Lethe Hounds</td><td>Open ground: gravel, straw, puddles</td><td>Stealth by sound; throwing objects to distract</td><td>Ring a dinner bell in a house to pull them all away</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">06</span><h2>Side stories and the choice</h2></div>
+    <p class="intro">Every side story returns a <b>name</b> to someone who has nearly lost it, and gives back a <b>memory</b> or a <b>keepsake</b> in return. The people are real; their fates in Lethe are our story.</p>
+    <div class="cards">
+      <article class="card"><span class="kind">Side story · the Dare House</span><h3>The girl who was born here</h3><p>A three-year-old girl sits under a table, singing a lullaby she half remembers. Her mother, <b>Eleanor Dare</b>, has kept a signal fire at the landing for four hundred years, waiting for her own father to come back. Find the missing words of the lullaby around the colony and sing it back.</p><dl><dt>Reward</dt><dd>A memory returned · Keepsake: the christening spoon (longer parry window)</dd><dt>History</dt><dd>Virginia Dare, born August 1587</dd></dl></article>
+      <article class="card"><span class="kind">Side story · the Lighthouse</span><h3>Three keepers</h3><p>On the sand spit, a lighthouse whose lamp has gone out. Three keepers argue on the stairs about whose turn it is. Relight the lamp with the UV Lantern and a mirror puzzle, and they remember their names.</p><dl><dt>Reward</dt><dd>A star · Keepsake: the oilskin (quieter steps)</dd><dt>History</dt><dd>Flannan Isles, Scotland: three keepers vanished in December 1900</dd></dl></article>
+      <article class="card"><span class="kind">Side story · gated, returns later</span><h3>The ship that sailed without them</h3><p>A brigantine drifts offshore with its lamps lit and dinner on the table. A captain, his wife and their little girl stand on deck. You can't reach them until you can call a crowd of names at once (Voice: Chorus).</p><dl><dt>Reward</dt><dd>A star · Keepsake: the ship's compass (points to the nearest star)</dd><dt>History</dt><dd>The Mary Celeste, found empty in December 1872</dd></dl></article>
+    </div>
+    <figure class="wide"><img class="hero" src="levels/roanoke-ship.jpg" alt="The ghost brigantine in the fog with three figures on deck, Nysa on the jetty with her violet torch"><figcaption>The ship. Players see it from the jetty in the first minute and can't reach it until much later: a reason to come back.</figcaption></figure>
+    <div class="note"><b>The choice: the fire at the landing.</b> The colonists are split. Eleanor Dare wants her signal fire lit, so they can be found. Master Hollis (a fictional colonist) and the others want it put out: being found is how the Sealers find you. <b>Light it</b> and the Hollows grow restless (harder fights here), but Eleanor fights beside you against the Bellringer and returns in Part Three. <b>Put it out</b> and the colony goes quiet (easier fights, a keepsake from Hollis), but Eleanor stops speaking to you, and the lullaby side story is lost.</div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">07</span><h2>Secrets: stars, vault, trial</h2></div>
+    <div class="tbl"><table>
+      <thead><tr><th>Secret</th><th>Where</th><th>How to get it</th></tr></thead>
+      <tbody>
+        <tr><td><b>Star 1 · Alkaid</b></td><td>The CROATOAN post</td><td>Main path: carved by you, as Eesa, in Scene 17</td></tr>
+        <tr><td><b>Star 2</b></td><td>End of the jetty</td><td>Under the last plank; visible only under the Lantern</td></tr>
+        <tr><td><b>Star 3</b></td><td>Lighthouse lamp room</td><td>Finish the keepers' side story</td></tr>
+        <tr><td><b>Star 4</b></td><td>Chapel roof beam</td><td>The climbing route over the chapel</td></tr>
+        <tr><td><b>Star 5</b></td><td>The Dare House, inside the cradle</td><td>Return after the lullaby</td></tr>
+        <tr><td><b>Star 6</b></td><td>Armoury rafters</td><td>Shoot down the hanging lantern with the caliver</td></tr>
+        <tr><td><b>Star 7</b></td><td>The captain's cabin, on the ship</td><td>Gated: come back with Voice: Chorus</td></tr>
+        <tr><td><b>Sealed Vault</b></td><td>Under the chapel</td><td>Gated: Lantern Focus (Ch. 2). Inside: the Sealers' first report on Roanoke, and Lantern Flare.</td></tr>
+        <tr><td><b>Warden's Trial · the Stockade</b></td><td>South, outside the walls</td><td>After the boss: five ranked fights with the caliver. Gold rank masters it (faster reload, two shots).</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">08</span><h2>The cross-time puzzle at the post</h2></div>
+    <div class="two">
+      <article class="box ours"><span class="kind">THEN · Scene 17 · Eesa, 14</span><p>The post is clean except for one word. The player moves Eesa's hands over it and chooses where to carve his first star: <b>nine possible spots</b> (three heights on three faces). The game records the choice silently. Nothing tells the player it matters.</p></article>
+      <article class="box ours"><span class="kind">NOW · step 5 · Nysa</span><p>Fifteen years later the post is covered in hundreds of carvings and grey plaster. The Lantern reveals only fresh cuts. The player has to remember where they carved it. The star is there, exactly, and the wood is still pale. Most players won't expect their own choice to come back. <b>Hint ladder:</b> after 90 seconds, Eesa's notebook shows a sketch of the post.</p></article>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">09</span><h2>Boss: the Bellringer</h2></div>
+    <p class="intro">Built from the colony itself: house timber, ship rope and sailcloth, with the colony's great bronze bell for a head. Its weapon is forgetting: <b>every ring takes something from the player</b>. Arena: the square, about 40 m across, with the post at its centre, the well, and four porches for cover. About 8–12 minutes on Balanced.</p>
+    <div class="phase">
+      <div class="ph">PHASE 1<b>The Ring</b>100–60%</div>
+      <div><p>It rings every 20 seconds. Each ring takes one thing away for 10 seconds, in order: <b>dodge</b>, then the <b>Lantern</b>, then the <b>screen</b> (the health bar and edges fade).</p><ul><li><b>Rope lash:</b> a wide sweep; jump it or duck behind a porch.</li><li><b>Lantern drag:</b> pulls burning lanterns across the ground, leaving lines of fire.</li><li><b>Stomp:</b> knocks you down if you're close.</li><li><b>Weak points:</b> three rope joints on its legs. Carve them with the chisel (each costs a small memory) to bring it to its knees, then shoot the bell with the caliver for big damage.</li></ul></div>
+      <div class="ph">PHASE 2<b>The Choir</b>60–25%</div>
+      <div><p>It pulls Hollows out of the fog and rings every 12 seconds.</p><ul><li><b>The answer is the post.</b> Stand at CROATOAN and <b>call the names</b> you've learned in the colony. Each Hollow you name stops, turns, and grabs the Bellringer's legs.</li><li>If you lit Eleanor's fire, <b>Eleanor Dare</b> joins the fight here.</li><li>Players who skipped the side stories have fewer names, so this phase is harder for them. The game rewards exploring.</li></ul></div>
+      <div class="ph">PHASE 3<b>The Price</b>25–0%</div>
+      <div><p>It tears free and lowers the bell over the square to crush it. The cold open replays: Nysa knocked flat, the chisel, one memory offered.</p><ul><li><b>"The night Eesa showed me Saturn."</b> Hold to spend. This time the player lived that night in Scene 6, and Eesa's voice says the line they heard him say then.</li><li>The bell cracks from top to bottom. The fog clears for the first time: there is no sky behind it, only darkness and seven faint stars.</li></ul></div>
+    </div>
+    <div class="note"><b>Rewards:</b> the chisel technique <b>Anchor</b> (carve a name into a place: checkpoint and fast travel), a bronze shard from the bell (Mahl Stick Tier II if not yet upgraded), and the Square becomes the colony's first anchor. <b>On Story difficulty</b> the rings take less away; <b>on Grounded</b> a hit while the screen is gone also costs your next memory card.</div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">10</span><h2>Build notes for Unreal Engine</h2></div>
+    <div class="tbl"><table>
+      <thead><tr><th>Area</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><b>Scale</b></td><td>Lane width 3–4 m; cottage 6 × 4 m, door 1.9 m; palisade 4 m high; bell tower 14 m; Bellringer 9 m standing. Player sprint about 6 m/s.</td></tr>
+        <tr><td><b>Fog and light</b></td><td>Volumetric fog everywhere, densest at the edges so the playable space reads; Lumen; warm point lights in windows and lanterns as the only colour; nothing above the fog (black).</td></tr>
+        <tr><td><b>Materials</b></td><td>Scanned timber, thatch, wet mud, iron, weathered bronze (Fab / Megascans). Everything slightly damp.</td></tr>
+        <tr><td><b>Sound</b></td><td>The bell is the score (low A). Whispered names placed on the frozen colonists. Unseen surf on the west side.</td></tr>
+        <tr><td><b>First build target</b></td><td>Grey-box the whole level (steps 1–11) and play it end to end for timing; then dress the Square and the Lanes to final quality for the vertical slice.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <footer>Draft v0.1. Real names and dates (Roanoke 1587–1590, the Dare family, the Flannan Isles keepers, the Mary Celeste) to be checked again before release; the real people who appear are shown with respect, never as monsters. Companion pages: Chapter 1 Blueprint, Game Design, Storyboard.</footer>
+</div>
