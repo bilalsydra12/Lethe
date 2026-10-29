@@ -83,3 +83,16 @@ Differences from the reference, to fix in round 8 (with the design session's rou
 3. The stripped band reads as white plaster; it should be cream-to-tan wood with grain.
 4. Palisade: thicker trunks (35-55 cm) set tight with no daylight; rails behind the trunks, not in front.
 5. Orange haze behind the wall; the reference is a cool blue-grey night with small warm points.
+
+## Round 8 · 2026-10-29
+
+![round 8](2026-10-29_gate_round8.png)
+
+Fixed since round 7: CROATOAN reads in dark, deep Roman capitals at 1.5 m with the later names round it; the carving faces the camera on a wider post; stripped band is pale tan wood with grain; trunks 35-55 cm set tight with rails behind; the orange is mostly gone.
+
+Differences from the reference, to fix in round 9:
+1. The final N is clipped at the post's edge: narrow the word slightly and centre it on the visible face.
+2. The UV spot also lights the left gatepost through the gap: tighter cone.
+3. Gate bars stop short of the post.
+4. The bark band above the stripped section still bulges like a cap (the scan used has a knot there).
+5. Warm glow behind the gap still a little large.
