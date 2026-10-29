@@ -107,8 +107,9 @@ The rule-breaking moment players will talk about:
 
 - When the bell rings, **the game forgets something.** The first ring removes the **dodge** button: pressing it does nothing, and the icon in the corner fades out. Ten seconds later it comes back.
 - The second ring blurs the screen edges and drops the sound out, except the bell.
-- The player has to survive two rings by running between the bell's sweeps toward the post in the middle of the square, the one carved with a word: **CROATOAN**.
-- They reach it on the third ring. It knocks Nysa flat.
+- The player has to survive two rings by running between the bell's sweeps, out of the square and back to the colony's entrance, where the right-hand gatepost has its bark stripped and one word carved five feet up: **CROATOAN**.
+- **On each ring, the houses around her vanish for a moment**, and she sees the colony as John White found it in 1590: the houses taken down, iron bars and lead lying in the grass. Then they're back.
+- They reach the gate yard on the third ring, among four rusted iron cannons half-buried in the grass. The ring knocks Nysa flat.
 
 ---
 
