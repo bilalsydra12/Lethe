@@ -171,3 +171,32 @@ Still to fix (round 3):
 4. The mud foreground shows a regular tile pattern in the puddles. Break it up with the mud decals and more stones.
 5. At this distance the letters still look a little even. The variation could go further.
 6. The house windows are a little too bright. Tone them down so they glow through the haze.
+
+## Sketch match · round 3 · 2026-10-30
+
+![sketch match round 3](2026-10-30_gate_match_r3.png)
+
+UV light off (test for H): the word still reads from the grooves alone, under the moon and the lantern.
+
+![round 3, UV off](2026-10-30_gate_match_r3_uvoff.png)
+
+Changes from the round 2 review (exposure -0.5 EV):
+- H/I. The CROATOAN post is now real geometry (`tools/make_panel_mask.ps1` writes the mesh), not a decal:
+  - Dark, deeply furrowed bark all round the post.
+  - One stripped panel, about 54 x 120 cm, centred at 1.5 m and sunk 2.5 cm below the bark, so the torn bark edge shows its thickness.
+  - CROATOAN cut as V-grooves about 1.1 cm deep (letters 10 cm high, each one different), with darker raw wood inside the cuts. The letters carry no colour; they read from shadow.
+  - The panel and bark share the log scan's grain strip, with no repeated tiles.
+- J. UV beam: three overlapping soft lobes of different widths, slightly mis-aimed, so the pool has an uneven edge. It is held up and to the left, so it rakes across the grooves. An IES profile was tried but pointed off the light's axis in UE 5.8, so it is not used.
+- K. Stakes are 20-32 cm and narrower at the point. Each point is 3-4 flat axe planes at random angles (`tools/make_hewn_tips.py`). The moon now comes from behind-left, so the stake edges pick up a rim.
+- M. Mud varies at large scale, so the puddles no longer repeat as evenly. Hand-placed puddles on the approach catch the gate lantern, plus mud patches, two cart ruts and more stones.
+- N. Tower: two storeys with X braces, a ladder, floor beams, a railed walk, a pitched shingle roof with 80 cm overhang and a dark underside, and a lantern. Set back in the fog.
+- The house is pushed back and its windows toned down. A light haze returns with distance.
+
+Assets: only the free Quixel Megascans already in the project (Fab Standard License, free for commercial use in Unreal): Old Wooden Log x2, Old Wooden Beam, Soil Mud, Military Trenches Ground Mud, Small Stones Pack, Scatter Rocks 03/06, plus grass and weeds. The post, stake points, tower and house are our own geometry.
+
+Still to do (round 4):
+1. L: Megascans bark, roof shingles and a timber-frame building would beat the hand-built tower roof and house. Adding them needs the project owner's Fab sign-in, so it is waiting on that.
+2. The N of CROATOAN sits close to the panel's right edge. Give it a few more cm of margin.
+3. At this distance the letters read a little thin. Cut them deeper and wider.
+4. The tower roof still reads as a plain slab through the fog.
+5. The far-left foreground mud still shows some repeat.
