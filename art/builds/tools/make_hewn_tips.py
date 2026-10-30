@@ -1,4 +1,4 @@
-"""
+﻿"""
 Writes axe-hewn stake points as OBJ meshes: C:/LETHE/SourceArt/Hewn/HewnTip_<n>.obj
 Each point is 4-6 uneven axe facets running from the round of the log (diameter 100 units) up to an
 off-centre apex, flat-shaded per facet so each cut reads as one plane. OBJ is Y-up; the base sits at y = 0.
@@ -15,8 +15,8 @@ RING = 24
 def tip(seed):
     r = random.Random(seed)
     facets = r.randint(4, 6)
-    height = r.uniform(110, 175)
-    apex = (r.uniform(-14, 14), height, r.uniform(-14, 14))
+    height = r.uniform(90, 160)
+    apex = (r.uniform(-24, 24), height, r.uniform(-24, 24))
     # Split the ring into facets of uneven width.
     cuts = sorted(r.uniform(0, RING) for _ in range(facets))
     ring = []
@@ -29,7 +29,7 @@ def tip(seed):
         g = sum(1 for c in cuts if c <= i) % facets
         group.append(g)
     # Each facet's axe stroke starts a little higher on one side: lift the ring vertices per facet.
-    lift = [r.uniform(0, 18) for _ in range(facets)]
+    lift = [r.uniform(0, 32) for _ in range(facets)]
     ring = [(x, y + lift[group[i]] * (0.4 + 0.6 * ((i % 3) / 2)), z) for i, (x, y, z) in enumerate(ring)]
 
     v, vt, vn, f = [], [], [], []

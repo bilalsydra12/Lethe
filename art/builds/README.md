@@ -150,3 +150,24 @@ Still far from the sketch (round 2):
 4. The stripped panel reads grey, not pale wood. The last N is clipped at the post edge, and the letters still look too even.
 5. Stake points are too regular and slightly wider than the log, so they read as arrowheads.
 6. The foreground mud is too flat and empty.
+
+## Sketch match · round 2 · 2026-10-30
+
+![sketch match round 2](2026-10-30_gate_match_r2.png)
+
+Changes from the round 1 review (exposure -0.5 EV):
+- A. Camera 4 m from the post, looking along one wall that recedes left. The gate opening with its lantern is centre-left. The right gatepost stands close to the CROATOAN post, and a short run of palisade continues behind it to the right. The lintels now span only the opening.
+- B. Every letter is cut differently: height ±15%, tilt ±4°, wandering baseline, its own stroke weight, uneven spacing. All 8 letters sit on the panel with margin. A few dry cracks run with the grain.
+- C. UV beam is violet-white with a soft edge, held off-axis from the left, about 1.5x the width of the word.
+- D. The post uses its own log scan (the old mismatch gave the "grey paint" look). The panel grain now comes from one continuous strip of the scan, with no repeated tiles. A torn bark rim with depth runs round the panel edge.
+- E/F. Fog shadow shafts are off. The sky and fog glow are lifted, so the watchtower (top left) and the house with two lit windows (top right) read as dark shapes.
+- G. Thicker rope lashings on the gate crossbars beside the lantern.
+- Stake points no wider than the log, shorter and more uneven.
+
+Still to fix (round 3):
+1. The fog went too thin. The background is too crisp, and the tower and house look too near. Bring back a light, even haze that grows with distance, and push the tower and house further back or make them smaller.
+2. The tower roof reads as one flat slab. It needs visible shingle rows and a darker underside.
+3. The post bark edges are not dark enough against the pale panel. Darken the bark and make the rim stand out more.
+4. The mud foreground shows a regular tile pattern in the puddles. Break it up with the mud decals and more stones.
+5. At this distance the letters still look a little even. The variation could go further.
+6. The house windows are a little too bright. Tone them down so they glow through the haze.
