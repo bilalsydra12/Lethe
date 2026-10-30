@@ -1,4 +1,4 @@
-﻿"""
+"""
 LETHE Â· Roanoke beauty corner: the CROATOAN gate at final quality (target: art/levels/roanoke/croatoan-gate.jpg).
 
 Free Quixel Megascans from Fab (Standard License, $0 for Unreal), downloaded to C:/LETHE/SourceArt/Megascans:
@@ -243,15 +243,25 @@ def m_decal(name, d, carving=False):
     m.set_editor_property("material_domain", unreal.MaterialDomain.MD_DEFERRED_DECAL)
     m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
     if carving:
+        # Mask: R = depth of the knife cut, G = the stripped-bark panel (pale weathered wood).
         mask = tparam(m, "Mask", d["mask"], SC.SAMPLERTYPE_MASKS, -1000, 0)
-        # Cut wood: dark in the groove; the deep CROATOAN cut fully opaque, later scratches fainter.
-        # Inside the cut: the same wood, darkened, so its grain still shows in the groove.
-        grain = tparam(m, "Grain", d["grain"], SC.SAMPLERTYPE_COLOR, -1200, -400,
-                       mul(m, E(m, unreal.MaterialExpressionTextureCoordinate, -1500, -400), sparam(m, "GrainScale", 0.5, -1500, -320), -1350, -400))
-        to_prop(mul(m, grain, vparam(m, "CutColor", (0.16, 0.11, 0.08), -900, -250), -700, -300, "RGB"), "", MP.MP_BASE_COLOR)
-        to_prop(E(m, unreal.MaterialExpressionConstant, -700, -100, r=0.85), "", MP.MP_ROUGHNESS)
-        op = E(m, unreal.MaterialExpressionSaturate, -400, 0)
-        link(mul(m, mask, sparam(m, "Depth", 2.6, -800, 120), -600, 0, "R"), "", op, "")
+        # Decal UVs span 100 x 400 cm; scale V four times as much so the grain is not stretched.
+        guv = mul(m, E(m, unreal.MaterialExpressionTextureCoordinate, -1700, -400),
+                  E(m, unreal.MaterialExpressionConstant2Vector, -1700, -320, r=1.5, g=6.0), -1500, -400)
+        grain = tparam(m, "Grain", d["grain"], SC.SAMPLERTYPE_COLOR, -1300, -400, guv)
+        lum = E(m, unreal.MaterialExpressionDotProduct, -1100, -500)
+        link(grain, "RGB", lum, "A")
+        link(E(m, unreal.MaterialExpressionConstant3Vector, -1300, -560, constant=unreal.LinearColor(0.3, 0.59, 0.11, 1)), "", lum, "B")
+        pale = mul(m, mul(m, lum, vparam(m, "PaleColor", (0.80, 0.77, 0.72), -1100, -640), -950, -560),
+                   sparam(m, "PaleBright", 1.9, -950, -660), -800, -560)
+        cut_col = mul(m, grain, vparam(m, "CutColor", (0.16, 0.11, 0.08), -1100, -250), -950, -300, "RGB")
+        cut_a = E(m, unreal.MaterialExpressionSaturate, -700, 0)
+        link(mul(m, mask, sparam(m, "Depth", 2.6, -900, 120), -800, 0, "R"), "", cut_a, "")
+        to_prop(lerp(m, pale, cut_col, cut_a, -550, -400), "", MP.MP_BASE_COLOR)
+        to_prop(E(m, unreal.MaterialExpressionConstant, -700, -100, r=0.82), "", MP.MP_ROUGHNESS)
+        op = E(m, unreal.MaterialExpressionMax, -500, 0)
+        link(mask, "G", op, "A")
+        link(cut_a, "", op, "B")
         to_prop(op, "", MP.MP_OPACITY)
         # Deep cut: a normal derived from the mask's slope, so the groove walls catch the light.
         uv0 = E(m, unreal.MaterialExpressionTextureCoordinate, -1600, 600)
@@ -261,8 +271,8 @@ def m_decal(name, d, carving=False):
             link(E(m, unreal.MaterialExpressionConstant2Vector, -1600, y + 60, r=du, g=dv), "", add, "B")
             return tparam(m, "Mask", d["mask"], SC.SAMPLERTYPE_MASKS, -1200, y, add)
         m0 = tparam(m, "Mask", d["mask"], SC.SAMPLERTYPE_MASKS, -1200, 600, uv0)
-        mx = shifted(1.0 / 1024, 0.0, 760)
-        my = shifted(0.0, 1.0 / 2048, 920)
+        mx = shifted(1.0 / 2048, 0.0, 760)
+        my = shifted(0.0, 1.0 / 8192, 920)
         dx = E(m, unreal.MaterialExpressionSubtract, -950, 700)
         link(mx, "R", dx, "A")
         link(m0, "R", dx, "B")
@@ -335,6 +345,9 @@ def V(x, y, z):
 
 
 INFO = {}
+TIPS = []          # hewn stake-point meshes
+HEWN = {}          # {"mat": material for the fresh axe cuts}
+BASES = []         # (x, y, diameter) of every stake, for dressing their feet
 
 
 def mesh_info(sm):
@@ -378,6 +391,16 @@ def upright(label, folder, sm, x, y, height, dia, mat, lean_x=0.0, lean_y=0.0, s
     lx, ly = math.radians(lean_x), math.radians(lean_y)
     top = V(x + math.sin(lx) * height, y + math.sin(ly) * height, -sink + math.cos(lx) * math.cos(ly) * height)
     a = place_between(label, folder, sm, V(x, y, -sink), top, dia, mat, spin=rng.uniform(0, 360))
+    BASES.append((x, y, dia))
+    if tip and TIPS and rng.random() > 0.1:    # axe-hewn point: 4-6 uneven facets, apex off-centre
+        dirv = unreal.Vector(top.x - x, top.y - y, top.z + sink)
+        n = math.sqrt(dirv.x ** 2 + dirv.y ** 2 + dirv.z ** 2)
+        ux, uy, uz = dirv.x / n, dirv.y / n, dirv.z / n
+        th = dia * rng.uniform(1.1, 1.8)
+        b0 = V(top.x - ux * 4, top.y - uy * 4, top.z - uz * 4)
+        place_between(label + "_Tip", folder, rng.choice(TIPS), V(b0.x + ux * th, b0.y + uy * th, b0.z + uz * th), b0,
+                      dia * 1.07, tip_mat or HEWN.get("mat") or mat, spin=rng.uniform(0, 360))
+        return a
     if tip and rng.random() > 0.14:            # ~1 in 7 is broken off flat
         # Crude axe-hewn point: a wedge (flattened on two faces), tilted, of varying length.
         th = dia * rng.uniform(0.7, 2.0)
@@ -454,13 +477,21 @@ def build():
     dp = "ydyqdits_2K_"
     t["dec"] = {"bc": tex(MS + DEC, dp + "Basecolor.jpg", "color"), "n": tex(MS + DEC, dp + "Normal.jpg", "normal"),
                 "op": tex(MS + DEC, dp + "Opacity.jpg", "linear")}
-    t["carve"] = {"mask": tex("Carving", "T_CroatoanCarving_Mask.png", "linear"), "grain": t["l2"]["bc"]}
+    # The post mask (R: CROATOAN cut, G: stripped panel) is regenerated between rounds, so always re-import it.
+    if eal.does_asset_exist(ROOT + "/Textures/T_CroatoanPanel_Mask"):
+        eal.delete_asset(ROOT + "/Textures/T_CroatoanPanel_Mask")
+    t["carve"] = {"mask": tex("Carving", "T_CroatoanPanel_Mask.png", "linear"), "grain": t["l2"]["bc"]}
 
     log("importing meshes")
     sm_l1 = mesh(L1, "Old_Wooden_Log_wcokfh1_High.fbx", "OldWoodenLog_A")
     sm_l2 = mesh(L2, "Old_Wooden_Log_wcokfdy_High.fbx", "OldWoodenLog_B")
     sm_bm = mesh(BM, "Old_Wooden_Beam_vkbhcbg_High.fbx", "OldWoodenBeam")
     grass = [mesh(GR, "Wild_Grass_vlkhcbxia_High_vlkhcbxia_Var%s_LOD0.fbx" % v, "WildGrass_" + v) for v in "ABCDEFGH"]
+    # Axe-hewn stake points (our own meshes, Scripts/make_hewn_tips.py)
+    for i in range(6):                         # always re-import: the tips are regenerated between rounds
+        if eal.does_directory_exist(ROOT + "/Meshes/HewnTip_%d" % i):
+            eal.delete_directory(ROOT + "/Meshes/HewnTip_%d" % i)
+    TIPS[:] = [mesh("../Hewn", "HewnTip_%d.obj" % i, "HewnTip_%d" % i) for i in range(6)]
 
     # Round 6: rocks and weeds (free Megascans, Standard License $0)
     def plant_set(folder, pre, uid, variants):
@@ -506,7 +537,7 @@ def build():
     m_mdec = m_decal("M_MudDecal", t["dec"])
     m_lamp = m_unlit("M_LanternGlass", (1.0, 0.62, 0.3), 5.0)
     m_win = m_unlit("M_WindowGlow", (1.0, 0.5, 0.18), 6.0)
-    m_sky = m_unlit("M_NightSky", (0.012, 0.016, 0.026), 1.0)
+    m_sky = m_unlit("M_NightSky", (0.030, 0.040, 0.056), 1.0)
     m_iron = mi("MI_IronDark", master, {"Wet": 0.6, "UVScale": 3.0}, {"Tint": (0.08, 0.08, 0.085)})
 
     log("level")
@@ -516,248 +547,284 @@ def build():
     else:
         levels.new_level(MAP)
 
-    logs = [(sm_l1, mi_l1), (sm_l2, mi_l2)]
+    # ==========================================================================================
+    # Round "match": framed and lit to the concept sketch (art/levels/roanoke/croatoan-gate.jpg).
+    # Cold moonlit fog; warm light only from three practicals (watch platform, gate, house windows).
+    # Eye-height 35 mm camera; the gatepost large on the right third; the palisade receding left.
+    # ==========================================================================================
+    mi_bark = mi("MI_Log_PostBark", master, {"Wet": 0.3}, {"Tint": (0.42, 0.42, 0.44)})
+    HEWN["mat"] = mi("MI_Log_Hewn", master, {"Pale": 0.2, "PaleBright": 1.1, "Wet": 0.45}, {"Tint": (0.5, 0.5, 0.52)},
+                     {"BaseColor": t["l2"]["bc"], "Normal": t["l2"]["n"], "Roughness": t["l2"]["r"], "AO": t["l2"]["ao"]})
+    mi_daub = mi("MI_Daub", master, {"Wet": 0.2, "UVScale": 3.0}, {"Tint": (0.30, 0.30, 0.31)},
+                 {"BaseColor": t["bm"]["bc"], "Normal": t["bm"]["n"], "Roughness": t["bm"]["r"], "AO": t["bm"]["ao"]})
 
-    def pick():
-        return logs[rng.randrange(2)]
+    CAM = (-143.0, 621.0, 160.0)
+    CAM_YAW, CAM_PITCH = -35.0, 3.5
 
-    # Ground: wet mud, 80 m square
+    def unit(yaw):
+        return math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+
+    def toward_cam(px, py, ux, uy):
+        """The wall normal (perpendicular to direction u) that faces the camera."""
+        nx, ny = -uy, ux
+        if nx * (CAM[0] - px) + ny * (CAM[1] - py) < 0:
+            nx, ny = -nx, -ny
+        return nx, ny
+
+    def local(origin, yaw, dx, dy, dz):
+        """World point for an offset (dx, dy, dz) in a frame at origin turned by yaw."""
+        c, s = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+        return (origin[0] + dx * c - dy * s, origin[1] + dx * s + dy * c, origin[2] + dz)
+
+    def lash_at(cx, cy, cz, ux, uy, folder, dia=22.0):
+        """Three turns of rope binding a rail to a trunk, wound diagonally across the rail."""
+        for k in range(3):
+            o = (k - 1) * 6.0
+            place_between("Lashing", folder, sm_bm, V(cx - ux * 10 + ux * o, cy - uy * 10 + uy * o, cz - dia * 0.6),
+                          V(cx + ux * 10 + ux * o, cy + uy * 10 + uy * o, cz + dia * 0.6), 2.6, mi_rope, spin=rng.uniform(0, 360))
+
+    def curtain(label, x0, y0, yaw, length, hgt, dia, lean_out, rail_z, rail_every=2):
+        """Whole trunks set tight along a line; uneven height, girth and lean; rails lashed on the outer face."""
+        ux, uy = unit(yaw)
+        nx, ny = toward_cam(x0, y0, ux, uy)
+        s, stakes = 0.0, []
+        dmax = dia[1]
+        while s < length:
+            sm_, mt = logs[rng.randrange(2)]
+            d = rng.uniform(*dia)
+            px, py = x0 + ux * s + nx * rng.uniform(-6, 6), y0 + uy * s + ny * rng.uniform(-6, 6)
+            lo = lean_out + rng.uniform(-2.5, 2.5)
+            side = rng.uniform(-2.5, 2.5)
+            upright(label, "Palisade", sm_, px, py, rng.uniform(*hgt), d, mt,
+                    lean_x=nx * lo + ux * side, lean_y=ny * lo + uy * side)
+            stakes.append((s, d))
+            s += d * rng.uniform(0.82, 0.92)
+        off = dmax * 0.5 + 9
+        for z in rail_z:
+            zz = z + rng.uniform(-8, 8)
+            place_between(label + "_Rail", "Palisade", sm_l1, V(x0 + nx * off - ux * 30, y0 + ny * off - uy * 30, zz),
+                          V(x0 + nx * off + ux * (length + 30), y0 + ny * off + uy * (length + 30), zz + rng.uniform(-14, 14)), 19, mi_dark)
+            for i, (ss, d) in enumerate(stakes):
+                if i % rail_every == 0:
+                    lash_at(x0 + ux * ss + nx * (off + 2), y0 + uy * ss + ny * (off + 2), zz, ux, uy, "Palisade")
+
+    logs = [(sm_l1, mi_dark), (sm_l2, mi_l1)]
+
+    # Ground: dark wet mud, puddles in the low spots of the scan
     g = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(1500, 0, 0), unreal.Rotator(0, 0, 0))
     g.static_mesh_component.set_static_mesh(PLANE)
     g.static_mesh_component.set_world_scale3d(V(80, 80, 1))
-    g.static_mesh_component.set_material(0, mi("MI_Mud", m_mud, {"UVScale": 32.0}))
+    g.static_mesh_component.set_material(0, mi("MI_Mud", m_mud, {"UVScale": 22.0, "PuddleLevel": 0.47, "PuddleSharpness": 10.0,
+                                                               "WetDarken": 0.42, "RoughnessMult": 0.55}))
     tag(g, "Ground_Mud", "Ground")
 
-    # --- the palisade: "a high palisado of great trees" --------------------------------------
-    F = "Palisade"
-
-    def lash(a_, b_, at_y, folder):
-        """Withy/rope lashing wrapped round a rail where it crosses a trunk."""
-        for k in range(3):
-            place_between("Lashing", folder, sm_bm, V(a_ - 14, at_y - 12, b_ - 12 + k * 8), V(a_ - 14, at_y + 12, b_ + 12 + k * 8), 3.0, mi_rope)
-
-    def run(label, x0, y_start, y_end, z_rail):
-        """A curtain of whole trunks: irregular heights, diameters, lean and spin; the odd gap; a lashed rail."""
-        step = 1 if y_end > y_start else -1
-        y = y_start
-        trunks = []
-        while (y - y_end) * step < 0:
-            s, mt = pick()
-            d = rng.uniform(35, 55)
-            if rng.random() > 0.03:                     # only where a trunk has rotted out
-                upright(label, F, s, x0 + rng.uniform(-10, 10), y, rng.uniform(350, 450), d, mt,
-                        lean_x=rng.uniform(-3, 2.5), lean_y=rng.uniform(-3, 3))
-                trunks.append(y)
-            y += step * d * rng.uniform(0.80, 0.90)          # set tight: "a high palisado of great trees"
-        if trunks:
-            place_between(label + "_Rail", F, sm_bm, V(x0 + 34, y_start, z_rail), V(x0 + 34, y_end, z_rail + rng.uniform(-15, 15)), 20, mi_beam)   # rails behind the trunks
-            for ty in trunks[::3]:
-                lash(x0 + 62, z_rail, ty, F)
-
-    run("Trunk_R", 740, 230, 2600, 240)          # right curtain, behind the CROATOAN post
-    run("Trunk_L", 715, -150, -650, 250)         # left curtain, from the gate to the flanker
-    # The flanker (bastion): trunks leaning outward toward the field, its face angled across the view
-    for i in range(20):
-        f = i / 19.0
-        s, mt = pick()
-        upright("Bastion", F, s, 700 - f * 480, -660 - f * 760, rng.uniform(430, 520), rng.uniform(30, 46), mt,
-                lean_x=-13 + rng.uniform(-3, 3), lean_y=rng.uniform(-3, 3))
-    for zz in (60, 300):
-        place_between("Bastion_Rail", F, sm_l1, V(735, -660, zz), V(220, -1420, zz + 20), 28, mi_dark)
-    # Watch platform on the flanker (top left of the reference)
-    T = "Bastion/Watch"
-    for (px, py) in ((850, -1000), (1250, -1000), (850, -1400), (1250, -1400)):
-        place_between("Watch_Leg", T, sm_l2, V(px, py, -40), V(px + rng.uniform(-10, 10), py, 900), 32, mi_dark)
-    box("Watch_Floor", T, (1050, -1200, 640), (480, 480, 18), mi_beam)
-    for (a_, b_) in (((810, -960, 760), (1290, -960, 760)), ((810, -1440, 760), (1290, -1440, 760)), ((810, -960, 760), (810, -1440, 760))):
-        place_between("Watch_Rail", T, sm_bm, V(*a_), V(*b_), 16, mi_beam)
-    box("Watch_RoofL", T, (1050, -1090, 1020), (560, 330, 14), mi_dark, rot=(28, 0, 0))
-    box("Watch_RoofR", T, (1050, -1310, 1020), (560, 330, 14), mi_dark, rot=(-28, 0, 0))
-    box("Watch_Lamp", T, (1000, -1050, 700), (16, 16, 24), m_lamp)
-    point("Watch_LampLight", T, (1000, -1050, 700), 120, 2300, radius=700, vol=0.15)
-
-    # --- the main entrance: a narrow gap between two great posts, barred with heavy timbers ---
-    G = "Gate"
-    place_between("GatePost_L", G, sm_l2, V(705, -95, -60), V(708, -95, 620), 78, mi_dark, spin=120)
-    for zz in (70, 245, 330):                      # heavy bars across the gap, kept clear of the 1.5 m line
-        z2 = zz + rng.uniform(-10, 10)
-        place_between("GateBar", G, sm_l1 if zz != 245 else sm_bm, V(668, -150, zz), V(672, 112, z2), rng.uniform(26, 32), mi_beam)
-        lash(705, zz, -95, G)
-    # The lantern hangs just inside the gap
-    lx, ly, lz = 860, 20, 255
-    box("GateLantern_Frame", G, (lx, ly, lz + 22), (18, 18, 4), m_iron)
-    box("GateLantern_Glass", G, (lx, ly, lz), (13, 13, 24), m_lamp)
-    box("GateLantern_Cap", G, (lx, ly, lz - 14), (18, 18, 4), m_iron)
-    point("GateLantern_Light", G, (lx, ly, lz), 140, 2300, radius=700, source=3, vol=0.25)
-
-    # --- the CROATOAN post: the RIGHT-hand post of the entrance, bark taken off, letters at 5 ft --
+    # --- the CROATOAN post: right-hand post of the entrance, a great trunk with its bark taken off in front
     P = "CroatoanPost"
-    PX, PY = 700, 150
-    place_between("CROATOAN_Post", P, sm_l2, V(PX, PY, -60), V(PX + 3, PY - 2, 300), 126, mi_post, spin=40)        # stripped section
-    place_between("CROATOAN_Post_Bark", P, sm_l1, V(PX + 3, PY - 2, 285), V(PX + 6, PY - 4, 700), 126, mi_dark, spin=90)  # bark left on above
-    # Face the carving toward the approach and the camera (about 25° off the wall normal).
-    face = math.radians(-4.0)
-    dec = actors.spawn_actor_from_class(unreal.DecalActor, V(PX - 95 * math.cos(face), PY - 95 * math.sin(face), 150),
-                                        unreal.Rotator(90, 0, math.degrees(face)))
-    dc = dec.decal
-    dc.set_decal_material(mi("MI_CroatoanCarving", m_carve))
-    dc.set_editor_property("decal_size", V(70, 124, 62))     # half-extents after the 90° roll: depth, height 2.48 m, width 1.24 m
-    # Cool fill on the post from out of frame left: the stripped wood should be the palest thing in the shot.
-    fa, fl = light(unreal.SpotLight, "PostFill", P, (-150, -250, 250))
-    fa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(-150, -250, 250), V(PX - 50, PY, 160)), False)
-    safe_set(fl, "intensity_units", unreal.LightUnits.LUMENS)
-    safe_set(fl, "intensity", float(os.environ.get("LETHE_POST_FILL", "220")))
-    safe_set(fl, "use_temperature", True)
-    safe_set(fl, "temperature", 7000.0)
-    safe_set(fl, "inner_cone_angle", 6.0)
-    safe_set(fl, "outer_cone_angle", 14.0)
-    safe_set(fl, "attenuation_radius", 1400.0)
-    safe_set(fl, "source_radius", 30.0)
-    safe_set(fl, "volumetric_scattering_intensity", 0.0)
-    tag(dec, "CROATOAN_Carving", P)
+    PX, PY = 290.0, 437.0
+    place_between("CROATOAN_Post", P, sm_l2, V(PX, PY, -60), V(PX + 4, PY - 3, 690), 76, mi_bark, spin=40)
+    face = -18.0                                      # the panel faces the approach, a little toward Nysa's lantern
+    fx, fy = unit(face)
+    dec = actors.spawn_actor_from_class(unreal.DecalActor, V(PX - 60 * fx, PY - 60 * fy, 210), unreal.Rotator(90, 0, face))
+    dec.decal.set_decal_material(mi("MI_CroatoanCarving", m_carve))
+    dec.decal.set_editor_property("decal_size", V(45, 200, 50))   # depth, height 4 m (z 10-410), width 1 m
+    tag(dec, "CROATOAN_Panel", P)
 
-    # --- behind the wall: lanterns leaking through the gaps, a house with lit windows -------
-    B = "BehindWall"
-    for (x, y_, z) in ((950, 600, 260), (1000, 1500, 240), (980, -600, 280), (1050, -150, 230)):
-        point("Lantern_Behind", B, (x, y_, z), 55, 2300, radius=550, vol=0.1)
-    box("House_Wall", B, (2300, 300, 300), (900, 1200, 600), mi_dark)
-    box("House_RoofA", B, (2300, 30, 760), (980, 700, 24), mi_dark, rot=(35, 0, 0))
-    box("House_RoofB", B, (2300, 570, 760), (980, 700, 24), mi_dark, rot=(-35, 0, 0))
-    box("House_Chimney", B, (2500, 100, 930), (90, 90, 300), mi_dark)
-    for (wy, wz) in ((-50, 300), (450, 300), (200, 520)):
-        box("House_Window", B, (1848, wy, wz), (6, 80, 110), m_win)
-    _, rc = light(unreal.RectLight, "House_WindowLight", B, (1830, 200, 330), (0, 0, 180))
-    safe_set(rc, "intensity_units", unreal.LightUnits.LUMENS)
-    safe_set(rc, "intensity", 60.0)
-    safe_set(rc, "use_temperature", True)
-    safe_set(rc, "temperature", 2000.0)
-    safe_set(rc, "source_width", 300.0)
-    safe_set(rc, "source_height", 150.0)
-    safe_set(rc, "attenuation_radius", 900.0)
-    safe_set(rc, "volumetric_scattering_intensity", 0.15)
+    # --- the entrance: left gatepost, a dark trunk beside the CROATOAN post, and a lashed gate between
+    G = "Gate"
+    place_between("GatePost_L", G, sm_l2, V(705, -95, -60), V(708, -96, 640), 62, mi_dark, spin=120)
+    upright("GateTrunk", G, sm_l1, 712, 72, 650, 54, mi_dark, lean_x=-1.0, lean_y=0.5)
+    vy = -66.0
+    while vy < 40:                                    # the gate leaf: upright poles
+        d = rng.uniform(17, 23)
+        upright("GatePole", G, logs[rng.randrange(2)][0], 726 + rng.uniform(-3, 3), vy, rng.uniform(285, 320), d, mi_dark,
+                lean_y=rng.uniform(-1.5, 1.5))
+        vy += d * rng.uniform(1.05, 1.2)
+    for z in (95, 232):                               # crossbars on the outer face, roped to every pole
+        zz = z + rng.uniform(-6, 6)
+        place_between("GateBar", G, sm_l1, V(704, -118, zz), V(704, 64, zz + rng.uniform(-8, 8)), 22, mi_beam)
+        for yy in range(-60, 50, 24):
+            lash_at(700, yy, zz, 0.0, 1.0, G)
+    for z in (440, 492):                              # heavy lintel logs up top, behind the posts
+        place_between("GateLintel", G, sm_l2, V(722, -135, z), V(722, 120, z + rng.uniform(-10, 10)), 32, mi_dark)
+    # A lantern hung on the gate
+    lx, ly, lz = 690.0, 0.0, 214.0
+    place_between("GateLantern_Hook", G, sm_bm, V(lx, ly, lz + 18), V(lx, ly, lz + 40), 1.6, m_iron)
+    box("GateLantern_Cap", G, (lx, ly, lz + 16), (17, 17, 4), m_iron)
+    box("GateLantern_Glass", G, (lx, ly, lz), (12, 12, 24), m_lamp)
+    box("GateLantern_Base", G, (lx, ly, lz - 14), (17, 17, 4), m_iron)
+    point("GateLantern_Light", G, (lx - 14, ly, lz), 160, 2200, radius=900, source=3, vol=0.45)
 
-    # --- ground dressing: grass "almost ouergrowen", mud decals ------------------------------
-    GD = "Ground/Grass"
-    for i in range(260):
-        if i < 140:
-            x, y_ = rng.uniform(560, 820), rng.uniform(-1900, 2600)        # along the wall foot
-        elif i < 200:
-            x, y_ = rng.uniform(-200, 500), rng.uniform(-1700, -500)       # left foreground
-        else:
-            x, y_ = rng.uniform(150, 700), rng.uniform(400, 1600)          # right of the post
-        s = rng.choice(grass)
-        a = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(x, y_, -2), unreal.Rotator(rng.uniform(-6, 6), rng.uniform(-6, 6), rng.uniform(0, 360)))
-        a.static_mesh_component.set_static_mesh(s)
-        sc = rng.uniform(0.7, 1.3)
-        a.static_mesh_component.set_world_scale3d(V(sc, sc, sc * rng.uniform(0.8, 1.2)))
-        for k in range(max(1, a.static_mesh_component.get_num_materials())):
-            a.static_mesh_component.set_material(k, m_gr)
-        tag(a, "Grass", GD)
+    # --- the palisade -------------------------------------------------------------------------
+    curtain("Trunk_L", 715, -150, -90, 1700, (370, 470), (30, 48), 5.0, (135, 330))      # recedes to the left
+    curtain("Trunk_R", 765, 162, 50, 420, (215, 280), (26, 38), 1.5, (120,), rail_every=1)   # behind the post, right
 
-    # Weeds, nettles, dry and wheat grass crowding the wall foot and the post; rocks half sunk in the mud.
-    def plant(kind, x, y_, scale_rng=(0.8, 1.3)):
+    # --- the watchtower, top left: legs, platform, railed walk, shingled pitched roof, a lantern
+    T = "Watchtower"
+    TX, TY = 1140.0, -1010.0
+    legs = [(-170, -170), (170, -170), (-170, 170), (170, 170)]
+    for (ox, oy) in legs:
+        place_between("Tower_Leg", T, sm_l2, V(TX + ox, TY + oy, -40), V(TX + ox * 0.94, TY + oy * 0.94, 640), 30, mi_dark)
+    for (a_, b_) in ((legs[0], legs[3]), (legs[1], legs[2])):        # cross braces under the platform
+        place_between("Tower_Brace", T, sm_bm, V(TX + a_[0], TY + a_[1], 80), V(TX + b_[0], TY + b_[1], 440), 14, mi_dark)
+    box("Tower_Floor", T, (TX, TY, 450), (380, 380, 16), mi_beam)
+    for zz in (495, 545):                                            # rails round the walk
+        for (a_, b_) in ((legs[0], legs[1]), (legs[1], legs[3]), (legs[3], legs[2]), (legs[2], legs[0])):
+            place_between("Tower_Rail", T, sm_bm, V(TX + a_[0], TY + a_[1], zz), V(TX + b_[0], TY + b_[1], zz + rng.uniform(-4, 4)), 10, mi_beam)
+    # Shingled gable roof, ridge running along X; rows of overlapping boards, each a little askew
+    eave, ridge, half = 640.0, 760.0, 230.0
+    slope = math.degrees(math.atan2(ridge - eave, half))
+    for side in (-1, 1):
+        for row in range(7):
+            f = (row + 0.5) / 7
+            yy = TY + side * half * f
+            zz = ridge - (ridge - eave) * f + 2
+            for k in range(6):
+                bx = TX - 250 + (k + 0.5) * (500 / 6) + rng.uniform(-6, 6)
+                box("Tower_Shingle", T, (bx, yy, zz), (500 / 6 + 4, (half / 7) * 1.5 / math.cos(math.radians(slope)), 4), mi_dark,
+                    rot=(side * slope + rng.uniform(-2, 2), rng.uniform(-1.5, 1.5), rng.uniform(-2, 2)))
+    place_between("Tower_Ridge", T, sm_bm, V(TX - 260, TY, ridge + 4), V(TX + 260, TY, ridge + 4), 16, mi_dark)
+    wl = (TX - 150, TY + 150, 520)
+    box("Tower_Lamp", T, wl, (14, 14, 22), m_lamp)
+    point("Tower_LampLight", T, wl, 220, 2200, radius=1100, source=4, vol=0.6)
+
+    # --- the house behind, top right: timber frame, chimney, two lit windows, softened by the fog
+    B = "House"
+    HX, HY, HZ = 2195.0, 81.0, 60.0
+    hy = math.degrees(math.atan2(CAM[1] - HY, CAM[0] - HX))         # local +X faces the camera
+
+    def hloc(dx, dy, dz):
+        return local((HX, HY, HZ), hy, dx, dy, dz)
+
+    def hbox(label, dx, dy, dz, size, mat, roll=0.0, pitch=0.0):
+        return box(label, B, hloc(dx, dy, dz), size, mat, rot=(roll, pitch, hy))
+
+    hbox("House_Walls", 0, 0, 300, (600, 900, 600), mi_daub)
+    for dy_ in (-445, -225, 0, 225, 445):
+        hbox("House_Stud", 303, dy_, 300, (14, 22, 600), mi_dark)
+    for dz_ in (12, 300, 590):
+        hbox("House_Rail", 303, 0, dz_, (14, 910, 20), mi_dark)
+    for (dy_, dz_, s_) in ((-335, 150, 1), (335, 150, -1), (-112, 445, -1), (112, 445, 1)):
+        hbox("House_Brace", 304, dy_, dz_, (12, 18, 300), mi_dark, roll=s_ * 35)
+    for (dy_, dz_) in ((-150, 430), (190, 430)):                      # the two warm windows, upper floor
+        hbox("House_Window", 302, dy_, dz_, (4, 90, 110), m_win)
+        hbox("House_Mullion", 305, dy_, dz_, (5, 6, 112), mi_dark)
+        hbox("House_Transom", 305, dy_, dz_ + 10, (5, 92, 6), mi_dark)
+        point("House_WindowLight", B, hloc(330, dy_, dz_), 90, 2000, radius=600, source=30, vol=0.15)
+    hbox("House_Door", 302, -330, 105, (4, 100, 200), mi_dark)
+    for side in (-1, 1):                                               # steep dark roof, ridge along the front
+        hbox("House_Roof", side * 160, 0, 760, (470, 980, 22), mi_dark, pitch=-side * 42)
+    hbox("House_Chimney", -90, 330, 760, (90, 90, 300), mi_dark)
+    hbox("House_ChimneyCap", -90, 330, 915, (110, 110, 14), mi_dark)
+
+    # --- ground dressing: small sparse tufts at the stake feet; a few stones in the mud -----------
+    PLANT_MI = {}
+
+    def plant(kind, x, y_, sc):
         tx, ms = plants[kind]
         if not ms:
             return
-        mat = mi("MI_Plant_" + kind, m_gr, None, {"Tint": (0.5, 0.52, 0.46)},
-                 {"BaseColor": tx["bc"], "Opacity": tx["op"], "Normal": tx["n"], "Translucency": tx["tr"]}) if kind not in PLANT_MI else PLANT_MI[kind]
-        PLANT_MI[kind] = mat
+        if kind not in PLANT_MI:
+            PLANT_MI[kind] = mi("MI_Plant_" + kind, m_gr, None, {"Tint": (0.40, 0.42, 0.40)},
+                                {"BaseColor": tx["bc"], "Opacity": tx["op"], "Normal": tx["n"], "Translucency": tx["tr"]})
         a = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(x, y_, -3), unreal.Rotator(rng.uniform(-5, 5), rng.uniform(-5, 5), rng.uniform(0, 360)))
         a.static_mesh_component.set_static_mesh(rng.choice(ms))
-        sc = rng.uniform(*scale_rng)
         a.static_mesh_component.set_world_scale3d(V(sc, sc, sc))
         for k in range(max(1, a.static_mesh_component.get_num_materials())):
-            a.static_mesh_component.set_material(k, mat)
-        tag(a, "Plant_" + kind, "Ground/Plants")
+            a.static_mesh_component.set_material(k, PLANT_MI[kind])
+        tag(a, "Tuft_" + kind, "Ground/Plants")
 
-    PLANT_MI = {}
-    for i in range(int(os.environ.get("LETHE_PLANTS", "420"))):
-        r = rng.random()
-        if r < 0.55:                                   # wall foot band, both curtains and the flanker
-            y_ = rng.uniform(-1300, 2200)
-            x = 690 + rng.uniform(-90, 25) if y_ > -650 else 700 - (abs(y_) - 660) * 0.63 + rng.uniform(-90, 20)
-        elif r < 0.75:                                 # round the CROATOAN post and the gate
-            x, y_ = rng.uniform(560, 700), rng.uniform(-200, 320)
-        else:                                          # scattered across the foreground mud, sparser
-            x, y_ = rng.uniform(150, 650), rng.uniform(-900, 1200)
-        kind = rng.choices(["weeds", "nettle", "dry", "wheat", "shrubs"], weights=[3, 2, 3, 3, 1])[0]
-        plant(kind, x, y_, (0.7, 1.4) if kind != "shrubs" else (0.6, 1.0))
+    for (bx, by, bd) in BASES:
+        if rng.random() < 0.3:
+            nx, ny = (CAM[0] - bx), (CAM[1] - by)
+            ln = math.hypot(nx, ny) or 1
+            r_ = bd * 0.5 + rng.uniform(4, 16)
+            plant(rng.choice(["dry", "weeds", "wheat"]), bx + nx / ln * r_, by + ny / ln * r_, rng.uniform(0.28, 0.5))
 
-    rock_mis = [mi("MI_Rock_%d" % i, master, {"Wet": 0.55}, {"Tint": (0.55, 0.56, 0.6)},
+    rock_mis = [mi("MI_Rock_%d" % i, master, {"Wet": 0.7}, {"Tint": (0.42, 0.43, 0.46)},
                    {"BaseColor": tx["bc"], "Normal": tx["n"], "Roughness": tx["r"], "AO": tx["ao"]}) for i, (tx, _) in enumerate(rocks)]
-    for i in range(int(os.environ.get("LETHE_ROCKS", "40"))):
+    placed = 0
+    while placed < int(os.environ.get("LETHE_ROCKS", "26")):
+        dist, brg = rng.uniform(170, 520), CAM_YAW + rng.uniform(-30, 2)      # left and centre foreground only
+        x, y_ = CAM[0] + math.cos(math.radians(brg)) * dist, CAM[1] + math.sin(math.radians(brg)) * dist
+        if x > PX - 60:
+            continue
         j = rng.randrange(len(rocks))
-        y_ = rng.uniform(-900, 1800)
-        x = rng.uniform(520, 700) if rng.random() < 0.7 else rng.uniform(150, 500)
-        a = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(x, y_, rng.uniform(-12, -3)),
+        a = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(x, y_, rng.uniform(-10, -3)),
                                           unreal.Rotator(rng.uniform(-20, 20), rng.uniform(-20, 20), rng.uniform(0, 360)))
         a.static_mesh_component.set_static_mesh(rocks[j][1])
-        sc = rng.uniform(0.6, 1.6) if j else rng.uniform(0.8, 1.2)
+        sc = rng.uniform(0.5, 1.2) if j else rng.uniform(0.6, 0.9)
         a.static_mesh_component.set_world_scale3d(V(sc, sc, sc))
         for k in range(max(1, a.static_mesh_component.get_num_materials())):
             a.static_mesh_component.set_material(k, rock_mis[j])
         tag(a, "Rock", "Ground/Rocks")
-    mdi = mi("MI_MudDecal", m_mdec)
-    for i in range(int(os.environ.get("LETHE_MUD_DECALS", "0"))):   # off until the decal mask is verified
-        a = actors.spawn_actor_from_class(unreal.DecalActor, V(rng.uniform(-100, 700), rng.uniform(-900, 900), 0), unreal.Rotator(0, -90, rng.uniform(0, 360)))
-        a.decal.set_decal_material(mdi)
-        s = rng.uniform(120, 260)
-        a.decal.set_editor_property("decal_size", V(40, s, s))
-        tag(a, "MudDecal", "Ground/Decals")
+        placed += 1
 
-    # --- sky and light ------------------------------------------------------------------------
+    # --- sky, moon, fog ---------------------------------------------------------------------------
     L = "Lighting"
-    sky = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(9000, 0, 1500), unreal.Rotator(0, 90, 0))
+    sky = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(9000, -4000, 1500), unreal.Rotator(0, 90, 0))
     sky.static_mesh_component.set_static_mesh(PLANE)
-    sky.static_mesh_component.set_world_scale3d(V(400, 400, 1))
+    sky.static_mesh_component.set_world_scale3d(V(500, 500, 1))
     sky.static_mesh_component.set_material(0, m_sky)
     sky.static_mesh_component.set_editor_property("cast_shadow", False)
     tag(sky, "NightSky", L)
 
-    _, moon = light(unreal.DirectionalLight, "MoonBacklight", L, (0, 0, 2000), (0, -22, 175))
-    safe_set(moon, "intensity", 0.9)
+    # The moon, high behind the tower: backlights the fog cold blue-grey
+    _, moon = light(unreal.DirectionalLight, "Moon", L, (0, 0, 2000), (0, -38, 150))
+    safe_set(moon, "intensity", float(os.environ.get("LETHE_MOON", "2.2")))
     safe_set(moon, "use_temperature", True)
-    safe_set(moon, "temperature", 12000.0)
-    safe_set(moon, "volumetric_scattering_intensity", 0.3)
-    safe_set(moon, "light_source_angle", 1.5)
+    safe_set(moon, "temperature", 10000.0)
+    safe_set(moon, "volumetric_scattering_intensity", 0.7)
+    safe_set(moon, "light_source_angle", 1.0)
 
     _, skyl = light(unreal.SkyLight, "SkyFill", L, (0, 0, 1500))
     safe_set(skyl, "real_time_capture", False)
-    safe_set(skyl, "intensity", 0.35)
-    safe_set(skyl, "lower_hemisphere_color", unreal.LinearColor(0.0, 0.0, 0.0, 1))
+    safe_set(skyl, "intensity", 0.8)
+    safe_set(skyl, "lower_hemisphere_color", unreal.LinearColor(0.004, 0.005, 0.007, 1))
 
-    # Nysa's UV Lantern, just out of frame to the right: a violet beam across the carving.
-    uva, uv = light(unreal.SpotLight, "UVLantern", L, (120, 920, 140))
-    uva.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(120, 920, 140), V(PX - 56, PY, 150)), False)
+    # Cool moonlit fill on the stripped panel: the pale wood is the brightest surface in the shot
+    pf = (PX - 370.0, PY - 480.0, 560.0)
+    fa, fl = light(unreal.SpotLight, "PanelMoonFill", P, pf)
+    fa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*pf), V(PX - 34 * fx, PY - 34 * fy, 200)), False)
+    safe_set(fl, "intensity_units", unreal.LightUnits.LUMENS)
+    safe_set(fl, "intensity", float(os.environ.get("LETHE_POST_FILL", "260")))
+    safe_set(fl, "use_temperature", True)
+    safe_set(fl, "temperature", 8500.0)
+    safe_set(fl, "inner_cone_angle", 8.0)
+    safe_set(fl, "outer_cone_angle", 20.0)
+    safe_set(fl, "attenuation_radius", 1600.0)
+    safe_set(fl, "source_radius", 40.0)
+    safe_set(fl, "volumetric_scattering_intensity", 0.0)
+
+    # Nysa's UV Lantern (from where she will stand): a tight violet pool on the post, no spill
+    src = (PX + 150 * math.cos(math.radians(200)), PY + 150 * math.sin(math.radians(200)), 145.0)
+    uva, uv = light(unreal.SpotLight, "UVLantern", L, src)
+    uva.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*src), V(PX - 36 * fx, PY - 36 * fy, 150)), False)
     safe_set(uv, "intensity_units", unreal.LightUnits.LUMENS)
-    safe_set(uv, "intensity", 220.0)
+    safe_set(uv, "intensity", float(os.environ.get("LETHE_UV", "120")))
     safe_set(uv, "light_color", unreal.Color(r=95, g=60, b=255, a=255))
-    safe_set(uv, "inner_cone_angle", 1.8)
-    safe_set(uv, "outer_cone_angle", 3.6)
-    safe_set(uv, "attenuation_radius", 1800.0)
-    safe_set(uv, "volumetric_scattering_intensity", 0.25)
+    safe_set(uv, "inner_cone_angle", 3.0)
+    safe_set(uv, "outer_cone_angle", 15.0)
+    safe_set(uv, "attenuation_radius", 320.0)
+    safe_set(uv, "volumetric_scattering_intensity", 0.1)
     safe_set(uv, "source_radius", 1.5)
 
     fog = actors.spawn_actor_from_class(unreal.ExponentialHeightFog, V(0, 0, 0), unreal.Rotator(0, 0, 0))
     fc = fog.component
-    safe_set(fc, "fog_density", 0.03)
-    safe_set(fc, "fog_height_falloff", 0.35)
-    safe_set(fc, "fog_inscattering_luminance", unreal.LinearColor(0.004, 0.008, 0.018, 1))
+    safe_set(fc, "fog_density", float(os.environ.get("LETHE_FOG", "0.03")))
+    safe_set(fc, "fog_height_falloff", 0.28)
+    safe_set(fc, "fog_inscattering_luminance", unreal.LinearColor(0.010, 0.013, 0.019, 1))
     safe_set(fc, "enable_volumetric_fog", True)
-    safe_set(fc, "volumetric_fog_albedo", unreal.Color(r=140, g=160, b=192, a=255))
-    safe_set(fc, "volumetric_fog_emissive", unreal.LinearColor(0.0008, 0.001, 0.0014, 1))
-    safe_set(fc, "volumetric_fog_extinction_scale", 1.2)
-    safe_set(fc, "volumetric_fog_scattering_distribution", 0.25)
-    safe_set(fc, "volumetric_fog_distance", 6000.0)
+    safe_set(fc, "volumetric_fog_albedo", unreal.Color(r=150, g=165, b=190, a=255))
+    safe_set(fc, "volumetric_fog_emissive", unreal.LinearColor(0.0012, 0.0015, 0.0021, 1))
+    safe_set(fc, "volumetric_fog_extinction_scale", 1.0)
+    safe_set(fc, "volumetric_fog_scattering_distribution", 0.35)
+    safe_set(fc, "volumetric_fog_distance", 8000.0)
     tag(fog, "NightFog", L)
     lfv_cls = unreal.load_class(None, "/Script/Engine.LocalFogVolume")
-    if lfv_cls:
-        for (x, y_) in ((700, -800), (750, 900), (300, 0)):
+    if lfv_cls:                                    # low mist lying along the wall foot
+        for (x, y_) in ((760, -700), (780, 400), (1200, -200)):
             v = actors.spawn_actor_from_class(lfv_cls, V(x, y_, 0), unreal.Rotator(0, 0, 0))
-            v.set_actor_scale3d(V(14, 14, 2.2))
-            for comp in v.get_components_by_class(unreal.ActorComponent):
-                safe_set(comp, "radial_fog_extinction", 0.25)
-                safe_set(comp, "height_fog_extinction", 0.6)
+            v.set_actor_scale3d(V(12, 12, 1.6))
             tag(v, "GroundMist", L)
 
     ppv = actors.spawn_actor_from_class(unreal.PostProcessVolume, V(0, 0, 0), unreal.Rotator(0, 0, 0))
@@ -767,15 +834,16 @@ def build():
         ("auto_exposure_method", unreal.AutoExposureMethod.AEM_MANUAL),
         ("auto_exposure_apply_physical_camera_exposure", False),
         ("auto_exposure_bias", float(os.environ.get("LETHE_BEAUTY_EV", "0.0"))),
-        ("bloom_intensity", 0.55),
-        ("bloom_threshold", 1.5),
-        ("vignette_intensity", 0.55),
-        ("film_grain_intensity", 0.18),
-        ("scene_fringe_intensity", 0.25),
-        ("color_saturation", unreal.Vector4(0.92, 0.92, 0.96, 1.0)),
-        ("color_contrast", unreal.Vector4(1.08, 1.08, 1.08, 1.0)),
-        ("color_gain_shadows", unreal.Vector4(0.86, 0.92, 1.08, 1.0)),
-        ("color_gain_highlights", unreal.Vector4(1.06, 1.0, 0.92, 1.0)),
+        ("bloom_intensity", 0.6),
+        ("bloom_threshold", 1.0),
+        ("vignette_intensity", 0.5),
+        ("film_grain_intensity", 0.15),
+        ("scene_fringe_intensity", 0.2),
+        ("color_saturation", unreal.Vector4(0.74, 0.76, 0.82, 1.0)),
+        ("color_contrast", unreal.Vector4(1.1, 1.1, 1.1, 1.0)),
+        ("color_gain_shadows", unreal.Vector4(0.86, 0.94, 1.12, 1.0)),
+        ("color_gain_midtones", unreal.Vector4(0.95, 0.98, 1.04, 1.0)),
+        ("color_gain_highlights", unreal.Vector4(1.0, 1.0, 1.0, 1.0)),
         ("lumen_final_gather_quality", 4.0),
         ("lumen_scene_lighting_quality", 2.0),
         ("lumen_scene_detail", 2.0),
@@ -787,19 +855,18 @@ def build():
     ppv.set_editor_property("settings", s)
     tag(ppv, "Grade", L)
 
-    # --- the camera ---------------------------------------------------------------------------
-    cam = actors.spawn_actor_from_class(unreal.CineCameraActor, V(-80, 520, 150), unreal.Rotator(0, 0, 0))
-    cam.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(-80, 520, 150), V(760, -180, 235)), False)
+    # --- the camera: eye height, 35 mm, slight upward tilt -----------------------------------------
+    cam = actors.spawn_actor_from_class(unreal.CineCameraActor, V(*CAM), unreal.Rotator(0, CAM_PITCH, CAM_YAW))
     cc = cam.get_cine_camera_component()
     fb = unreal.CameraFilmbackSettings()
     safe_set(fb, "sensor_width", 36.0)
     safe_set(fb, "sensor_height", 20.25)
     safe_set(cc, "filmback", fb)
-    safe_set(cc, "current_focal_length", 40.0)
-    safe_set(cc, "current_aperture", 2.8)
+    safe_set(cc, "current_focal_length", 35.0)
+    safe_set(cc, "current_aperture", 4.0)
     fs = unreal.CameraFocusSettings()
     safe_set(fs, "focus_method", unreal.CameraFocusMethod.MANUAL)
-    safe_set(fs, "manual_focus_distance", 810.0)
+    safe_set(fs, "manual_focus_distance", 470.0)
     safe_set(cc, "focus_settings", fs)
     tag(cam, "BeautyCam", "Camera")
 

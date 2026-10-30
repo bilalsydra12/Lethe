@@ -128,3 +128,25 @@ Darker cuts with grain; turning the carving moved the word left, but it was simp
 All eight letters of CROATOAN read: hand-cut Roman capitals, 1.5 m up the stripped right-hand post, in the violet beam, with the later names scratched round them. Word narrowed 20% to sit on the visible face.
 
 Agreed with the design session: this closes the first beauty pass. A second pass will come with Nysa (MetaHuman) in the shot. Known items for that pass: the warm glow behind the gap is still a little large; the left gatepost catches some violet; Nysa and her lantern replace the off-screen UV source.
+
+## Sketch match · round 1 · 2026-10-30
+
+![sketch match round 1](2026-10-29_gate_match_r1.png)
+
+Scene rebuilt against `art/levels/roanoke/croatoan-gate.jpg`. Render 2560x1440, 35 mm at eye height 1.6 m, exposure -2 EV.
+
+New this round:
+- Moonlit blue-grey fog. Warm light only from the gate lantern, the tower lantern and the house windows. UV beam aimed at the post only.
+- Wet mud ground with puddles, a few stones, small tufts at stake feet only (no tall grass).
+- Thicker CROATOAN post (76 cm) with a tall stripped panel. Letters are 10 cm high at 1.5 m. No cross, no extra names.
+- Gate between two posts with lashed crossbars, rope-lashed rails on the palisade, stakes of uneven height, lean and girth.
+- Axe-cut stake points built from our own faceted meshes (`tools/make_hewn_tips.py`), not cones.
+- Watchtower with shingle roof, rails and lantern. Timber-frame house with chimney and two lit windows.
+
+Still far from the sketch (round 2):
+1. Composition: the two gateposts stand like a tall ladder in mid-frame. The palisade on the left fills too much of the frame. The tower and house are lost in the fog.
+2. Fog is too thick and shows streaky shadow shafts. It needs to be thinner near the camera so the background shapes read.
+3. The UV pool is a hard, saturated blue oval. It should be a softer violet wash.
+4. The stripped panel reads grey, not pale wood. The last N is clipped at the post edge, and the letters still look too even.
+5. Stake points are too regular and slightly wider than the log, so they read as arrowheads.
+6. The foreground mud is too flat and empty.
