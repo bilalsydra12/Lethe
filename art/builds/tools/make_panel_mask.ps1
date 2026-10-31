@@ -73,11 +73,11 @@ public static class Panel {
         // ---- red: CROATOAN, cap height 10 cm, centred 150 cm above the ground
         var bc = new Bitmap(W, H, PixelFormat.Format32bppArgb); var g = Graphics.FromImage(bc);
         g.SmoothingMode = SmoothingMode.AntiAlias; g.Clear(Color.Black);
-        float cap = 9.8f * PXCM, sw = 0.17f * cap, gap = 0.10f;
+        float cap = 9.8f * PXCM, sw = 0.16f * cap, gap = 0.15f;
         string word = "CROATOAN"; float total = 0; var ws = new float[word.Length];
         for (int i = 0; i < word.Length; i++) { float w; Strokes(word[i], out w); ws[i] = w; total += w + (i > 0 ? gap : 0); }
-        float xs = 0.70f; for (int i = 0; i < ws.Length; i++) ws[i] *= xs; total *= xs;   // narrower Roman capitals
-        float x0 = X(-3f) - total * cap / 2f;
+        float xs = 0.63f; for (int i = 0; i < ws.Length; i++) ws[i] *= xs; total *= xs;   // narrower Roman capitals
+        float x0 = X(-5f) - total * cap / 2f;
         float wob = (float)r.NextDouble() * 6f;
         for (int i = 0; i < word.Length; i++) {
             float w; var st = Strokes(word[i], out w); w *= xs;
@@ -120,12 +120,12 @@ public static class Panel {
             }
         }
         g.Dispose();
-        var cut = Blur(Read(bc), 7); bc.Dispose();
+        var cut = Blur(Read(bc), 9); bc.Dispose();   // wide blur: each stroke becomes a V, deepest on its centre line
         // chipped groove edges
         var cg = Grid(r, 4096);
         for (int i = 0; i < cut.Length; i++) { float v = cut[i]; if (v <= 0.002f) { cut[i] = 0; continue; }
             float n = 0.5f + 0.5f * N1(cg, (i % W) / 9f + (i / W) * 0.37f);
-            cut[i] = Math.Min(1f, v < 0.45f ? v * (1f - 0.7f * n) * 1.6f : v * 1.15f); }
+            cut[i] = Math.Min(1f, v < 0.30f ? v * (1f - 0.5f * n) * 1.3f : v * 1.3f); }
 
         // ---- green: the stripped panel, peeled in vertical strips of uneven height
         var pan = new float[W * H];
@@ -215,7 +215,7 @@ public static class Panel {
         for (int j = 0; j < nr; j++) for (int i = 0; i < nc; i++) {
             float s = cols[i], z = rows[j];
             float g = Samp(pan, s, z), c = Samp(cut, s, z) * g;
-            float r = RAD + (1 - g) * Bark(s, z) - 4.5f * g - 2.1f * c;
+            float r = RAD + (1 - g) * Bark(s, z) - 4.5f * g - 1.8f * c;
             double th = -s / RAD;
             P[j * nc + i] = new double[] { r * Math.Cos(th), r * Math.Sin(th), z }; G[j * nc + i] = g; C[j * nc + i] = c;
         }
@@ -256,7 +256,7 @@ public static class Panel {
             int i1 = (i + 1) % nc;
             int a = j * nc + i, b = j * nc + i1, c = (j + 1) * nc + i1, d = (j + 1) * nc + i;
             float g = (G[a] + G[b] + G[c] + G[d]) / 4, cm = Math.Max(Math.Max(C[a], C[b]), Math.Max(C[c], C[d]));
-            string mat = g < 0.9f ? "Bark" : (cm > 0.2f ? "Cut" : "Panel");   // the torn edge's wall is bark, not pale wood
+            string mat = g < 0.9f ? "Bark" : (cm > 0.45f ? "Cut" : "Panel");   // the torn edge's wall is bark, not pale wood
             int mode = mat == "Bark" ? 1 : 0;
             Tri(mat, a, b, c, mode); Tri(mat, a, c, d, mode);
         }

@@ -498,6 +498,35 @@ def m_hdri_sky(name, hdri, moon_dir, yaw_offset, bright):
     return m
 
 
+def m_glass(name, rgb, strength, opacity):
+    """Lantern glass: translucent and softly self-lit, so the flame inside shows through."""
+    m = new_material(name)
+    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+    m.set_editor_property("two_sided", True)
+    to_prop(vparam(m, "Color", (rgb[0] * strength, rgb[1] * strength, rgb[2] * strength), -400, 0), "", MP.MP_EMISSIVE_COLOR)
+    to_prop(E(m, unreal.MaterialExpressionConstant, -400, 120, r=opacity), "", MP.MP_OPACITY)
+    mel.recompile_material(m)
+    return m
+
+
+def import_parts(path, dest):
+    """Imports every static mesh in an FBX (frame, glass, door...) into dest; returns them."""
+    if not eal.does_directory_exist(dest) or not [p for p in eal.list_assets(dest, recursive=True)]:
+        import_file(path, dest)
+    out = []
+    for p in eal.list_assets(dest, recursive=True):
+        a = unreal.load_asset(p)
+        if isinstance(a, unreal.StaticMesh):
+            ns = a.get_editor_property("nanite_settings")         # translucent glass cannot draw through Nanite
+            if ns.get_editor_property("enabled"):
+                ns.set_editor_property("enabled", False)
+                a.set_editor_property("nanite_settings", ns)
+                eal.save_loaded_asset(a)
+            out.append(a)
+    return out
+
+
 def m_unlit(name, rgb, strength):
     m = new_material(name)
     m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
@@ -761,6 +790,9 @@ def build():
                "n": ph_tex(a_ + "/textures", a_ + "_nor_gl_2k.exr", "normal", gl=True), "tr": tex(p_, a_ + "_diff_2k.jpg", "color")}
         return tx_, [sm_]
     ph_grass, ph_weed = ph_plant("grass_medium_01"), ph_plant("weed_plant_02")
+    # Poly Haven Lantern_01 (CC0): a metal-framed glass lantern, for the gate, the tower and the far lights
+    lantern_parts = import_parts(SRC + "/PolyHaven/Lantern_01/Lantern_01_2k.fbx", ROOT + "/Meshes/PH_Lantern01")
+    log("lantern parts: %s" % [(m_.get_name(), [str(s.material_slot_name) for s in m_.static_materials]) for m_ in lantern_parts])
 
     def ph_mi(name, a_, scalars, tint):
         d_ = ph[a_]
@@ -827,6 +859,8 @@ def build():
     m_pud = m_puddle("M_Puddle", t["mud"]["h"])
     m_lamp = m_unlit("M_LanternGlass", (1.0, 0.38, 0.10), 0.22)
     m_lamp_far = m_unlit("M_LanternGlassFar", (1.0, 0.40, 0.12), 0.9)
+    m_lglass = m_glass("M_LanternGlassSoft", (1.0, 0.45, 0.16), 0.10, 0.45)
+    m_flame = m_unlit("M_LanternFlame", (1.0, 0.52, 0.18), 1.6)
     m_win = m_unlit("M_WindowGlow", (1.0, 0.45, 0.22), 0.05)
     m_sky = m_unlit("M_NightSky", (0.060, 0.075, 0.100), 1.0)
     m_iron = mi("MI_IronDark", master, {"Wet": 0.6, "UVScale": 3.0}, {"Tint": (0.08, 0.08, 0.085)},
@@ -849,7 +883,7 @@ def build():
     HEWN["mat"] = ph_mi("MI_Log_Hewn", "rough_wood", {"Pale": 0.2, "PaleBright": 1.0, "Wet": 0.45, "UVScale": 0.6}, {"Tint": (0.80, 0.74, 0.66)})
     _unused_hewn = (
                      {"BaseColor": t["l2"]["bc"], "Normal": t["l2"]["n"], "Roughness": t["l2"]["r"], "AO": t["l2"]["ao"]})
-    mi_daub = mi("MI_Daub", master, {"Wet": 0.2, "UVScale": 3.0}, {"Tint": (0.42, 0.40, 0.37)}, plaster_tx)
+    mi_daub = mi("MI_Daub", master, {"Wet": 0.2, "UVScale": 3.0}, {"Tint": (0.20, 0.19, 0.18)}, plaster_tx)
     _unused_daub = (
                  {"BaseColor": t["bm"]["bc"], "Normal": t["bm"]["n"], "Roughness": t["bm"]["r"], "AO": t["bm"]["ao"]})
 
@@ -987,6 +1021,30 @@ def build():
 
     logs = [(sm_l1, mi_dark), (sm_l2, mi_l1)]
     mi_shadow = mi("MI_Log_Shadow", master, {"Wet": 0.5}, {"Tint": (0.22, 0.21, 0.21)}, dt1)
+
+    def lantern(label, folder, c, height, lumens, kelvin=2700, radius=450, vol=1.5, flame=1.0):
+        """A lantern centred on c, `height` cm tall: Lantern_01 frame (dark iron), soft glass, a flame, a hazy light."""
+        lo = [1e9, 1e9, 1e9]; hi = [-1e9, -1e9, -1e9]
+        for m_ in lantern_parts:
+            bb = m_.get_bounding_box()
+            for i, (a_, b_) in enumerate(((bb.min.x, bb.max.x), (bb.min.y, bb.max.y), (bb.min.z, bb.max.z))):
+                lo[i] = min(lo[i], a_); hi[i] = max(hi[i], b_)
+        sc = height / max(1.0, hi[2] - lo[2])
+        ctr = [(lo[i] + hi[i]) / 2 * sc for i in range(3)]
+        for m_ in lantern_parts:
+            a = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(c[0] - ctr[0], c[1] - ctr[1], c[2] - ctr[2]), unreal.Rotator(0, 0, 0))
+            a.static_mesh_component.set_static_mesh(m_)
+            a.static_mesh_component.set_world_scale3d(V(sc, sc, sc))
+            for k, slot in enumerate(m_.static_materials):
+                a.static_mesh_component.set_material(k, m_lglass if "glass" in str(slot.material_slot_name).lower() else m_iron)
+            tag(a, label + "_Frame", folder)
+        f = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(c[0], c[1], c[2] - height * 0.08), unreal.Rotator(0, 0, 0))
+        f.static_mesh_component.set_static_mesh(SPHERE)
+        f.static_mesh_component.set_world_scale3d(V(height * 0.07 / 100 * flame, height * 0.07 / 100 * flame, height * 0.16 / 100 * flame))
+        f.static_mesh_component.set_material(0, m_flame)
+        f.static_mesh_component.set_editor_property("cast_shadow", False)
+        tag(f, label + "_Flame", folder)
+        return point(label + "_Light", folder, (c[0], c[1], c[2] - height * 0.05), lumens, kelvin, radius=radius, source=2.5, vol=vol)
     dark_logs = [(sm_l1, mi_dark), (sm_l1, mi_shadow)]
 
     # Ground: dark wet mud, puddles in the low spots of the scan
@@ -1012,7 +1070,9 @@ def build():
         "Panel": ph_mi("MI_Post_Panel", "rough_wood", {"Pale": 0.92, "PaleBright": float(os.environ.get("LETHE_PANEL_BRIGHT", "3.8")),
                                                        "PaleContrast": 1.35, "Wet": 0.08, "RoughnessMult": 1.2},
                        {"PaleColor": (0.66, 0.61, 0.62), "Tint": (1.0, 1.0, 1.0)}),
-        "Cut": ph_mi("MI_Post_CutWood", "fine_grained_wood", {"Wet": 0.2}, {"Tint": (0.75, 0.66, 0.60)}),
+        "Cut": ph_mi("MI_Post_CutWood", "rough_wood", {"Pale": 0.92, "PaleBright": 1.5, "PaleContrast": 1.15, "Wet": 0.05,
+                                                        "RoughnessMult": 1.3, "UVScale": 3.0},
+                     {"PaleColor": (0.70, 0.60, 0.55), "Tint": (1.0, 1.0, 1.0)}),
     }
     for k, slot in enumerate(sm_post.static_materials):
         post.static_mesh_component.set_material(k, post_mats.get(str(slot.material_slot_name), post_mats["Bark"]))
@@ -1051,10 +1111,7 @@ def build():
     # A lantern hung on the gate
     lx, ly, lz = 690.0, 84.0, 256.0                      # spec: frame (0.537, 0.38)
     place_between("GateLantern_Hook", G, sm_bm, V(lx, ly, lz + 18), V(lx, ly, lz + 40), 1.6, m_iron)
-    box("GateLantern_Cap", G, (lx, ly, lz + 16), (17, 17, 4), m_iron)
-    box("GateLantern_Glass", G, (lx, ly, lz), (12, 12, 24), m_lamp)
-    box("GateLantern_Base", G, (lx, ly, lz - 14), (17, 17, 4), m_iron)
-    point("GateLantern_Light", G, (lx - 14, ly, lz), 10, 2700, radius=420, source=3, vol=0.05)
+    lantern("GateLantern", G, (lx, ly, lz), 36, 10, radius=420, vol=0.5)
 
     # --- the palisade -------------------------------------------------------------------------
     # left: a tight bundle of 35-50 cm trunks leaning toward the gate ("/" in frame), two roped rails, a row behind
@@ -1101,12 +1158,19 @@ def build():
         place_between("Tower_Fascia", T, sm_bm, V(TX - 275, TY + side * half, eave - 4), V(TX + 275, TY + side * half, eave - 4), 12, mi_dark)
     wl = (TX - 140, TY + 140, 850)
     place_between("Tower_LampHook", T, sm_bm, V(wl[0], wl[1], wl[2] + 14), V(wl[0], wl[1], wl[2] + 45), 1.6, m_iron)
-    box("Tower_Lamp", T, wl, (16, 16, 24), m_lamp_far)
-    point("Tower_LampLight", T, wl, 90, 2200, radius=800, source=4, vol=0.5)
+    lantern("Tower_Lamp", T, wl, 44, 90, kelvin=2200, radius=800, vol=0.9, flame=1.3)
+    point("Tower_GalleryGlow", T, (TX, TY, 790), 40, 2200, radius=420, source=30, vol=0.4)     # warm light inside the gallery
+    # the tower stands on a log-walled lower storey down to the ground (solid below the gallery, as painted)
+    for (ax, ay, bx_, by_) in ((-185, -185, 185, -185), (185, -185, 185, 185), (185, 185, -185, 185), (-185, 185, -185, -185)):
+        zz = 4.0
+        while zz < 700:
+            place_between("Tower_WallLog", T, sm_l1, V(TX + ax * 1.04, TY + ay * 1.04, zz), V(TX + bx_ * 1.04, TY + by_ * 1.04, zz + rng.uniform(-3, 3)),
+                          30, mi_dark, spin=rng.uniform(0, 360))
+            zz += 28.0
 
     # --- the house behind, top right: timber frame, chimney, two lit windows, softened by the fog
     B = "House"
-    HZ = 137.0
+    HZ = 137.0                                           # raised floor; a dark sill wall carries it to the ground
     _win = at_frame_z(0.85, 0.20, HZ + 430.0)          # spec: window at frame (0.85, 0.20)
     HX, HY = _win[0], _win[1]
     for _ in range(4):                                 # the window sits 302 cm in front of the house centre, 150 cm to its side
@@ -1123,8 +1187,9 @@ def build():
         return box(label, B, hloc(dx, dy, dz), size, mat, rot=(roll, pitch, hy))
 
     hbox("House_Walls", 0, 0, 300, (600, 900, 600), mi_daub)
+    hbox("House_Sill", 0, 0, -HZ / 2 - 2, (606, 906, HZ + 8), mi_dark)            # stands on the ground, no floating floor
     for dy_ in (-445, -225, 0, 225, 445):
-        hbox("House_Stud", 303, dy_, 300, (14, 22, 600), mi_dark)
+        hbox("House_Stud", 304, dy_, 300 - HZ / 2, (14, 22, 600 + HZ), mi_dark)
     for dz_ in (12, 300, 590):
         hbox("House_Rail", 303, 0, dz_, (14, 910, 20), mi_dark)
     for (dy_, dz_, s_) in ((-335, 150, 1), (335, 150, -1), (-112, 445, -1), (112, 445, 1)):
@@ -1133,12 +1198,19 @@ def build():
         hbox("House_Window", 302, dy_, dz_, (4, 90, 110), m_win)
         hbox("House_Mullion", 305, dy_, dz_, (5, 6, 112), mi_dark)
         hbox("House_Transom", 305, dy_, dz_ + 10, (5, 92, 6), mi_dark)
-        point("House_WindowLight", B, hloc(330, dy_, dz_), 10, 2000, radius=700, source=30, vol=0.2)
+        point("House_WindowLight", B, hloc(330, dy_, dz_), 8, 2000, radius=400, source=30, vol=0.15)
     hbox("House_Door", 302, -330, 105, (4, 100, 200), mi_dark)
     # steep shingle roof, ridge along the front (local Y), eaves over the walls
     shingle_roof("House_Roof", B, hloc(0, 0, 930), hy, 1010, 480, 45.0, mi_thatch, course=30.0, width=(45.0, 70.0), under=mi_thatch)
     hbox("House_Chimney", -90, 330, 760, (90, 90, 300), mi_dark)
     hbox("House_ChimneyCap", -90, 330, 915, (110, 110, 14), mi_dark)
+
+    for (lbl, fx_, fy_, dep) in (("FarLantern_L", 0.32, 0.215, 2100.0), ("FarLantern_R", 0.935, 0.245, 1750.0)):
+        fl_ = at_frame(fx_, fy_, dep)
+        place_between(lbl + "_Pole", "Lights", sm_l1, V(fl_[0], fl_[1], -20), V(fl_[0], fl_[1] + 1, fl_[2] + 30), 16, mi_dark)
+        lantern(lbl, "Lights", (fl_[0] - 14, fl_[1], fl_[2]), 40, 30 if fx_ < 0.5 else 12, kelvin=2300, radius=600,
+                vol=0.8 if fx_ < 0.5 else 0.2, flame=1.3)        # the right one dim: no glowing fog between house and post
+        log("%s at %s" % (lbl, str(frame_of(*fl_))))
 
     # --- a barrel at the foot of the right palisade (spec x 0.81-0.85, y 0.67-0.80) ------------------
     mi_stave = ph_mi("MI_BarrelStave", "rough_wood", {"Wet": 0.45, "UVScale": 0.5}, {"Tint": (0.36, 0.32, 0.30)})
@@ -1280,7 +1352,7 @@ def build():
     fa, fl = light(unreal.SpotLight, "PanelMoonFill", P, pf)
     fa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*pf), V(PX - 34 * fx, PY - 34 * fy, 150)), False)
     safe_set(fl, "intensity_units", unreal.LightUnits.LUMENS)
-    safe_set(fl, "intensity", float(os.environ.get("LETHE_POST_FILL", "24")))
+    safe_set(fl, "intensity", float(os.environ.get("LETHE_POST_FILL", "18")))
     safe_set(fl, "use_temperature", True)
     safe_set(fl, "temperature", 8500.0)
     safe_set(fl, "inner_cone_angle", 8.0)
@@ -1288,6 +1360,18 @@ def build():
     safe_set(fl, "attenuation_radius", 1600.0)
     safe_set(fl, "source_radius", 40.0)
     safe_set(fl, "volumetric_scattering_intensity", 0.0)
+    rk = (PX - 52 * fx, PY - 52 * fy, 330.0)
+    rka, rkl = light(unreal.SpotLight, "CarveRake", P, rk)
+    rka.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*rk), V(PX - 35 * fx, PY - 35 * fy, 187)), False)
+    safe_set(rkl, "intensity_units", unreal.LightUnits.LUMENS)
+    safe_set(rkl, "intensity", float(os.environ.get("LETHE_RAKE", "1.0")))
+    safe_set(rkl, "use_temperature", True)
+    safe_set(rkl, "temperature", 6500.0)
+    safe_set(rkl, "inner_cone_angle", 6.0)
+    safe_set(rkl, "outer_cone_angle", 9.0)
+    safe_set(rkl, "attenuation_radius", 400.0)
+    safe_set(rkl, "source_radius", 1.0)
+    safe_set(rkl, "volumetric_scattering_intensity", 0.0)
 
     # Nysa's UV Lantern (from where she will stand): a tight violet pool on the post, no spill
     src = (CAM[0] + 300 * math.cos(math.radians(CAM_YAW + 8.5)), CAM[1] + 300 * math.sin(math.radians(CAM_YAW + 8.5)), 168.0)
@@ -1401,12 +1485,17 @@ def build():
 
     lfv_cls = unreal.load_class(None, "/Script/Engine.LocalFogVolume")
     if lfv_cls and not os.environ.get("LETHE_NOMIST"):   # low mist lying along the wall foot
-        for (x, y_, sx, sz) in ((760, -700, 12, 1.6), (780, 400, 12, 1.6), (1200, -200, 12, 1.6),
+        mist = []
+        for (fx_, fy_, sx_, sz_) in ((0.04, 0.70, 6, 0.45), (0.17, 0.71, 5, 0.4), (0.30, 0.74, 4.5, 0.35), (0.44, 0.79, 4, 0.3),
+                                     (0.10, 0.86, 4, 0.35), (0.27, 0.90, 3.5, 0.3), (0.52, 0.86, 3, 0.3)):
+            gx, gy, _ = at_frame_z(fx_, fy_, 0.0)
+            mist.append((gx, gy, sx_, sz_))
+        for (x, y_, sx, sz) in tuple(mist) + ((760, -700, 12, 1.6), (1200, -200, 12, 1.6),
                                 (2400, -1600, 22, 4.0), (3300, 300, 24, 5.0), (5200, -2600, 40, 9.0),
                                 (300, -650, 9, 0.9)):                                           # + the low mist bank, left
             v = actors.spawn_actor_from_class(lfv_cls, V(x, y_, 0), unreal.Rotator(0, 0, 0))
             v.set_actor_scale3d(V(sx, sx, sz))
-            ext = (0.45 if sx < 11 else 0.12) if sx < 20 else 0.022  # the near left bank thickest; thin veils elsewhere
+            ext = ((0.30 if frame_of(x, y_, 0.0)[0] < 0.3 else 0.15) if sx < 8 else 0.40 if sx < 11 else 0.10) if sx < 20 else 0.022  # rolling ground mist, low, thickest left
             for comp in v.get_components_by_class(unreal.LocalFogVolumeComponent):
                 safe_set(comp, "radial_fog_extinction", ext)
                 safe_set(comp, "height_fog_extinction", ext)

@@ -406,3 +406,36 @@ Edge agreement (edges within 4 px of an edge in the other image): spec match rou
 5. **The house is too plain and too clear:** a flat lit wall with one window, no visible chimney; the painting's is a steep dark roof with a chimney, half lost in fog.
 6. **The ground has green moss specks** from the mud scan; the painting's mud is brown-black with more stones and brighter wet streaks toward the gate.
 7. The gate lantern core is too pale (not amber enough), and the tonal spread is still a bit too contrasty: more near-black and more highlights than the painting, fewer dark mid-tones.
+
+## Painting match · round 2 · 2026-10-31
+
+![painting match round 2](2026-10-31_gate_painting_match_r2.png)
+
+Side by side, painting left: [compare/2026-10-31_painting_vs_match_r2.jpg](compare/2026-10-31_painting_vs_match_r2.jpg) (round 1: [compare/2026-10-31_painting_vs_match_r1.jpg](compare/2026-10-31_painting_vs_match_r1.jpg)).
+
+Answers the review of round 1: buildings not on the floor, a glowing patch between the house and the post, the carving not looking carved, the fog missing, and the lanterns missing. Same light balance; exposure back at +1.9 EV. Five test renders; this is the last. All in frame is still CC0 or our own; nothing bought, nothing downloaded this round.
+
+**What changed:**
+- **Real lanterns.** Poly Haven `Lantern_01` (CC0, already on disk) as the gate and tower lanterns: a dark iron frame, soft translucent glass, a small flame inside, and a tight haze around each light so it sits in the fog instead of hanging as a bright box. Two more far lanterns glimpsed between the stake tips, where the painting has them (frame 0.32, 0.22 and 0.93, 0.25).
+- **Buildings on the ground.** The house now stands on a dark sill wall down to the mud. The watchtower has a log-walled lower storey down to the ground, with a warm glow in its gallery.
+- **No glowing patch at top right.** Darker house walls, a weaker window light, and the far-right lantern kept dim.
+- **CROATOAN carved.** Each stroke is now a V-groove about 1.8 cm deep in the same pale wood (earlier the cut used a near-black texture, so the letters read as flat purple paint). A faint raking light from above gives lit lips and shadowed insides. Wider letter spacing so "AN" no longer runs together. The T is still unmistakable.
+- **Fog back.** Rolling ground mist low across the left and middle, thickest on the left; slightly more general fog.
+
+| Band | Painting | Round 1 | Round 2 |
+|---|---|---|---|
+| 0-20% | 71.1% | 76.5% | 80.1% |
+| 20-40% | 27.5% | 18.1% | 15.4% |
+| 40-60% | 1.2% | 3.7% | 2.6% |
+| 60-80% | 0.2% | 1.7% | 1.4% |
+| 80-100% | 0.0% | 0.2% | 0.5% |
+| Average | #272427 | #28252A | #262328 |
+
+Edge agreement with the painting: round 1 49.4%, round 2 50.2%. Changed regions: tower lantern #84655D (painting #845D46), house window #5B3C32 (#5D4237), ground mist left #32323F (#39393D), gate gap #251D1E (#1B1918).
+
+**Still different (honest):**
+1. Nysa is still missing (needs Sydra's and the user's OK).
+2. The gate lantern is small and mostly hidden behind a gate pole; its core reads dimmer than the painting's (#584030 against #BF8446 in the measured box).
+3. The stripped face's upper part is brighter than the painting's (#5E595D against #393131), and the UV pool is paler lilac than the painting's violet.
+4. The letters are still violet-filled where the UV beam hits the groove walls; the painting's are darker cuts in a violet pool.
+5. The left wall is one long fence, not the painting's short bundle; the tower has no railed gallery; the house has no visible chimney; the mud has green moss specks.
