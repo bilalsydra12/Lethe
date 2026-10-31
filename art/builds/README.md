@@ -340,3 +340,69 @@ Rendered with Movie Render Queue (Lumen, 32 samples, 2560x1440). Everything in f
 3. The UV pool is too pale. The painting's is a stronger violet (#564583).
 4. The foreground mud near the camera is too dark and plain. It needs wet highlights and stones.
 5. The stake points still read arrow-like, and there is no barrel at the right.
+
+## Painting match · round 1 · 2026-10-31
+
+![painting match round 1](2026-10-31_gate_painting_match_r1.png)
+
+Judged against `art/levels/roanoke/croatoan-gate.jpg` by eye first: a 50% overlay, an edge map and a side-by-side for every test render (`tools/compare_frame.ps1`, new), then the numbers (`tools/measure_frame.ps1`). Six test renders this round; this is the last. Movie Render Queue, Lumen, 32 samples, 2560x1440, exposure +2.25 EV (was +1.9; the scene is less foggy now, so it needed a little more). Everything in frame is CC0 (Poly Haven, ambientCG) or our own geometry; nothing was bought. Nysa is still out.
+
+**What changed from spec match round 1:**
+- **Wall at the painting's scale.** Left palisade of 35-50 cm trunks packed with overlap, a second row behind on the joints (no fog through the wall), leaning 14° toward the gate so it reads "/" as in the painting, two thick rails with rope bands. A massive gatepost pair. Right palisade: tall, separate, upright stakes, set back.
+- **No more arrowheads.** The stake points were short meshes that `place_between` stretched sideways. They are now long (1.5-2.3x the trunk), narrower than the trunk, and mostly the trunk's own dark wood.
+- **CROATOAN post.** A 70 cm post, near-black bark, the stripped face pale by contrast (a new contrast control on the pale wood). Wider, deeper cuts (2 cm), steadier capitals, a wide T, at the painting's height (y 0.42). The torn bark edge is bark now, not bright saw teeth. No extra names.
+- **Dark gate gap.** Two thick crossbeams moved down to y 0.17-0.25 with rope bands, and dark stakes plus a dark backing right behind the gate where the sightlines through it land.
+- **Positions by the camera, not by guesswork.** The build script now projects frame positions into the world: tower lantern at (0.19, 0.14), house window at (0.85, 0.20), barrel at x 0.81-0.85, y 0.67-0.80, stones and puddles where the camera sees the ground (it starts ~6 m out; earlier stones and puddles were all out of frame).
+- **Wet mud** with glints from a low cool light beyond the foreground.
+- **Painterly.** Sharpening off, softer bloom, film grain 0.35, f/2.8 so the gate, tower and house soften slightly while the post stays sharp. Less fog on the wall, a low mist bank only.
+
+**1. Brightness**
+
+| Band | Painting | Render |
+|---|---|---|
+| 0-20% | 71.1% | 76.5% |
+| 20-40% | 27.5% | 18.1% |
+| 40-60% | 1.2% | 3.7% |
+| 60-80% | 0.2% | 1.7% |
+| 80-100% | 0.0% | 0.2% |
+| Average | #272427 | #28252A |
+
+Edge agreement (edges within 4 px of an edge in the other image): spec match round 1 38.7%, this round **49.4%**.
+
+**2. Regions** (average colour; within about ±15 RGB of the painting counts as close)
+
+| Region | Painting | Render | |
+|---|---|---|---|
+| Sky, top left | #494A59 | #43434F | close |
+| Sky, top centre | #454955 | #36363F | darker: fir silhouettes |
+| Sky, top right | #454755 | #1B1A20 | darker: our house roof fills it |
+| Ground mist, left | #39393D | #31303C | close |
+| Through the gate gap | #1B1918 | #271E1E | close (was #5E4D4D) |
+| Watchtower roof | #46454F | #6B6877 | too bright |
+| Tower lantern | #845D46 | #896F6B | close, a little grey |
+| Left palisade stakes | #202022 | #282831 | close |
+| Gate lantern core | #BF8446 | #ECC281 | too pale and bright |
+| Gate lantern halo | #372618 | #453930 | close |
+| Gate crossbeams | #1D1C1C | #1A1618 | close (was #56515E) |
+| Dark second post | #0E0E10 | #171310 | close |
+| Post bark | #110F0E | #060403 | slightly dark |
+| Post left edge (UV) | #54426A | #978EAA | too bright, less violet |
+| Stripped panel, upper | #393131 | #48434B | close, a little bright |
+| Stripped panel, lower | #372C28 | #3A353A | close |
+| Panel inside UV pool | #564583 | #756992 | brighter, less saturated |
+| Letters band | #584A7B | #4A3760 | close |
+| Foreground mud | #262426 | #211F1D | close (was #110E0F) |
+| Middle mud | #292829 | #2F2D30 | close |
+| Puddle reflection | #201B17 | #14100D | slightly dark |
+| House wall, right | #403C41 | #3A3032 | close |
+| House window | #5D4237 | #7B5241 | brighter |
+| Right palisade stakes | #141312 | #141318 | close |
+
+**Still different from the painting (honest):**
+1. **Nysa is missing**, and she is the painting's focal point. Her space (x 0.505-0.65) shows the gate and the dark second post instead. Needs Sydra's and the user's OK for a MetaHuman stand-in.
+2. **The post's pale face is narrower** than the painting's. Ours shows dark bark on its left third; the painting's stripped face fills nearly the whole visible width and is paler at the top. The UV pool is smaller and more lilac than violet.
+3. **The left wall is one long fence**, not the painting's short separate bundle with mist rolling out from under it, and it runs further left than the painting's. The rope bands read as thick spools from a distance.
+4. **The tower is a plain roof on posts.** The painting's has an open gallery with a railing and a watchman, and sits lower (roof eave y ~0.10, ours ~0.05).
+5. **The house is too plain and too clear:** a flat lit wall with one window, no visible chimney; the painting's is a steep dark roof with a chimney, half lost in fog.
+6. **The ground has green moss specks** from the mud scan; the painting's mud is brown-black with more stones and brighter wet streaks toward the gate.
+7. The gate lantern core is too pale (not amber enough), and the tonal spread is still a bit too contrasty: more near-black and more highlights than the painting, fewer dark mid-tones.

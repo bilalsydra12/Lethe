@@ -20,7 +20,7 @@ def planes(r):
     n = r.choice((3, 3, 4, 4, 4))
     base = r.uniform(0, 2 * math.pi)
     apex = (r.uniform(-12, 12), r.uniform(-12, 12))
-    height = r.uniform(85, 150)
+    height = r.uniform(170, 260)
     ps = []
     for i in range(n):
         a = base + 2 * math.pi * i / n + r.uniform(-0.35, 0.35)

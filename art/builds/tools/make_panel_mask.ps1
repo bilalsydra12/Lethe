@@ -73,26 +73,26 @@ public static class Panel {
         // ---- red: CROATOAN, cap height 10 cm, centred 150 cm above the ground
         var bc = new Bitmap(W, H, PixelFormat.Format32bppArgb); var g = Graphics.FromImage(bc);
         g.SmoothingMode = SmoothingMode.AntiAlias; g.Clear(Color.Black);
-        float cap = 10f * PXCM, sw = 0.12f * cap, gap = 0.10f;
+        float cap = 9.8f * PXCM, sw = 0.17f * cap, gap = 0.10f;
         string word = "CROATOAN"; float total = 0; var ws = new float[word.Length];
         for (int i = 0; i < word.Length; i++) { float w; Strokes(word[i], out w); ws[i] = w; total += w + (i > 0 ? gap : 0); }
-        float xs = 0.62f; for (int i = 0; i < ws.Length; i++) ws[i] *= xs; total *= xs;   // narrower Roman capitals
-        float x0 = X(-4f) - total * cap / 2f;
+        float xs = 0.70f; for (int i = 0; i < ws.Length; i++) ws[i] *= xs; total *= xs;   // narrower Roman capitals
+        float x0 = X(-3f) - total * cap / 2f;
         float wob = (float)r.NextDouble() * 6f;
         for (int i = 0; i < word.Length; i++) {
             float w; var st = Strokes(word[i], out w); w *= xs;
             // each letter cut on its own: height +-15%, tilt +-4 deg, its own stroke weight, a wandering baseline
-            float size = cap * (0.82f + 0.38f * (float)r.NextDouble());
-            float rot = (float)((r.NextDouble() - 0.5) * 10.0 * Math.PI / 180);
-            float lw = sw * (0.80f + 0.45f * (float)r.NextDouble());
-            float by = Y(196f) + cap / 2f + 0.07f * cap * (float)Math.Sin(wob + i * 0.9f) + (float)(r.NextDouble() - 0.5) * 0.06f * cap;   // baseline
+            float size = cap * (0.93f + 0.14f * (float)r.NextDouble());
+            float rot = (float)((r.NextDouble() - 0.5) * 4.0 * Math.PI / 180);
+            float lw = sw * (0.92f + 0.16f * (float)r.NextDouble());
+            float by = Y(187f) + cap / 2f + 0.03f * cap * (float)Math.Sin(wob + i * 0.9f) + (float)(r.NextDouble() - 0.5) * 0.06f * cap;   // baseline
             float ox = x0 + (float)(r.NextDouble() - 0.5) * 0.05f * cap;
             float sq = 0.92f + 0.16f * (float)r.NextDouble();                 // a little wider or narrower
             foreach (var line in st) {
                 var pts = new PointF[line.Length];
                 for (int k = 0; k < line.Length; k++) {
-                    float lx = (line[k][0] * xs - w / 2) * size * sq + (float)(r.NextDouble() - 0.5) * 0.065f * cap;
-                    float ly = (line[k][1] - 0.5f) * size + (float)(r.NextDouble() - 0.5) * 0.065f * cap;
+                    float lx = (line[k][0] * xs - w / 2) * size * sq + (float)(r.NextDouble() - 0.5) * 0.035f * cap;
+                    float ly = (line[k][1] - 0.5f) * size + (float)(r.NextDouble() - 0.5) * 0.035f * cap;
                     float rx = lx * (float)Math.Cos(rot) - ly * (float)Math.Sin(rot), ry = lx * (float)Math.Sin(rot) + ly * (float)Math.Cos(rot);
                     pts[k] = new PointF(ox + w * cap / 2 + rx, by - cap / 2 - ry);
                 }
@@ -111,7 +111,7 @@ public static class Panel {
         // a few long dry cracks running with the grain, kept off the word
         for (int c = 0; c < 6; c++) {
             float cx = -21f + 42f * (float)r.NextDouble(), z0 = 20f + 290f * (float)r.NextDouble(), len = 15f + 45f * (float)r.NextDouble();
-            if (z0 < 216f && z0 + len > 176f) { if (z0 < 196f) { len = Math.Max(4f, 174f - z0); if (z0 > 170f) z0 = 166f; } else z0 = 218f; }   // keep the word clear
+            if (z0 < 207f && z0 + len > 167f) { if (z0 < 187f) { len = Math.Max(4f, 165f - z0); if (z0 > 161f) z0 = 157f; } else z0 = 209f; }   // keep the word clear
             float cxp = cx, pz = z0;
             for (int s2 = 0; s2 < 8; s2++) {
                 float nz = pz + len / 8f, nx2 = cxp + ((float)r.NextDouble() - 0.5f) * 1.2f;
@@ -134,8 +134,8 @@ public static class Panel {
         for (int k = 0; k <= strips; k++) { tops[k] = 330f + (float)r.NextDouble() * 30f; bots[k] = -2f + (float)r.NextDouble() * 10f; }
         for (int y = 0; y < H; y++) {
             float z = TOP - y / PXCM;
-            float xl = -29f + 4.0f * N1(gl, z / 18f) + 1.6f * N1(gf, z / 7f + 200) + 0.25f * N1(gf, z / 2.5f);
-            float xr =  29f + 4.0f * N1(gr, z / 18f) + 1.6f * N1(gf, z / 7f + 300) + 0.25f * N1(gf, z / 2.5f + 40);
+            float xl = -34f + 4.0f * N1(gl, z / 18f) + 1.6f * N1(gf, z / 7f + 200) + 0.25f * N1(gf, z / 2.5f);
+            float xr =  34f + 4.0f * N1(gr, z / 18f) + 1.6f * N1(gf, z / 7f + 300) + 0.25f * N1(gf, z / 2.5f + 40);
             for (int x = 0; x < W; x++) {
                 float xc = (x - W / 2f) / PXCM; if (xc < xl - 1 || xc > xr + 1) continue;
                 float u = (xc - xl) / (xr - xl) * strips; int k = Math.Max(0, Math.Min(strips - 1, (int)u)); float f = u - k;
@@ -147,7 +147,7 @@ public static class Panel {
         // a few islands of bark left clinging near the edges
         for (int b = 0; b < 8; b++) {
             float cx = (r.NextDouble() < 0.5 ? -1 : 1) * (28f + (float)r.NextDouble() * 2f), cz = 20f + (float)r.NextDouble() * 300f;
-            if (cz > 176f && cz < 216f) cz = (cz < 196f) ? 164f : 228f;                         // keep the word clear
+            if (cz > 167f && cz < 207f) cz = (cz < 187f) ? 155f : 219f;                         // keep the word clear
             float rx = 1.5f + (float)r.NextDouble() * 2.5f, rz = 2f + (float)r.NextDouble() * 6f;
             for (int y = (int)Y(cz + rz); y < (int)Y(cz - rz); y++) for (int x = (int)X(cx - rx); x < (int)X(cx + rx); x++) {
                 if (x < 0 || x >= W || y < 0 || y >= H) continue;
@@ -155,7 +155,7 @@ public static class Panel {
         }
         // ---- blue: the torn bark rim just outside the panel, ~2.5 cm, strongest at the edge
         var wide = Blur(pan, 50);
-        pan = Blur(pan, 3);
+        pan = Blur(pan, 8);
         var rim = new float[W * H];
         for (int i = 0; i < rim.Length; i++) rim[i] = Math.Min(1f, wide[i] * 2.6f) * (1f - pan[i]);
 
@@ -177,7 +177,7 @@ public static class Panel {
     public static string MeshPath = null;
     public static string Conv = "x,z,-y";     // OBJ axes from UE local axes (set from the importer probe)
     public static bool Flip = false;          // reverse winding after making it outward in OBJ space
-    const float RAD = 33f;
+    const float RAD = 35f;
 
     static float Samp(float[] a, float xcm, float zcm) {
         float fx = X(xcm), fy = Y(zcm); if (fx < 0 || fy < 0 || fx >= W - 1 || fy >= H - 1) return 0f;
@@ -197,7 +197,7 @@ public static class Panel {
         float n = VN((s + warp) / 3.2f, z / 28f, 3);
         float plate = 1f - Math.Abs(2f * n - 1f);
         float fine = VN(s / 0.9f, z / 5f, 11);
-        return 2.4f * (float)Math.Pow(plate, 1.6) - 0.9f + 0.45f * fine;
+        return 2.4f * (float)Math.Pow(plate, 1.6) - 0.9f + 0.2f * fine;
     }
 
     static int[] ax = new int[3]; static double[] sg = new double[3];
@@ -208,14 +208,14 @@ public static class Panel {
         ParseConv();
         var inv = System.Globalization.CultureInfo.InvariantCulture;
         double half = Math.PI * RAD;
-        var cols = new List<float>(); for (double s = -half; s < half - 0.01; ) { cols.Add((float)s); s += Math.Abs(s) < 34 ? 0.25 : 1.5; }
-        var rows = new List<float>(); for (double z = -60; z <= 700.01; ) { rows.Add((float)z); z += (z >= 182 && z < 211) ? 0.25 : (z >= -5 && z < 365) ? 1.0 : 2.5; }
+        var cols = new List<float>(); for (double s = -half; s < half - 0.01; ) { cols.Add((float)s); s += Math.Abs(s) < 39 ? 0.25 : 1.5; }
+        var rows = new List<float>(); for (double z = -60; z <= 700.01; ) { rows.Add((float)z); z += (z >= 173 && z < 202) ? 0.25 : (z >= -5 && z < 365) ? 1.0 : 2.5; }
         int nc = cols.Count, nr = rows.Count, cap = nc * nr;   // cap = index of the top centre vertex
         var P = new double[cap + 1][]; var G = new float[cap]; var C = new float[cap];
         for (int j = 0; j < nr; j++) for (int i = 0; i < nc; i++) {
             float s = cols[i], z = rows[j];
             float g = Samp(pan, s, z), c = Samp(cut, s, z) * g;
-            float r = RAD + (1 - g) * Bark(s, z) - 3.5f * g - 1.3f * c;
+            float r = RAD + (1 - g) * Bark(s, z) - 4.5f * g - 2.1f * c;
             double th = -s / RAD;
             P[j * nc + i] = new double[] { r * Math.Cos(th), r * Math.Sin(th), z }; G[j * nc + i] = g; C[j * nc + i] = c;
         }
@@ -256,7 +256,7 @@ public static class Panel {
             int i1 = (i + 1) % nc;
             int a = j * nc + i, b = j * nc + i1, c = (j + 1) * nc + i1, d = (j + 1) * nc + i;
             float g = (G[a] + G[b] + G[c] + G[d]) / 4, cm = Math.Max(Math.Max(C[a], C[b]), Math.Max(C[c], C[d]));
-            string mat = g < 0.5f ? "Bark" : (cm > 0.2f ? "Cut" : "Panel");
+            string mat = g < 0.9f ? "Bark" : (cm > 0.2f ? "Cut" : "Panel");   // the torn edge's wall is bark, not pale wood
             int mode = mat == "Bark" ? 1 : 0;
             Tri(mat, a, b, c, mode); Tri(mat, a, c, d, mode);
         }
