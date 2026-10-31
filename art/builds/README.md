@@ -243,3 +243,32 @@ In frame:
 4. The stake points still read a little like arrowheads.
 5. CROATOAN still looks somewhat even, and the panel is cleaner than the weathered one in the sketch.
 6. The scanned Poly Haven lanterns are not yet swapped in for the gate and tower lanterns.
+
+## Full scene · round 2 · 2026-10-31
+
+![full scene round 2](2026-10-31_gate_full_scene_r2.png)
+
+Sydra's six fixes after the first full scene (Movie Render Queue, Lumen, 32 samples, 2560x1440):
+1. **Panel:** now the post's own wood with the bark peeled away. It's sunk 3.5 cm with a thick, torn bark edge (bigger tears, less fringe), in silver-grey weathered wood with vertical grain and cracks (Poly Haven `rough_wood`). No hard white.
+2. **Letters:** cut deeper and more unevenly. Each letter has its own size, tilt and baseline, and the straight strokes have knife nicks at their ends. The cuts show darker raw wood (`fine_grained_wood`), with the violet beam raking from the upper left.
+3. **Stakes:** whole scanned trunks (Poly Haven `dead_tree_trunk`), 20-32 cm, with uneven heights and leans. The axe points sit full width and start inside the trunk, and some stakes are snapped off.
+4. **House:** thick thatched roof (`thatch_roof_angled`), plaster daub between the timbers (ambientCG `Plaster001`), framed windows, chimney. Both buildings sit deep in the fog.
+5. **Light:** dimmer moon and sky fill, so the foreground goes darker. Warm gate lantern, tower lantern and house windows glow into the fog and onto the mud. More contrast, soft violet pool.
+6. **Quixel "no AI" items:** all replaced in frame:
+   - rope → ambientCG `Rope001`
+   - beams → the scanned trunk
+   - grass and weeds → Poly Haven `grass_medium_01`, `weed_plant_02`
+   - Quixel mud decals → removed
+
+Assets in frame (all CC0, free, nothing bought):
+- Poly Haven: `rogland_moonlit_night`, `fir_tree_01`, `dead_tree_trunk`, `knotted_pine_bark`, `rough_wood`, `fine_grained_wood`, `thatch_roof_angled`, `wood_trunk_wall`, `brown_mud_leaves_01`, `rock_moss_set_01`, `grass_medium_01`, `weed_plant_02`
+- ambientCG: `Rope001`, `Plaster001`
+
+Our own geometry: the carved post, axe-cut stake points, tower, house frame, gate lantern. Nysa is out for now, as Sydra asked.
+
+Still different from the sketch:
+1. Many stake points still read a little arrow-like, and a few snapped stakes show flat round tops.
+2. The tower is still a plain shape; it needs posts and a railing that read through the fog.
+3. The foreground mud is very dark and empty. The sketch has lit puddles and stones close to the camera.
+4. The letters are better but still a little regular. The sketch's are deeper and wider.
+5. The Poly Haven lanterns are not yet swapped in for the gate and tower lanterns.

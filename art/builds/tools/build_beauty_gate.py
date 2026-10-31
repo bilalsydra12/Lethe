@@ -581,14 +581,15 @@ def upright(label, folder, sm, x, y, height, dia, mat, lean_x=0.0, lean_y=0.0, s
     top = V(x + math.sin(lx) * height, y + math.sin(ly) * height, -sink + math.cos(lx) * math.cos(ly) * height)
     a = place_between(label, folder, sm, V(x, y, -sink), top, dia, mat, spin=rng.uniform(0, 360))
     BASES.append((x, y, dia))
-    if tip and TIPS and rng.random() > 0.1:    # axe-hewn point: 4-6 uneven facets, apex off-centre
+    if tip and TIPS and rng.random() > 0.12:   # axe-hewn point: 3-4 uneven facets cut into the top of the trunk
         dirv = unreal.Vector(top.x - x, top.y - y, top.z + sink)
         n = math.sqrt(dirv.x ** 2 + dirv.y ** 2 + dirv.z ** 2)
         ux, uy, uz = dirv.x / n, dirv.y / n, dirv.z / n
-        th = dia * rng.uniform(0.9, 1.4)
-        b0 = V(top.x - ux * 4, top.y - uy * 4, top.z - uz * 4)
+        th = dia * rng.uniform(0.7, 1.6)
+        sink_ = th * rng.uniform(0.25, 0.4)
+        b0 = V(top.x - ux * sink_, top.y - uy * sink_, top.z - uz * sink_)
         place_between(label + "_Tip", folder, rng.choice(TIPS), V(b0.x + ux * th, b0.y + uy * th, b0.z + uz * th), b0,
-                      dia * 0.8, tip_mat or HEWN.get("mat") or mat, spin=rng.uniform(0, 360))
+                      dia * rng.uniform(0.92, 1.0), tip_mat or HEWN.get("mat") or mat, spin=rng.uniform(0, 360))
         return a
     if tip and rng.random() > 0.14:            # ~1 in 7 is broken off flat
         # Crude axe-hewn point: a wedge (flattened on two faces), tilted, of varying length.
@@ -737,8 +738,33 @@ def build():
     safe_set(sky_hdri, "srgb", False)
     safe_set(sky_hdri, "mip_gen_settings", unreal.TextureMipGenSettings.TMGS_NO_MIPMAPS)
     eal.save_loaded_asset(sky_hdri)
-    # the palisade, gate, rails and tower are built from the scanned trunk
-    sm_l1 = sm_l2 = sm_dt1
+    for a_ in ("rough_wood", "thatch_roof_angled", "wood_trunk_wall"):
+        ph[a_] = ph_surface(a_)
+    ph["fine_grained_wood"] = {"bc": ph_tex("fine_grained_wood", "fine_grained_wood_col_2k.jpg", "color"),
+                               "n": ph_tex("fine_grained_wood", "fine_grained_wood_nor_dx_2k.jpg", "normal"),
+                               "r": ph_tex("fine_grained_wood", "fine_grained_wood_rough_2k.jpg", "linear"),
+                               "ao": ph_tex("fine_grained_wood", "fine_grained_wood_arm_2k.jpg", "linear")}
+
+    def acg(a_):                                      # ambientCG (CC0) 2K JPG set
+        p_ = "AmbientCG/" + a_
+        return {"BaseColor": tex(p_, a_ + "_2K-JPG_Color.jpg", "color"), "Normal": tex(p_, a_ + "_2K-JPG_NormalDX.jpg", "normal"),
+                "Roughness": tex(p_, a_ + "_2K-JPG_Roughness.jpg", "linear"), "AO": WHITE}
+    rope_tx, plaster_tx = acg("Rope001"), acg("Plaster001")
+
+    def ph_plant(a_):
+        p_ = "PolyHaven/" + a_ + "/textures"
+        sm_ = mesh("../PolyHaven/" + a_, a_ + "_2k.fbx", "PH_" + a_)
+        tx_ = {"bc": tex(p_, a_ + "_diff_2k.jpg", "color"), "op": tex(p_, a_ + "_alpha_2k.png", "linear"),
+               "n": ph_tex(a_ + "/textures", a_ + "_nor_gl_2k.exr", "normal", gl=True), "tr": tex(p_, a_ + "_diff_2k.jpg", "color")}
+        return tx_, [sm_]
+    ph_grass, ph_weed = ph_plant("grass_medium_01"), ph_plant("weed_plant_02")
+
+    def ph_mi(name, a_, scalars, tint):
+        d_ = ph[a_]
+        return mi(name, master, scalars, tint, {"BaseColor": d_["bc"], "Normal": d_["n"], "Roughness": d_["r"], "AO": d_["ao"]})
+
+    # the palisade, gate, rails, braces and tower are built from the scanned trunk
+    sm_l1 = sm_l2 = sm_bm = sm_dt1
     # The UV Lantern's beam profile (Scripts/make_uv_ies.py): an uneven torch edge, not a stage spot
     if eal.does_directory_exist(ROOT + "/Lights"):
         eal.delete_directory(ROOT + "/Lights")
@@ -760,13 +786,14 @@ def build():
               "r": tex(MS + folder, pre + "4K_Roughness.jpg", "linear"), "ao": tex(MS + folder, pre + "4K_AO.jpg", "linear")}
         return tx, mesh(folder, fbx, name)
 
-    plants = {
+    plants_quixel = {
         "weeds": plant_set("curbside_weeds_ujzjfexja_high", "Curbside_Weeds_ujzjfexja_High_", "ujzjfexja", "ABCDEFGHIJK"),
         "nettle": plant_set("common_hemp_nettle_xh1kdfbqx_high", "Common_Hemp_Nettle_xh1kdfbqx_High_", "xh1kdfbqx", "ABCDEFG"),
         "dry": plant_set("dry_grass_tbbqejqr_high", "Dry_Grass_tbbqejqr_High_", "tbbqejqr", "ABCDE"),
         "wheat": plant_set("wheat_grass_tdcrdbur_high", "Wheat_Grass_tdcrdbur_High_", "tdcrdbur", "ABCDEF"),
         "shrubs": plant_set("dead_shrubs_vdknafgha_high", "Dead_Shrubs_vdknafgha_High_", "vdknafgha", "ABCDEFGH"),
     }
+    plants = {"grass": ph_grass, "weed": ph_weed}
     rocks_quixel = [
         rock_set("small_stones_pack_vdjkbfmiw_high", "Small_Stones_Pack_vdjkbfmiw_High_", "Small_Stones_Pack_vdjkbfmiw_High.fbx", "SmallStones"),
         rock_set("military_trenches_scatter_rock_s_06_ydzrebd_high", "Military_Trenches_Scatter_Rock_S_06_ydzrebd_High_", "Military_Trenches_Scatter_Rock_S_06_ydzrebd_High.fbx", "Rock06"),
@@ -788,14 +815,18 @@ def build():
     mi_l2 = mi("MI_Log_B", master, {"Wet": 0.4}, {"Tint": (0.60, 0.58, 0.56)}, dt1)
     mi_dark = mi("MI_Log_Dark", master, {"Wet": 0.5}, {"Tint": (0.40, 0.39, 0.38)}, dt1)
     m_mud = m_ground(ph["brown_mud_leaves_01"])
+    mi_beam = mi("MI_Beam", master, {"Wet": 0.45}, {"Tint": (0.52, 0.50, 0.48)}, dt1)
+    mi_rope = mi("MI_Rope", master, {"Wet": 0.3, "UVScale": 4.0}, {"Tint": (0.85, 0.78, 0.62)}, rope_tx)
+    mi_thatch = ph_mi("MI_Thatch", "thatch_roof_angled", {"Wet": 0.25, "UVScale": 2.5}, {"Tint": (0.55, 0.52, 0.48)})
     m_gr = m_foliage(t["gr"])
     m_carve = m_decal("M_CroatoanCarving", t["carve"], carving=True)
     m_mdec = m_decal("M_MudDecal", t["dec"])
     m_pud = m_puddle("M_Puddle", t["mud"]["h"])
-    m_lamp = m_unlit("M_LanternGlass", (1.0, 0.62, 0.3), 5.0)
-    m_win = m_unlit("M_WindowGlow", (1.0, 0.5, 0.18), 3.0)
+    m_lamp = m_unlit("M_LanternGlass", (1.0, 0.58, 0.25), 8.0)
+    m_win = m_unlit("M_WindowGlow", (1.0, 0.48, 0.16), 7.0)
     m_sky = m_unlit("M_NightSky", (0.060, 0.075, 0.100), 1.0)
-    m_iron = mi("MI_IronDark", master, {"Wet": 0.6, "UVScale": 3.0}, {"Tint": (0.08, 0.08, 0.085)})
+    m_iron = mi("MI_IronDark", master, {"Wet": 0.6, "UVScale": 3.0}, {"Tint": (0.08, 0.08, 0.085)},
+                {"BaseColor": WHITE, "Normal": ph["rough_wood"]["n"], "Roughness": ph["rough_wood"]["r"], "AO": WHITE})
 
     log("level")
     if eal.does_asset_exist(MAP):
@@ -811,9 +842,11 @@ def build():
     # ==========================================================================================
     mi_bark = mi("MI_Log_PostBark", master, {"Wet": 0.45}, {"Tint": (0.30, 0.28, 0.27)},
                  {"BaseColor": t["l2"]["bc"], "Normal": t["l2"]["n"], "Roughness": t["l2"]["r"], "AO": t["l2"]["ao"]})
-    HEWN["mat"] = mi("MI_Log_Hewn", master, {"Pale": 0.25, "PaleBright": 1.0, "Wet": 0.5}, {"Tint": (0.50, 0.48, 0.46)},
+    HEWN["mat"] = ph_mi("MI_Log_Hewn", "rough_wood", {"Pale": 0.2, "PaleBright": 1.0, "Wet": 0.45, "UVScale": 0.6}, {"Tint": (0.80, 0.74, 0.66)})
+    _unused_hewn = (
                      {"BaseColor": t["l2"]["bc"], "Normal": t["l2"]["n"], "Roughness": t["l2"]["r"], "AO": t["l2"]["ao"]})
-    mi_daub = mi("MI_Daub", master, {"Wet": 0.2, "UVScale": 3.0}, {"Tint": (0.30, 0.30, 0.31)},
+    mi_daub = mi("MI_Daub", master, {"Wet": 0.2, "UVScale": 3.0}, {"Tint": (0.42, 0.40, 0.37)}, plaster_tx)
+    _unused_daub = (
                  {"BaseColor": t["bm"]["bc"], "Normal": t["bm"]["n"], "Roughness": t["bm"]["r"], "AO": t["bm"]["ao"]})
 
     CAM = (-143.0, 621.0, 160.0)
@@ -917,8 +950,8 @@ def build():
         "Bark": mi("MI_Post_Bark", master, {"Wet": 0.4}, {"Tint": (0.42, 0.40, 0.38)},
                    {"BaseColor": ph["knotted_pine_bark"]["bc"], "Normal": ph["knotted_pine_bark"]["n"],
                     "Roughness": ph["knotted_pine_bark"]["r"], "AO": ph["knotted_pine_bark"]["ao"]}),
-        "Panel": mi("MI_Post_Panel", master, {"Pale": 1.0, "PaleBright": 2.8, "Wet": 0.05}, {"PaleColor": (0.80, 0.79, 0.76)}, l2),
-        "Cut": mi("MI_Post_CutWood", master, {"Pale": 0.8, "PaleBright": 1.0, "Wet": 0.2}, {"PaleColor": (0.55, 0.42, 0.30)}, l2),
+        "Panel": ph_mi("MI_Post_Panel", "rough_wood", {"Pale": 0.45, "PaleBright": 1.35, "Wet": 0.05}, {"PaleColor": (0.78, 0.79, 0.80), "Tint": (0.92, 0.93, 0.95)}),
+        "Cut": ph_mi("MI_Post_CutWood", "fine_grained_wood", {"Wet": 0.2}, {"Tint": (0.42, 0.33, 0.25)}),
     }
     for k, slot in enumerate(sm_post.static_materials):
         post.static_mesh_component.set_material(k, post_mats.get(str(slot.material_slot_name), post_mats["Bark"]))
@@ -947,7 +980,7 @@ def build():
     box("GateLantern_Cap", G, (lx, ly, lz + 16), (17, 17, 4), m_iron)
     box("GateLantern_Glass", G, (lx, ly, lz), (12, 12, 24), m_lamp)
     box("GateLantern_Base", G, (lx, ly, lz - 14), (17, 17, 4), m_iron)
-    point("GateLantern_Light", G, (lx - 14, ly, lz), 160, 2200, radius=900, source=3, vol=0.45)
+    point("GateLantern_Light", G, (lx - 14, ly, lz), 260, 2000, radius=1100, source=3, vol=0.55)
 
     # --- the palisade -------------------------------------------------------------------------
     curtain("Trunk_L", 715, -165, -90, 1700, (370, 470), (20, 32), 5.0, (135, 330))      # recedes to the left
@@ -956,7 +989,8 @@ def build():
     # --- the watchtower, top left: legs, platform, railed walk, shingled pitched roof, a lantern
     T = "Watchtower"
     TX, TY = 1450.0, -1350.0
-    mi_shingle = mi("MI_Shingle", master, {"Wet": 0.35, "UVScale": 2.0}, {"Tint": (0.22, 0.21, 0.20)},
+    mi_shingle = ph_mi("MI_Shingle", "wood_trunk_wall", {"Wet": 0.35, "UVScale": 1.5}, {"Tint": (0.40, 0.38, 0.36)})
+    _unused_shingle = (
                     {"BaseColor": t["bm"]["bc"], "Normal": t["bm"]["n"], "Roughness": t["bm"]["r"], "AO": t["bm"]["ao"]})
     legs = [(-170, -170), (170, -170), (170, 170), (-170, 170)]            # round the square
     for (ox, oy) in legs:
@@ -987,7 +1021,7 @@ def build():
     wl = (TX - 140, TY + 140, 610)
     place_between("Tower_LampHook", T, sm_bm, V(wl[0], wl[1], wl[2] + 14), V(wl[0], wl[1], wl[2] + 45), 1.6, m_iron)
     box("Tower_Lamp", T, wl, (14, 14, 22), m_lamp)
-    point("Tower_LampLight", T, wl, 220, 2200, radius=1100, source=4, vol=0.6)
+    point("Tower_LampLight", T, wl, 200, 2000, radius=1000, source=4, vol=0.45)
 
     # --- the house behind, top right: timber frame, chimney, two lit windows, softened by the fog
     B = "House"
@@ -1011,10 +1045,10 @@ def build():
         hbox("House_Window", 302, dy_, dz_, (4, 90, 110), m_win)
         hbox("House_Mullion", 305, dy_, dz_, (5, 6, 112), mi_dark)
         hbox("House_Transom", 305, dy_, dz_ + 10, (5, 92, 6), mi_dark)
-        point("House_WindowLight", B, hloc(330, dy_, dz_), 60, 2000, radius=600, source=30, vol=0.15)
+        point("House_WindowLight", B, hloc(330, dy_, dz_), 150, 1900, radius=900, source=30, vol=0.35)
     hbox("House_Door", 302, -330, 105, (4, 100, 200), mi_dark)
     # steep shingle roof, ridge along the front (local Y), eaves over the walls
-    shingle_roof("House_Roof", B, hloc(0, 0, 918), hy, 990, 460, 42.0, mi_shingle, course=22.0, width=(18.0, 34.0), under=m_iron)
+    shingle_roof("House_Roof", B, hloc(0, 0, 930), hy, 1010, 480, 45.0, mi_thatch, course=30.0, width=(45.0, 70.0), under=mi_thatch)
     hbox("House_Chimney", -90, 330, 760, (90, 90, 300), mi_dark)
     hbox("House_ChimneyCap", -90, 330, 915, (110, 110, 14), mi_dark)
 
@@ -1040,7 +1074,7 @@ def build():
             nx, ny = (CAM[0] - bx), (CAM[1] - by)
             ln = math.hypot(nx, ny) or 1
             r_ = bd * 0.5 + rng.uniform(4, 16)
-            plant(rng.choice(["dry", "weeds", "wheat"]), bx + nx / ln * r_, by + ny / ln * r_, rng.uniform(0.28, 0.5))
+            plant(rng.choice(["grass", "grass", "weed"]), bx + nx / ln * r_, by + ny / ln * r_, rng.uniform(0.7, 1.3))
 
     rock_mis = [mi("MI_Rock_%d" % i, master, {"Wet": 0.7}, {"Tint": (0.42, 0.43, 0.46)},
                    {"BaseColor": tx["bc"], "Normal": tx["n"], "Roughness": tx["r"], "AO": tx["ao"]}) for i, (tx, _) in enumerate(rocks)]
@@ -1072,16 +1106,16 @@ def build():
                             (380, 380, 80, 55), (520, 230, 110, 70)):
         ground_decal("Puddle", mi_pud, x, y_, ln, wd, rng.uniform(0, 180))
     mi_md = mi("MI_MudPatch", m_mdec)
-    for _ in range(12):
+    for _ in range(0):
         dist, brg = rng.uniform(150, 900), CAM_YAW + rng.uniform(-28, 26)
         ground_decal("MudPatch", mi_md, CAM[0] + math.cos(math.radians(brg)) * dist, CAM[1] + math.sin(math.radians(brg)) * dist,
                      rng.uniform(150, 280), rng.uniform(120, 220), rng.uniform(0, 360))
-    for _ in range(10):                             # break up the left foreground
+    for _ in range(0):                              # (Quixel mud decal: not used)
         dist, brg = rng.uniform(110, 520), CAM_YAW + rng.uniform(-30, -8)
         ground_decal("MudPatch", mi_md, CAM[0] + math.cos(math.radians(brg)) * dist, CAM[1] + math.sin(math.radians(brg)) * dist,
                      rng.uniform(110, 240), rng.uniform(90, 180), rng.uniform(0, 360))
     ry = math.degrees(math.atan2(20 - 430, 650 - 140))
-    for off in (-70, 70):
+    for off in ():
         nx_, ny_ = -math.sin(math.radians(ry)), math.cos(math.radians(ry))
         ground_decal("Rut", mi_md, 395 + nx_ * off, 225 + ny_ * off, 700, 34, ry + 90)
 
@@ -1106,7 +1140,7 @@ def build():
 
     # The moon, high behind the tower: backlights the fog cold blue-grey
     _, moon = light(unreal.DirectionalLight, "Moon", L, (0, 0, 2000), (0, -28, MYAW + 180.0 - 25.0))   # from the moon, behind-left
-    safe_set(moon, "intensity", float(os.environ.get("LETHE_MOON", "2.2")))
+    safe_set(moon, "intensity", float(os.environ.get("LETHE_MOON", "1.3")))
     safe_set(moon, "use_temperature", True)
     safe_set(moon, "temperature", 10000.0)
     safe_set(moon, "volumetric_scattering_intensity", 0.25)
@@ -1115,7 +1149,7 @@ def build():
 
     _, skyl = light(unreal.SkyLight, "SkyFill", L, (0, 0, 1500))
     safe_set(skyl, "real_time_capture", False)
-    safe_set(skyl, "intensity", 0.8)
+    safe_set(skyl, "intensity", 0.35)
     safe_set(skyl, "lower_hemisphere_color", unreal.LinearColor(0.004, 0.005, 0.007, 1))
 
     # Cool moonlit fill on the stripped panel: the pale wood is the brightest surface in the shot
@@ -1228,7 +1262,7 @@ def build():
         ("film_grain_intensity", 0.15),
         ("scene_fringe_intensity", 0.2),
         ("color_saturation", unreal.Vector4(0.74, 0.76, 0.82, 1.0)),
-        ("color_contrast", unreal.Vector4(1.1, 1.1, 1.1, 1.0)),
+        ("color_contrast", unreal.Vector4(1.22, 1.22, 1.22, 1.0)),
         ("color_gain_shadows", unreal.Vector4(0.86, 0.94, 1.12, 1.0)),
         ("color_gain_midtones", unreal.Vector4(0.95, 0.98, 1.04, 1.0)),
         ("color_gain_highlights", unreal.Vector4(1.0, 1.0, 1.0, 1.0)),

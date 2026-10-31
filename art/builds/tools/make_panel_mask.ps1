@@ -82,8 +82,8 @@ public static class Panel {
         for (int i = 0; i < word.Length; i++) {
             float w; var st = Strokes(word[i], out w); w *= xs;
             // each letter cut on its own: height +-15%, tilt +-4 deg, its own stroke weight, a wandering baseline
-            float size = cap * (0.85f + 0.30f * (float)r.NextDouble());
-            float rot = (float)((r.NextDouble() - 0.5) * 8.0 * Math.PI / 180);
+            float size = cap * (0.82f + 0.38f * (float)r.NextDouble());
+            float rot = (float)((r.NextDouble() - 0.5) * 10.0 * Math.PI / 180);
             float lw = sw * (0.80f + 0.45f * (float)r.NextDouble());
             float by = Y(150f) + cap / 2f + 0.07f * cap * (float)Math.Sin(wob + i * 0.9f) + (float)(r.NextDouble() - 0.5) * 0.06f * cap;   // baseline
             float ox = x0 + (float)(r.NextDouble() - 0.5) * 0.05f * cap;
@@ -91,14 +91,22 @@ public static class Panel {
             foreach (var line in st) {
                 var pts = new PointF[line.Length];
                 for (int k = 0; k < line.Length; k++) {
-                    float lx = (line[k][0] * xs - w / 2) * size * sq + (float)(r.NextDouble() - 0.5) * 0.05f * cap;
-                    float ly = (line[k][1] - 0.5f) * size + (float)(r.NextDouble() - 0.5) * 0.05f * cap;
+                    float lx = (line[k][0] * xs - w / 2) * size * sq + (float)(r.NextDouble() - 0.5) * 0.065f * cap;
+                    float ly = (line[k][1] - 0.5f) * size + (float)(r.NextDouble() - 0.5) * 0.065f * cap;
                     float rx = lx * (float)Math.Cos(rot) - ly * (float)Math.Sin(rot), ry = lx * (float)Math.Sin(rot) + ly * (float)Math.Cos(rot);
                     pts[k] = new PointF(ox + w * cap / 2 + rx, by - cap / 2 - ry);
                 }
-                for (int k = 0; k + 1 < pts.Length; k++) Cut(g, pts[k], pts[k + 1], lw * (0.8f + 0.4f * (float)r.NextDouble()), r);
+                for (int k = 0; k + 1 < pts.Length; k++) Cut(g, pts[k], pts[k + 1], lw * (0.75f + 0.5f * (float)r.NextDouble()), r);
+                // knife nicks where a stroke starts and ends: a short cross cut, like hand-cut Roman capitals
+                foreach (int e in new int[] { 0, pts.Length - 1 }) {
+                    if (pts.Length != 2 || r.NextDouble() < 0.35) continue;          // straight strokes only
+                    PointF p0 = pts[e], p1 = pts[e == 0 ? 1 : e - 1];
+                    float ddx = p1.X - p0.X, ddy = p1.Y - p0.Y, dl = (float)Math.Sqrt(ddx * ddx + ddy * ddy); if (dl < 1) continue;
+                    float nnx = -ddy / dl, nny = ddx / dl, sl = cap * (0.07f + 0.08f * (float)r.NextDouble());
+                    Cut(g, new PointF(p0.X - nnx * sl, p0.Y - nny * sl), new PointF(p0.X + nnx * sl, p0.Y + nny * sl), lw * 0.55f, r);
+                }
             }
-            x0 += (w + gap * (0.6f + 0.9f * (float)r.NextDouble())) * cap;
+            x0 += (w * (size / cap) + gap * (0.9f + 0.6f * (float)r.NextDouble())) * cap;
         }
         // a few long dry cracks running with the grain, kept off the word
         for (int c = 0; c < 6; c++) {
@@ -126,8 +134,8 @@ public static class Panel {
         for (int k = 0; k <= strips; k++) { tops[k] = 200f + (float)r.NextDouble() * 16f; bots[k] = 86f + (float)r.NextDouble() * 10f; }
         for (int y = 0; y < H; y++) {
             float z = TOP - y / PXCM;
-            float xl = -29f + 2.5f * N1(gl, z / 22f) + 0.8f * N1(gf, z / 2.5f);
-            float xr =  29f + 2.5f * N1(gr, z / 22f) + 0.8f * N1(gf, z / 2.5f + 40);
+            float xl = -29f + 4.0f * N1(gl, z / 18f) + 1.6f * N1(gf, z / 7f + 200) + 0.25f * N1(gf, z / 2.5f);
+            float xr =  29f + 4.0f * N1(gr, z / 18f) + 1.6f * N1(gf, z / 7f + 300) + 0.25f * N1(gf, z / 2.5f + 40);
             for (int x = 0; x < W; x++) {
                 float xc = (x - W / 2f) / PXCM; if (xc < xl - 1 || xc > xr + 1) continue;
                 float u = (xc - xl) / (xr - xl) * strips; int k = Math.Max(0, Math.Min(strips - 1, (int)u)); float f = u - k;
@@ -207,7 +215,7 @@ public static class Panel {
         for (int j = 0; j < nr; j++) for (int i = 0; i < nc; i++) {
             float s = cols[i], z = rows[j];
             float g = Samp(pan, s, z), c = Samp(cut, s, z) * g;
-            float r = RAD + (1 - g) * Bark(s, z) - 2.5f * g - 1.3f * c;
+            float r = RAD + (1 - g) * Bark(s, z) - 3.5f * g - 1.3f * c;
             double th = -s / RAD;
             P[j * nc + i] = new double[] { r * Math.Cos(th), r * Math.Sin(th), z }; G[j * nc + i] = g; C[j * nc + i] = c;
         }
