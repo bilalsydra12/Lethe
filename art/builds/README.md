@@ -272,3 +272,71 @@ Still different from the sketch:
 3. The foreground mud is very dark and empty. The sketch has lit puddles and stones close to the camera.
 4. The letters are better but still a little regular. The sketch's are deeper and wider.
 5. The Poly Haven lanterns are not yet swapped in for the gate and tower lanterns.
+
+## Spec match · round 1 · 2026-10-31
+
+![spec match round 1](2026-10-31_gate_spec_match_r1.png)
+
+Rebuilt to `art/levels/roanoke/croatoan-gate-spec.md` and measured with `tools/measure_frame.ps1`: the spec's brightness bands plus 24 named regions, boxes as frame fractions. Run on the painting itself, the script reproduces the spec's numbers (average #272427 against the spec's #282527), so the two columns below are measured the same way.
+
+Rendered with Movie Render Queue (Lumen, 32 samples, 2560x1440). Everything in frame is CC0 (Poly Haven, ambientCG) or our own geometry; nothing was bought. Nysa is still out, so her space (x 0.505-0.65) is clear.
+
+**1. Brightness**
+
+| Band | Painting | Render |
+|---|---|---|
+| 0-20% | 71.1% | 72.7% |
+| 20-40% | 27.5% | 23.7% |
+| 40-60% | 1.2% | 2.8% |
+| 60-80% | 0.2% | 0.8% |
+| 80-100% | 0.0% | 0.1% |
+| Average | #272427 | #2B262C |
+
+**2. Regions** (average colour; within about ±15 RGB of the painting counts as close)
+
+| Region | Painting | Render | |
+|---|---|---|---|
+| Sky, top left | #494A59 | #383947 | darker |
+| Sky, top centre | #454955 | #35323C | darker |
+| Sky, top right | #454755 | #36292B | darker, warmer |
+| Ground mist, left | #39393D | #31323F | close |
+| Through the gate gap | #1B1918 | #5E4D4D | **too bright**: fog lights the firs behind the gate |
+| Watchtower roof | #46454F | #524A56 | close |
+| Tower lantern | #845D46 | #5B505B | missed: the lantern sits off its spot (0.19, 0.14) |
+| Left palisade stakes | #202022 | #31303C | slightly bright |
+| Gate lantern core | #BF8446 | #D39655 | close |
+| Gate lantern halo | #372618 | #705544 | halo too wide and bright |
+| Gate crossbeams | #1D1C1C | #56515E | **too bright**: fog behind them |
+| Dark second post | #0E0E10 | #221F20 | slightly bright |
+| Post bark | #110F0E | #050405 | slightly dark |
+| Post left edge (UV) | #54426A | #6B5B63 | close, less violet |
+| Stripped panel, upper | #393131 | #463F46 | close |
+| Stripped panel, lower | #372C28 | #211B1B | darker |
+| Panel inside UV pool | #564583 | #3C333A | **less violet** |
+| Letters band | #584A7B | #615075 | close |
+| Foreground mud | #262426 | #110E0F | **too dark** |
+| Middle mud | #292829 | #2C2B35 | close |
+| Puddle reflection | #201B17 | #1A1311 | close |
+| House wall, right | #403C41 | #3F2E2D | close, warmer |
+| House window | #5D4237 | #211F26 | missed: our window lands at about (0.97, 0.08), not (0.85, 0.20) |
+| Right palisade stakes | #141312 | #0E0D11 | close |
+
+**What changed from round 2:**
+- Low-key overcast night: no moon, sky dimmed, overall exposure matched to the painting.
+- Camera horizon at y 0.55.
+- Gate lantern moved to (0.537, 0.38) with an amber core.
+- Lavender UV (#7961D9) from Nysa's hand position (0.645, 0.505).
+- The whole front face of the post is stripped, with CROATOAN at y 0.40-0.445 and a wide, clear T. No extra names.
+- A dark full-bark second post at x 0.58-0.645.
+- Left palisade leans outward 12°, with rails at the spec heights.
+- Taller right palisade.
+- Gate leaf and rope rails at the spec heights.
+- A low mist bank on the left.
+- Neutral grade (the blue shadow tint is gone).
+
+**Still to fix (round 2):**
+1. The gate gap and crossbeams are lit grey by fog, where the painting is dark. They need dark structures right behind the gate.
+2. The watchtower and its lantern sit too high and left. The house window lands near the top-right corner.
+3. The UV pool is too pale. The painting's is a stronger violet (#564583).
+4. The foreground mud near the camera is too dark and plain. It needs wet highlights and stones.
+5. The stake points still read arrow-like, and there is no barrel at the right.
