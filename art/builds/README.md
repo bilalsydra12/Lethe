@@ -439,3 +439,39 @@ Edge agreement with the painting: round 1 49.4%, round 2 50.2%. Changed regions:
 3. The stripped face's upper part is brighter than the painting's (#5E595D against #393131), and the UV pool is paler lilac than the painting's violet.
 4. The letters are still violet-filled where the UV beam hits the groove walls; the painting's are darker cuts in a violet pool.
 5. The left wall is one long fence, not the painting's short bundle; the tower has no railed gallery; the house has no visible chimney; the mud has green moss specks.
+
+## Painting match · round 3
+
+![painting match round 3](2026-10-31_gate_painting_match_r3.png)
+
+Side by side, painting left: [compare/2026-10-31_painting_vs_match_r3.jpg](compare/2026-10-31_painting_vs_match_r3.jpg).
+
+Works through the differences left after round 2. Three test renders; this is the last. Nothing bought or downloaded.
+
+**What changed:**
+- **Gate lantern** about 40% bigger, more than twice as bright, and moved forward clear of the gate poles.
+- **Left wall** stays tall by the gate and drops about 40% lower toward the left edge, so it no longer reads as one even fence.
+- **Watchtower gallery** has balusters round the walk and a warmer glow inside.
+- **Post face** fill light lowered and aimed lower; panel brightness 3.8 → 3.1.
+- **Mud** stones and weeds re-tinted away from green.
+- **House chimney** raised above the ridge (but it lands behind the post, out of frame; see below).
+
+| Band | Painting | Round 2 | Round 3 |
+|---|---|---|---|
+| 0-20% | 71.1% | 80.1% | 74.9% |
+| 20-40% | 27.5% | 15.4% | 20.1% |
+| 40-60% | 1.2% | 2.6% | 3.2% |
+| 60-80% | 0.2% | 1.4% | 1.5% |
+| 80-100% | 0.0% | 0.5% | 0.4% |
+| Average | #272427 | #262328 | #2B262A |
+
+Edge agreement with the painting: round 2 50.2%, round 3 50.6%.
+
+**Nysa: tried, left out.** I built a stand-in from the free female Mannequin that ships with Unreal (copied to `Content/Mannequin`): a long dark coat, hair, and a raised arm holding the UV lamp. In both tests she read as a toy robot with a bead wig, not a person, so this render leaves her out. The build script keeps her behind a switch (`LETHE_NO_NYSA=1` turns her off). A believable Nysa needs a real character: a MetaHuman (free for Unreal use, but it needs an Epic sign-in and a download), or a sculpted or commissioned figure.
+
+**Still different:**
+1. Nysa is missing (see above).
+2. The upper post face is still brighter than the painting's (#5A5559 against #393131), and the UV pool is paler (#827892 against #564583).
+3. The house chimney sits behind the post, out of frame. Getting the painting's chimney at top right needs the house roof moved, not just the chimney.
+4. Yellow-green leaf specks in the mud texture (`brown_mud_leaves_01`) still show.
+5. The far-left wall still runs to the frame edge, lower, rather than ending in the painting's short, leaning bundle.

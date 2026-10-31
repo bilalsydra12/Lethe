@@ -536,6 +536,24 @@ def m_unlit(name, rgb, strength):
     return m
 
 
+def m_cloth(name, rgb, rough, tex=None, sheen=0.0):
+    """Matte cloth or hair: base colour (optionally a texture multiplied by rgb), roughness; usable on skeletal meshes."""
+    m = new_material(name)
+    safe_set(m, "used_with_skeletal_mesh", True)
+    col = vparam(m, "Tint", rgb, -600, -200)
+    if tex is not None:
+        t_ = E(m, unreal.MaterialExpressionTextureSample, -900, 0)
+        t_.set_editor_property("texture", tex)
+        uvs = mul(m, E(m, unreal.MaterialExpressionTextureCoordinate, -1300, 0), E(m, unreal.MaterialExpressionConstant, -1300, 120, r=4.0), -1100, 0)
+        link(uvs, "", t_, "UVs")
+        col = mul(m, t_, col, -400, -100, "RGB")
+    to_prop(col, "", MP.MP_BASE_COLOR)
+    to_prop(E(m, unreal.MaterialExpressionConstant, -400, 200, r=rough), "", MP.MP_ROUGHNESS)
+    to_prop(E(m, unreal.MaterialExpressionConstant, -400, 300, r=sheen), "", MP.MP_SPECULAR)
+    mel.recompile_material(m)
+    return m
+
+
 def mi(name, parent, scalars=None, vectors=None, textures=None):
     path = ROOT + "/Materials/" + name
     if eal.does_asset_exist(path):
@@ -862,6 +880,7 @@ def build():
     m_lglass = m_glass("M_LanternGlassSoft", (1.0, 0.45, 0.16), 0.10, 0.45)
     m_flame = m_unlit("M_LanternFlame", (1.0, 0.52, 0.18), 1.6)
     m_win = m_unlit("M_WindowGlow", (1.0, 0.45, 0.22), 0.05)
+    m_uvlens = m_unlit("M_UVLens", (0.42, 0.26, 1.0), 2.2)
     m_sky = m_unlit("M_NightSky", (0.060, 0.075, 0.100), 1.0)
     m_iron = mi("MI_IronDark", master, {"Wet": 0.6, "UVScale": 3.0}, {"Tint": (0.08, 0.08, 0.085)},
                 {"BaseColor": WHITE, "Normal": ph["rough_wood"]["n"], "Roughness": ph["rough_wood"]["r"], "AO": WHITE})
@@ -1067,7 +1086,7 @@ def build():
         "Bark": mi("MI_Post_Bark", master, {"Wet": 0.2, "RoughnessMult": 1.4}, {"Tint": (0.62, 0.57, 0.53)},
                    {"BaseColor": ph["knotted_pine_bark"]["bc"], "Normal": ph["knotted_pine_bark"]["n"],
                     "Roughness": ph["knotted_pine_bark"]["r"], "AO": ph["knotted_pine_bark"]["ao"]}),
-        "Panel": ph_mi("MI_Post_Panel", "rough_wood", {"Pale": 0.92, "PaleBright": float(os.environ.get("LETHE_PANEL_BRIGHT", "3.8")),
+        "Panel": ph_mi("MI_Post_Panel", "rough_wood", {"Pale": 0.92, "PaleBright": float(os.environ.get("LETHE_PANEL_BRIGHT", "3.1")),
                                                        "PaleContrast": 1.35, "Wet": 0.08, "RoughnessMult": 1.2},
                        {"PaleColor": (0.66, 0.61, 0.62), "Tint": (1.0, 1.0, 1.0)}),
         "Cut": ph_mi("MI_Post_CutWood", "rough_wood", {"Pale": 0.92, "PaleBright": 1.5, "PaleContrast": 1.15, "Wet": 0.05,
@@ -1109,14 +1128,14 @@ def build():
         vy += d * rng.uniform(0.7, 0.8)
     box("GateInner_Backing", G, (1010, -140, 200), (20, 620, 420), mi_shadow)
     # A lantern hung on the gate
-    lx, ly, lz = 690.0, 84.0, 256.0                      # spec: frame (0.537, 0.38)
+    lx, ly, lz = 676.0, 92.0, 256.0                      # spec: frame (0.537, 0.38)
     place_between("GateLantern_Hook", G, sm_bm, V(lx, ly, lz + 18), V(lx, ly, lz + 40), 1.6, m_iron)
-    lantern("GateLantern", G, (lx, ly, lz), 36, 10, radius=420, vol=0.5)
+    lantern("GateLantern", G, (lx, ly, lz), 50, 26, radius=560, vol=0.8, flame=1.25)
 
     # --- the palisade -------------------------------------------------------------------------
     # left: a tight bundle of 35-50 cm trunks leaning toward the gate ("/" in frame), two roped rails, a row behind
     curtain("Trunk_L", 712, -300, -90, 1500, (430, 505), (35, 50), 3.0, (95, 315), rail_every=3, lean_along=-14.0,
-            back_row=True, rail_dia=27, taper=0.12)
+            back_row=True, rail_dia=27, taper=0.40)
     for yy_ in (-200, -224, -248, -272):                           # upright stakes closing the foot of the wall against the gatepost
         upright("Trunk_LG", "Palisade", sm_l1, 714 + rng.uniform(-4, 4), yy_, rng.uniform(400, 440), rng.uniform(36, 44), mi_dark)
     # right: tall, more upright, separate pointed stakes, set back so the barrel stands in front of them
@@ -1142,6 +1161,10 @@ def build():
             place_between("Tower_Beam", T, sm_bm, V(TX + a_[0], TY + a_[1], zz), V(TX + b_[0], TY + b_[1], zz), 16, mi_beam)
         for zz in (755, 805):                                              # rails round the walk
             place_between("Tower_Rail", T, sm_bm, V(TX + a_[0], TY + a_[1], zz), V(TX + b_[0], TY + b_[1], zz + rng.uniform(-4, 4)), 10, mi_beam)
+        for j in range(1, 12):                                             # balusters
+            t_ = j / 12.0
+            bx0, by0 = TX + a_[0] + (b_[0] - a_[0]) * t_, TY + a_[1] + (b_[1] - a_[1]) * t_
+            place_between("Tower_Baluster", T, sm_bm, V(bx0, by0, 722), V(bx0, by0, 808), 6, mi_beam)
     box("Tower_Floor", T, (TX, TY, 718), (380, 380, 12), mi_beam)
     box("Tower_MidFloor", T, (TX, TY, 361), (360, 360, 10), mi_beam)
     for sy in (-38, 38):                                                   # ladder up the near face
@@ -1159,7 +1182,7 @@ def build():
     wl = (TX - 140, TY + 140, 850)
     place_between("Tower_LampHook", T, sm_bm, V(wl[0], wl[1], wl[2] + 14), V(wl[0], wl[1], wl[2] + 45), 1.6, m_iron)
     lantern("Tower_Lamp", T, wl, 44, 90, kelvin=2200, radius=800, vol=0.9, flame=1.3)
-    point("Tower_GalleryGlow", T, (TX, TY, 790), 40, 2200, radius=420, source=30, vol=0.4)     # warm light inside the gallery
+    point("Tower_GalleryGlow", T, (TX, TY, 790), 110, 2200, radius=460, source=30, vol=0.6)     # warm light inside the gallery
     # the tower stands on a log-walled lower storey down to the ground (solid below the gallery, as painted)
     for (ax, ay, bx_, by_) in ((-185, -185, 185, -185), (185, -185, 185, 185), (185, 185, -185, 185), (-185, 185, -185, -185)):
         zz = 4.0
@@ -1202,8 +1225,9 @@ def build():
     hbox("House_Door", 302, -330, 105, (4, 100, 200), mi_dark)
     # steep shingle roof, ridge along the front (local Y), eaves over the walls
     shingle_roof("House_Roof", B, hloc(0, 0, 930), hy, 1010, 480, 45.0, mi_thatch, course=30.0, width=(45.0, 70.0), under=mi_thatch)
-    hbox("House_Chimney", -90, 330, 760, (90, 90, 300), mi_dark)
-    hbox("House_ChimneyCap", -90, 330, 915, (110, 110, 14), mi_dark)
+    hbox("House_Chimney", -90, 330, 850, (90, 90, 420), mi_dark)
+    hbox("House_ChimneyCap", -90, 330, 1064, (110, 110, 14), mi_dark)
+    log("chimney top at frame %s" % str(frame_of(*hloc(-90, 330, 1070))))
 
     for (lbl, fx_, fy_, dep) in (("FarLantern_L", 0.32, 0.215, 2100.0), ("FarLantern_R", 0.935, 0.245, 1750.0)):
         fl_ = at_frame(fx_, fy_, dep)
@@ -1246,7 +1270,7 @@ def build():
         if not ms:
             return
         if kind not in PLANT_MI:
-            PLANT_MI[kind] = mi("MI_Plant_" + kind, m_gr, None, {"Tint": (0.40, 0.42, 0.40)},
+            PLANT_MI[kind] = mi("MI_Plant_" + kind, m_gr, None, {"Tint": (0.30, 0.27, 0.24)},
                                 {"BaseColor": tx["bc"], "Opacity": tx["op"], "Normal": tx["n"], "Translucency": tx["tr"]})
         a = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(x, y_, -3), unreal.Rotator(rng.uniform(-5, 5), rng.uniform(-5, 5), rng.uniform(0, 360)))
         a.static_mesh_component.set_static_mesh(rng.choice(ms))
@@ -1262,7 +1286,7 @@ def build():
             r_ = bd * 0.5 + rng.uniform(4, 16)
             plant(rng.choice(["grass", "grass", "weed"]), bx + nx / ln * r_, by + ny / ln * r_, rng.uniform(0.7, 1.3))
 
-    rock_mis = [mi("MI_Rock_%d" % i, master, {"Wet": 0.7}, {"Tint": (0.42, 0.43, 0.46)},
+    rock_mis = [mi("MI_Rock_%d" % i, master, {"Wet": 0.7}, {"Tint": (0.40, 0.30, 0.33)},
                    {"BaseColor": tx["bc"], "Normal": tx["n"], "Roughness": tx["r"], "AO": tx["ao"]}) for i, (tx, _) in enumerate(rocks)]
     placed = 0
     while placed < int(os.environ.get("LETHE_ROCKS", "70")):
@@ -1348,9 +1372,9 @@ def build():
     safe_set(skyl, "lower_hemisphere_color", unreal.LinearColor(0.025, 0.025, 0.030, 1))
 
     # Cool moonlit fill on the stripped panel: the pale wood is the brightest surface in the shot
-    pf = (PX - 393.0, PY - 275.0, 560.0)
+    pf = (PX - 393.0, PY - 275.0, 430.0)
     fa, fl = light(unreal.SpotLight, "PanelMoonFill", P, pf)
-    fa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*pf), V(PX - 34 * fx, PY - 34 * fy, 150)), False)
+    fa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*pf), V(PX - 34 * fx, PY - 34 * fy, 115)), False)
     safe_set(fl, "intensity_units", unreal.LightUnits.LUMENS)
     safe_set(fl, "intensity", float(os.environ.get("LETHE_POST_FILL", "18")))
     safe_set(fl, "use_temperature", True)
@@ -1373,8 +1397,103 @@ def build():
     safe_set(rkl, "source_radius", 1.0)
     safe_set(rkl, "volumetric_scattering_intensity", 0.0)
 
+    # --- Nysa (stand-in): the engine's free female Mannequin in a long dark coat, back to camera, lamp raised to the post
+    N = "Nysa"
+    NYSA_HAND = None
+    sk_n = unreal.load_asset("/Game/Mannequin/Character/Mesh/SK_Mannequin_Female")
+    idle_n = unreal.load_asset("/Game/Mannequin/Animations/ThirdPersonIdle")
+    if sk_n and not os.environ.get("LETHE_NO_NYSA"):
+        mi_coat = m_cloth("M_Nysa_Coat", (0.045, 0.042, 0.048), 0.85, plaster_tx.get("BaseColor") if isinstance(plaster_tx, dict) else None, 0.3)
+        mi_hair = m_cloth("M_Nysa_Hair", (0.040, 0.024, 0.018), 0.55, None, 0.45)
+        nd = float(os.environ.get("LETHE_NYSA_DEPTH", "255"))
+        nfx = float(os.environ.get("LETHE_NYSA_FX", "0.56"))
+        r_ = ray(nfx, 0.5)
+        hn = math.hypot(r_[0], r_[1])
+        NX, NY = CAM[0] + nd * r_[0] / hn, CAM[1] + nd * r_[1] / hn
+        nyaw = math.degrees(math.atan2(PY - NY, PX - NX)) + float(os.environ.get("LETHE_NYSA_TURN", "-8"))
+        fwx, fwy = unit(nyaw)
+        rtx, rty = unit(nyaw + 90.0)
+        NH = float(os.environ.get("LETHE_NYSA_H", "168"))
+        try:
+            b_ = sk_n.get_bounds()
+            H0 = b_.origin.z + b_.box_extent.z
+        except Exception:
+            H0 = 170.0
+        ns = NH / max(100.0, H0)
+        log("nysa at (%.0f, %.0f) yaw %.0f, mannequin height %.0f, scale %.3f, frame %s" % (NX, NY, nyaw, H0, ns, str(frame_of(NX, NY, NH))))
+        na = actors.spawn_actor_from_class(unreal.SkeletalMeshActor, V(NX, NY, 0), unreal.Rotator(0, 0, nyaw - 90.0))
+        skc = na.skeletal_mesh_component
+        try:
+            skc.set_skeletal_mesh_asset(sk_n)
+        except Exception:
+            skc.set_skeletal_mesh(sk_n)
+        skc.set_world_scale3d(V(ns, ns, ns))
+        for k in range(max(1, skc.get_num_materials())):
+            skc.set_material(k, mi_coat)
+        if idle_n:
+            safe_set(skc, "animation_mode", unreal.AnimationMode.ANIMATION_SINGLE_NODE)
+            pd = unreal.SingleAnimationPlayData()
+            safe_set(pd, "anim_to_play", idle_n)
+            safe_set(pd, "saved_looping", True)
+            safe_set(pd, "saved_playing", True)
+            safe_set(pd, "saved_position", 0.3)
+            safe_set(skc, "animation_data", pd)
+            safe_set(skc, "update_animation_in_editor", True)
+        for bone in ("upperarm_r",):                     # her right arm is raised below; hide the hanging one
+            try:
+                skc.hide_bone_by_name(bone, unreal.PhysBodyOp.PBO_NONE)
+            except Exception as e:
+                log("hide bone failed: %s" % e)
+        tag(na, "Nysa_Body", N)
+        # long A-line coat skirt from the chest to the mud
+        cb = CONE.get_bounding_box()
+        ch, cw = cb.max.z - cb.min.z, cb.max.x - cb.min.x
+        top_, bot_, rb_ = NH * 0.86, -2.0, NH * 0.19
+        szc = (top_ - bot_) / ch
+        sk_c = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(NX - fwx * 2, NY - fwy * 2, bot_ - cb.min.z * szc), unreal.Rotator(0, 0, nyaw))
+        sk_c.static_mesh_component.set_static_mesh(CONE)
+        sk_c.static_mesh_component.set_world_scale3d(V(2 * rb_ * 0.85 / cw, 2 * rb_ / cw, szc))
+        sk_c.static_mesh_component.set_material(0, mi_coat)
+        tag(sk_c, "Nysa_Coat", N)
+        # long dark curly hair: a mass over the back of the head and down to the shoulder blades, with curls
+        hz = NH * 0.935
+        for (bk, zz, sz) in ((3.0, hz + 0.5, (21, 19, 23)), (7.5, hz - 22, (13, 29, 40)), (6.5, hz - 40, (11, 25, 22))):
+            h_ = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(NX - fwx * bk, NY - fwy * bk, zz), unreal.Rotator(0, 0, nyaw))
+            h_.static_mesh_component.set_static_mesh(SPHERE)
+            h_.static_mesh_component.set_world_scale3d(V(sz[0] / 100, sz[1] / 100, sz[2] / 100))
+            h_.static_mesh_component.set_material(0, mi_hair)
+            tag(h_, "Nysa_Hair", N)
+        for k in range(70):
+            a_ = math.radians(180 + rng.uniform(-100, 100))
+            zz = rng.uniform(hz - 52, hz + 8)
+            rr = (10.0 if zz > hz - 14 else 7.0) + rng.uniform(-1, 1.5)
+            cx_ = math.cos(a_) * rr
+            cy_ = math.sin(a_) * rr * (1.6 if zz < hz - 14 else 1.0)
+            r2 = rng.uniform(2.6, 4.2)
+            h_ = actors.spawn_actor_from_class(unreal.StaticMeshActor,
+                                               V(NX + fwx * (cx_ - 3) + rtx * cy_, NY + fwy * (cx_ - 3) + rty * cy_, zz), unreal.Rotator(0, 0, rng.uniform(0, 360)))
+            h_.static_mesh_component.set_static_mesh(SPHERE)
+            h_.static_mesh_component.set_world_scale3d(V(r2 / 50, r2 / 50, r2 * 1.5 / 50))
+            h_.static_mesh_component.set_material(0, mi_hair)
+            tag(h_, "Nysa_Curl", N)
+        # the raised right arm (a coat sleeve) holding the UV lamp toward the post
+        sh = (NX + rtx * 17 * ns, NY + rty * 17 * ns, NH * 0.81)
+        NYSA_HAND = (NX + fwx * 50 + rtx * 12, NY + fwy * 50 + rty * 12, float(os.environ.get("LETHE_NYSA_HANDZ", "158")))
+        el = ((sh[0] + NYSA_HAND[0]) / 2 + rtx * 9, (sh[1] + NYSA_HAND[1]) / 2 + rty * 9, (sh[2] + NYSA_HAND[2]) / 2 - 10)
+        place_between("Nysa_Sleeve", N, CYL, V(*sh), V(*el), 11, mi_coat)
+        place_between("Nysa_Sleeve", N, CYL, V(*el), V(*NYSA_HAND), 9, mi_coat)
+        lb = (NYSA_HAND[0] - fwx * 4, NYSA_HAND[1] - fwy * 4, NYSA_HAND[2])
+        lf = (NYSA_HAND[0] + fwx * 12, NYSA_HAND[1] + fwy * 12, NYSA_HAND[2] + 2)
+        place_between("Nysa_Lamp", N, CYL, V(*lb), V(*lf), 6.5, m_iron)
+        lens = place_between("Nysa_LampLens", N, CYL, V(*lf), V(lf[0] + fwx * 1.0, lf[1] + fwy * 1.0, lf[2]), 5.0, m_uvlens)
+        for a_ in [x for x in actors.get_all_level_actors() if x.get_actor_label().startswith(("Nysa_Lamp", "Nysa_LampLens"))]:
+            a_.static_mesh_component.set_editor_property("cast_shadow", False)
+        log("nysa hand at %s" % str(frame_of(*NYSA_HAND)))
+
     # Nysa's UV Lantern (from where she will stand): a tight violet pool on the post, no spill
     src = (CAM[0] + 300 * math.cos(math.radians(CAM_YAW + 8.5)), CAM[1] + 300 * math.sin(math.radians(CAM_YAW + 8.5)), 168.0)
+    if NYSA_HAND:
+        src = (NYSA_HAND[0] + fwx * 16, NYSA_HAND[1] + fwy * 16, NYSA_HAND[2] + 2)
     uva, uv = light(unreal.SpotLight, "UVLantern", L, src)
     uva.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*src), V(PX - 38 * fx, PY - 38 * fy, 187)), False)
     safe_set(uv, "intensity_units", unreal.LightUnits.LUMENS)
