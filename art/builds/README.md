@@ -200,3 +200,46 @@ Still to do (round 4):
 3. At this distance the letters read a little thin. Cut them deeper and wider.
 4. The tower roof still reads as a plain slab through the fog.
 5. The far-left foreground mud still shows some repeat.
+
+## Full scene · 2026-10-31
+
+![full scene](2026-10-30_gate_full_scene.png)
+
+One complete shot of the CROATOAN gate against the sketch (`art/levels/roanoke/croatoan-gate.jpg`), rendered with Movie Render Queue: Lumen, 32 temporal samples, 64 warm-up frames, 2560x1440. Path Tracer was not used, because hardware ray tracing is off on this PC since the GPU driver crash.
+
+In frame:
+- Photographed moonlit night sky with the moon above the gate.
+- Real fir trees in layered height fog.
+- Palisade and gate built from a scanned trunk.
+- Wet mud with puddles reflecting the gate lantern and the moon.
+- Watchtower with lantern, house with two lit windows.
+- The carved CROATOAN post: bark, stripped panel and V-cut letters as real geometry.
+
+**Stand-ins and what's missing**
+- **Nysa is not in the shot.** Her spot by the post is left clear. Free MetaHuman hair and clothing can't give her long dark curly hair, a fitted coat and the raised torch, so she waits for her own MetaHuman.
+- The tower, house, gate lantern, hewn stake points and shingle roofs are our own simple geometry, textured with scanned wood. No free scanned versions exist.
+- The moon disc and halo are drawn into the sky material; the sky behind them is the photograph.
+
+**Assets and licences**
+- Poly Haven, CC0 (public domain, no attribution needed, no AI restriction):
+  - `rogland_moonlit_night`: sky
+  - `fir_tree_01`: forest
+  - `dead_tree_trunk`: stakes, rails, gateposts, tower legs
+  - `knotted_pine_bark`: post bark
+  - `brown_mud_leaves_01`: ground
+  - `rock_moss_set_01`: stones
+- Downloaded but not used yet (CC0): `bark_brown_02`, `brown_mud_02`, `forest_ground_04`, `dead_tree_trunk_02`, `tree_stump_01`, `Lantern_01`, `wooden_lantern_01`, `qwantani_night_puresky`.
+- Quixel Megascans still in frame (Fab Standard License, marked "no AI usage"), to be replaced with CC0 next:
+  - Old Wooden Log grain: stripped panel and cut wood
+  - Old Wooden Beam: rope lashings, beams, house walls, shingles
+  - Military Trenches mud decal: mud patches and ruts
+  - Grass tufts
+- Nothing bought. No Medieval Village sample.
+
+**Differences from the sketch**
+1. No Nysa (see above).
+2. The light is cooler and flatter. The sketch has deeper blacks, a warmer gate lantern and a lit tower platform.
+3. Tower and house read as plain shapes in the fog. They need real timber detail, or scans.
+4. The stake points still read a little like arrowheads.
+5. CROATOAN still looks somewhat even, and the panel is cleaner than the weathered one in the sketch.
+6. The scanned Poly Haven lanterns are not yet swapped in for the gate and tower lanterns.

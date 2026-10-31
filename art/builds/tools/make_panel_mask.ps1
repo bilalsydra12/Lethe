@@ -126,8 +126,8 @@ public static class Panel {
         for (int k = 0; k <= strips; k++) { tops[k] = 200f + (float)r.NextDouble() * 16f; bots[k] = 86f + (float)r.NextDouble() * 10f; }
         for (int y = 0; y < H; y++) {
             float z = TOP - y / PXCM;
-            float xl = -27f + 2.5f * N1(gl, z / 22f) + 0.8f * N1(gf, z / 2.5f);
-            float xr =  27f + 2.5f * N1(gr, z / 22f) + 0.8f * N1(gf, z / 2.5f + 40);
+            float xl = -29f + 2.5f * N1(gl, z / 22f) + 0.8f * N1(gf, z / 2.5f);
+            float xr =  29f + 2.5f * N1(gr, z / 22f) + 0.8f * N1(gf, z / 2.5f + 40);
             for (int x = 0; x < W; x++) {
                 float xc = (x - W / 2f) / PXCM; if (xc < xl - 1 || xc > xr + 1) continue;
                 float u = (xc - xl) / (xr - xl) * strips; int k = Math.Max(0, Math.Min(strips - 1, (int)u)); float f = u - k;
@@ -138,7 +138,7 @@ public static class Panel {
         }
         // a few islands of bark left clinging near the edges
         for (int b = 0; b < 8; b++) {
-            float cx = (r.NextDouble() < 0.5 ? -1 : 1) * (26f + (float)r.NextDouble() * 2f), cz = 96f + (float)r.NextDouble() * 106f;
+            float cx = (r.NextDouble() < 0.5 ? -1 : 1) * (28f + (float)r.NextDouble() * 2f), cz = 96f + (float)r.NextDouble() * 106f;
             if (cz > 130f && cz < 170f) cz = (cz < 150f) ? 118f : 184f;                         // keep the word clear
             float rx = 1.5f + (float)r.NextDouble() * 2.5f, rz = 2f + (float)r.NextDouble() * 6f;
             for (int y = (int)Y(cz + rz); y < (int)Y(cz - rz); y++) for (int x = (int)X(cx - rx); x < (int)X(cx + rx); x++) {
@@ -200,14 +200,14 @@ public static class Panel {
         ParseConv();
         var inv = System.Globalization.CultureInfo.InvariantCulture;
         double half = Math.PI * RAD;
-        var cols = new List<float>(); for (double s = -half; s < half - 0.01; ) { cols.Add((float)s); s += Math.Abs(s) < 30 ? 0.25 : 1.5; }
+        var cols = new List<float>(); for (double s = -half; s < half - 0.01; ) { cols.Add((float)s); s += Math.Abs(s) < 34 ? 0.25 : 1.5; }
         var rows = new List<float>(); for (double z = -60; z <= 700.01; ) { rows.Add((float)z); z += (z >= 138 && z < 163) ? 0.25 : (z >= 85 && z < 215) ? 0.8 : 2.5; }
         int nc = cols.Count, nr = rows.Count, cap = nc * nr;   // cap = index of the top centre vertex
         var P = new double[cap + 1][]; var G = new float[cap]; var C = new float[cap];
         for (int j = 0; j < nr; j++) for (int i = 0; i < nc; i++) {
             float s = cols[i], z = rows[j];
             float g = Samp(pan, s, z), c = Samp(cut, s, z) * g;
-            float r = RAD + (1 - g) * Bark(s, z) - 2.5f * g - 1.1f * c;
+            float r = RAD + (1 - g) * Bark(s, z) - 2.5f * g - 1.3f * c;
             double th = -s / RAD;
             P[j * nc + i] = new double[] { r * Math.Cos(th), r * Math.Sin(th), z }; G[j * nc + i] = g; C[j * nc + i] = c;
         }

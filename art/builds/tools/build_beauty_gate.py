@@ -209,7 +209,7 @@ def m_ground(d):
     link(macro, "R", mc, "A")
     lvl = E(m, unreal.MaterialExpressionAdd, -850, 650)
     link(sparam(m, "PuddleLevel", 0.38, -1000, 620), "", lvl, "A")
-    link(mul(m, mc, sparam(m, "MacroAmp", 0.35, -1000, 880), -900, 800), "", lvl, "B")
+    link(mul(m, mc, sparam(m, "MacroAmp", 0.5, -1000, 880), -900, 800), "", lvl, "B")
     sub = E(m, unreal.MaterialExpressionSubtract, -750, 500)
     link(lvl, "", sub, "A")
     link(ds, "R", sub, "B")
@@ -354,6 +354,143 @@ def m_decal(name, d, carving=False):
         to_prop(op, "R", MP.MP_OPACITY)
         to_prop(nm, "RGB", MP.MP_NORMAL)
         to_prop(E(m, unreal.MaterialExpressionConstant, -600, 100, r=0.12), "", MP.MP_ROUGHNESS)
+    mel.recompile_material(m)
+    return m
+
+
+def m_pine(name, tx):
+    """A distant pine: a two-sided masked silhouette, near-black, so the fog alone gives it depth."""
+    m = new_material(name)
+    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
+    m.set_editor_property("two_sided", True)
+    t = tparam(m, "Silhouette", tx, SC.SAMPLERTYPE_COLOR, -800, 0)
+    to_prop(E(m, unreal.MaterialExpressionConstant3Vector, -500, -200, constant=unreal.LinearColor(0.012, 0.014, 0.016, 1)), "", MP.MP_BASE_COLOR)
+    # cut out by darkness: the tree is near-black, the empty card is white (robust even if the alpha is lost on import)
+    om = E(m, unreal.MaterialExpressionOneMinus, -500, 0)
+    link(t, "R", om, "")
+    to_prop(om, "", MP.MP_OPACITY_MASK)
+    to_prop(E(m, unreal.MaterialExpressionConstant, -500, 100, r=0.95), "", MP.MP_ROUGHNESS)
+    mel.recompile_material(m)
+    return m
+
+
+def moon_glow(m, moon, radius, x, y):
+    """saturate(1 - |world position - moon| / radius)^2, the soft halo round the moon."""
+    wp = E(m, unreal.MaterialExpressionWorldPosition, x - 600, y)
+    d = E(m, unreal.MaterialExpressionDistance, x - 400, y)
+    link(wp, "", d, "A")
+    link(E(m, unreal.MaterialExpressionConstant3Vector, x - 600, y + 80, constant=unreal.LinearColor(moon[0], moon[1], moon[2], 1)), "", d, "B")
+    f = E(m, unreal.MaterialExpressionSubtract, x - 200, y, const_a=1.0)
+    link(mul(m, d, E(m, unreal.MaterialExpressionConstant, x - 400, y + 120, r=1.0 / radius), x - 300, y), "", f, "B")
+    s = E(m, unreal.MaterialExpressionSaturate, x - 100, y)
+    link(f, "", s, "")
+    return mul(m, s, s, x, y)
+
+
+def m_night_sky(name, moon):
+    """Night sky: cold blue-grey, brighter toward the moon."""
+    m = new_material(name)
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+    m.set_editor_property("two_sided", True)
+    g1 = moon_glow(m, moon, 9000.0, -300, 200)
+    g2 = moon_glow(m, moon, 2600.0, -300, 500)
+    base = E(m, unreal.MaterialExpressionConstant3Vector, -300, -200, constant=unreal.LinearColor(0.070, 0.085, 0.112, 1))
+    add1 = E(m, unreal.MaterialExpressionAdd, -100, 0)
+    link(base, "", add1, "A")
+    link(mul(m, g1, E(m, unreal.MaterialExpressionConstant3Vector, -300, 350, constant=unreal.LinearColor(0.10, 0.11, 0.14, 1)), -150, 250), "", add1, "B")
+    add2 = E(m, unreal.MaterialExpressionAdd, 0, 100)
+    link(add1, "", add2, "A")
+    link(mul(m, g2, E(m, unreal.MaterialExpressionConstant3Vector, -300, 650, constant=unreal.LinearColor(0.45, 0.48, 0.55, 1)), -150, 550), "", add2, "B")
+    to_prop(add2, "", MP.MP_EMISSIVE_COLOR)
+    mel.recompile_material(m)
+    return m
+
+
+def m_cloud(name, moon):
+    """A thin layer of night cloud drifting across the moon: noise opacity, edges lit silver near the moon."""
+    m = new_material(name)
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
+    m.set_editor_property("two_sided", True)
+    n1 = E(m, unreal.MaterialExpressionNoise, -700, 0, scale=0.00045, levels=6, output_min=-1.0, output_max=1.0, quality=2)
+    n2 = E(m, unreal.MaterialExpressionNoise, -700, 200, scale=0.0016, levels=4, output_min=-0.3, output_max=0.3, quality=2)
+    n = E(m, unreal.MaterialExpressionAdd, -500, 100)
+    link(n1, "", n, "A")
+    link(n2, "", n, "B")
+    op = E(m, unreal.MaterialExpressionSaturate, -300, 100)
+    thin = E(m, unreal.MaterialExpressionSubtract, -450, 100, const_b=0.25)    # gaps between the clouds
+    link(n, "", thin, "A")
+    link(thin, "", op, "")
+    to_prop(mul(m, op, E(m, unreal.MaterialExpressionConstant, -300, 250, r=0.55), -200, 100), "", MP.MP_OPACITY)
+    g = moon_glow(m, moon, 3200.0, -300, 500)
+    col = E(m, unreal.MaterialExpressionAdd, -100, 300)
+    link(E(m, unreal.MaterialExpressionConstant3Vector, -300, 350, constant=unreal.LinearColor(0.030, 0.036, 0.048, 1)), "", col, "A")
+    link(mul(m, g, E(m, unreal.MaterialExpressionConstant3Vector, -300, 650, constant=unreal.LinearColor(0.55, 0.58, 0.66, 1)), -150, 550), "", col, "B")
+    to_prop(col, "", MP.MP_EMISSIVE_COLOR)
+    mel.recompile_material(m)
+    return m
+
+
+def m_hdri_sky(name, hdri, moon_dir, yaw_offset, bright):
+    """A photographed night sky on a huge sphere round the camera: lat-long lookup of the HDRI by view direction,
+    a dark fog colour below the horizon, and the moon (disc + halo) drawn where moon_dir points."""
+    m = new_material(name)
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+    m.set_editor_property("two_sided", True)
+    d = E(m, unreal.MaterialExpressionSubtract, -1800, 0)
+    link(E(m, unreal.MaterialExpressionWorldPosition, -2000, 0), "", d, "A")
+    link(E(m, unreal.MaterialExpressionCameraPositionWS, -2000, 100), "", d, "B")
+    dirv = E(m, unreal.MaterialExpressionNormalize, -1650, 0)
+    link(d, "", dirv, "VectorInput")
+
+    def comp(r, g, b, y):
+        c = E(m, unreal.MaterialExpressionComponentMask, -1500, y, r=r, g=g, b=b, a=False)
+        link(dirv, "", c, "")
+        return c
+    dx, dy, dz = comp(True, False, False, -200), comp(False, True, False, -100), comp(False, False, True, 0)
+    az = E(m, unreal.MaterialExpressionArctangent2, -1300, -150)
+    link(dy, "", az, "Y")
+    link(dx, "", az, "X")
+    u = E(m, unreal.MaterialExpressionAdd, -1000, -150, const_b=0.5 + yaw_offset)
+    link(mul(m, az, E(m, unreal.MaterialExpressionConstant, -1300, -50, r=-0.15915494), -1150, -150), "", u, "A")
+    el = E(m, unreal.MaterialExpressionArccosine, -1300, 50)
+    link(dz, "", el, "")
+    v = mul(m, el, E(m, unreal.MaterialExpressionConstant, -1300, 150, r=0.31830989), -1150, 50)
+    uv = E(m, unreal.MaterialExpressionAppendVector, -900, 0)
+    link(u, "", uv, "A")
+    link(v, "", uv, "B")
+    s = E(m, unreal.MaterialExpressionTextureSampleParameter2D, -700, 0, parameter_name="HDRI", texture=hdri)
+    safe_set(s, "sampler_type", unreal.MaterialSamplerType.SAMPLERTYPE_LINEAR_COLOR)
+    link(uv, "", s, "UVs")
+    skyc = mul(m, s, sparam(m, "SkyBright", bright, -700, 200), -500, 0, "RGB")
+    below = E(m, unreal.MaterialExpressionSaturate, -700, 350)
+    link(mul(m, dz, E(m, unreal.MaterialExpressionConstant, -900, 400, r=25.0), -800, 350), "", below, "")
+    sky = lerp(m, vparam(m, "Horizon", (0.030, 0.036, 0.048), -500, 300), skyc, below, -300, 0)
+    # the moon: a crisp disc and a soft double halo
+    md = E(m, unreal.MaterialExpressionDotProduct, -1100, 500)
+    link(dirv, "", md, "A")
+    link(E(m, unreal.MaterialExpressionConstant3Vector, -1300, 550, constant=unreal.LinearColor(moon_dir[0], moon_dir[1], moon_dir[2], 1)), "", md, "B")
+    mds = E(m, unreal.MaterialExpressionSaturate, -950, 500)
+    link(md, "", mds, "")
+    disc0 = E(m, unreal.MaterialExpressionSubtract, -800, 500, const_b=0.99988)
+    link(mds, "", disc0, "A")
+    disc = E(m, unreal.MaterialExpressionSaturate, -600, 500)
+    link(mul(m, disc0, E(m, unreal.MaterialExpressionConstant, -800, 600, r=9000.0), -700, 500), "", disc, "")
+    h1 = E(m, unreal.MaterialExpressionPower, -800, 700, const_exponent=700.0)
+    link(mds, "", h1, "Base")
+    h2 = E(m, unreal.MaterialExpressionPower, -800, 800, const_exponent=45.0)
+    link(mds, "", h2, "Base")
+    glow = E(m, unreal.MaterialExpressionAdd, -500, 600)
+    link(mul(m, disc, E(m, unreal.MaterialExpressionConstant, -700, 650, r=40.0), -600, 600), "", glow, "A")
+    hal = E(m, unreal.MaterialExpressionAdd, -600, 750)
+    link(mul(m, h1, E(m, unreal.MaterialExpressionConstant, -800, 760, r=1.6), -700, 720), "", hal, "A")
+    link(mul(m, h2, E(m, unreal.MaterialExpressionConstant, -800, 860, r=0.22), -700, 820), "", hal, "B")
+    link(hal, "", glow, "B")
+    mc = mul(m, glow, vparam(m, "MoonColor", (0.85, 0.90, 1.0), -500, 800), -400, 650)
+    out = E(m, unreal.MaterialExpressionAdd, -200, 300)
+    link(sky, "", out, "A")
+    link(mc, "", out, "B")
+    to_prop(out, "", MP.MP_EMISSIVE_COLOR)
     mel.recompile_material(m)
     return m
 
@@ -548,6 +685,60 @@ def build():
     if eal.does_directory_exist(ROOT + "/Meshes/CroatoanPost"):
         eal.delete_directory(ROOT + "/Meshes/CroatoanPost")
     sm_post = mesh("../Carving", "CroatoanPost.obj", "CroatoanPost")
+    for nm in ("Card_Base", "Card_Center"):
+        if eal.does_directory_exist(ROOT + "/Meshes/" + nm):
+            eal.delete_directory(ROOT + "/Meshes/" + nm)
+    sm_card = mesh("../Cards", "Card_Base.obj", "Card_Base")
+    sm_card_c = mesh("../Cards", "Card_Center.obj", "Card_Center")
+    for sm_ in (sm_card, sm_card_c):                # flat cards: Nanite cannot draw the translucent cloud
+        ns = sm_.get_editor_property("nanite_settings")
+        ns.set_editor_property("enabled", False)
+        sm_.set_editor_property("nanite_settings", ns)
+        eal.save_loaded_asset(sm_)
+    pine_tx = [tex("Pines", "T_Pine_%d.png" % i, "color") for i in range(6)]
+
+    # ---- Poly Haven (CC0): scanned surfaces, trunks, rocks, fir trees, night sky
+    WHITE = unreal.load_asset("/Engine/EngineResources/WhiteSquareTexture")
+
+    def ph_tex(asset, name, kind, gl=False):
+        t_ = tex("PolyHaven/" + asset, name, kind)
+        if gl:
+            safe_set(t_, "flip_green_channel", True)            # OpenGL normal map
+            eal.save_loaded_asset(t_)
+        return t_
+
+    def ph_surface(a):
+        return {"bc": ph_tex(a, a + "_diff_2k.jpg", "color"), "n": ph_tex(a, a + "_nor_dx_2k.jpg", "normal"),
+                "r": ph_tex(a, a + "_rough_2k.jpg", "linear"), "ao": ph_tex(a, a + "_arm_2k.jpg", "linear"),
+                "h": ph_tex(a, a + "_disp_2k.jpg", "linear")}
+    ph = {a: ph_surface(a) for a in ("knotted_pine_bark", "bark_brown_02", "brown_mud_leaves_01", "brown_mud_02", "forest_ground_04")}
+    sm_dt1 = mesh("../PolyHaven/dead_tree_trunk", "dead_tree_trunk_2k.fbx", "PH_DeadTrunk")
+    sm_dt2 = mesh("../PolyHaven/dead_tree_trunk_02", "dead_tree_trunk_02_2k.fbx", "PH_DeadTrunk02")
+    dt1 = {"BaseColor": ph_tex("dead_tree_trunk/textures", "dead_tree_trunk_diff_2k.jpg", "color"),
+           "Normal": ph_tex("dead_tree_trunk/textures", "dead_tree_trunk_nor_gl_2k.exr", "normal", gl=True),
+           "Roughness": ph_tex("dead_tree_trunk/textures", "dead_tree_trunk_rough_2k.exr", "linear"), "AO": WHITE}
+    dt2 = {"BaseColor": ph_tex("dead_tree_trunk_02/textures", "dead_tree_trunk_02_diff_2k.jpg", "color"),
+           "Normal": ph_tex("dead_tree_trunk_02/textures", "dead_tree_trunk_02_nor_gl_2k.exr", "normal", gl=True),
+           "Roughness": ph_tex("dead_tree_trunk_02/textures", "dead_tree_trunk_02_rough_2k.exr", "linear"), "AO": WHITE}
+    sm_rock = mesh("../PolyHaven/rock_moss_set_01", "rock_moss_set_01_2k.fbx", "PH_RockMoss")
+    rock_tx = {"bc": ph_tex("rock_moss_set_01/textures", "rock_moss_set_01_diff_2k.jpg", "color"),
+               "n": ph_tex("rock_moss_set_01/textures", "rock_moss_set_01_nor_gl_2k.exr", "normal", gl=True),
+               "r": ph_tex("rock_moss_set_01/textures", "rock_moss_set_01_rough_2k.jpg", "linear"), "ao": WHITE}
+    sm_fir = mesh("../PolyHaven/fir_tree_01", "fir_tree_01_2k.fbx", "PH_FirTree")
+    fir_bark = {"BaseColor": ph_tex("fir_tree_01/textures", "fir_tree_01_bark_diff_2k.png", "color"),
+                "Normal": ph_tex("fir_tree_01/textures", "fir_tree_01_bark_nor_gl_2k.png", "normal", gl=True),
+                "Roughness": ph_tex("fir_tree_01/textures", "fir_tree_01_bark_rough_2k.png", "linear"), "AO": WHITE}
+    fir_twig = {"bc": ph_tex("fir_tree_01/textures", "fir_tree_01_twig_diff_2k.png", "color"),
+                "op": ph_tex("fir_tree_01/textures", "fir_tree_01_twig_alpha_2k.png", "linear"),
+                "n": ph_tex("fir_tree_01/textures", "fir_tree_01_twig_nor_gl_2k.png", "normal", gl=True),
+                "tr": ph_tex("fir_tree_01/textures", "fir_tree_01_twig_diff_2k.png", "color")}
+    sky_hdri = ph_tex("rogland_moonlit_night", "rogland_moonlit_night_4k.exr", "color")
+    safe_set(sky_hdri, "compression_settings", unreal.TextureCompressionSettings.TC_HDR)
+    safe_set(sky_hdri, "srgb", False)
+    safe_set(sky_hdri, "mip_gen_settings", unreal.TextureMipGenSettings.TMGS_NO_MIPMAPS)
+    eal.save_loaded_asset(sky_hdri)
+    # the palisade, gate, rails and tower are built from the scanned trunk
+    sm_l1 = sm_l2 = sm_dt1
     # The UV Lantern's beam profile (Scripts/make_uv_ies.py): an uneven torch edge, not a stage spot
     if eal.does_directory_exist(ROOT + "/Lights"):
         eal.delete_directory(ROOT + "/Lights")
@@ -576,11 +767,13 @@ def build():
         "wheat": plant_set("wheat_grass_tdcrdbur_high", "Wheat_Grass_tdcrdbur_High_", "tdcrdbur", "ABCDEF"),
         "shrubs": plant_set("dead_shrubs_vdknafgha_high", "Dead_Shrubs_vdknafgha_High_", "vdknafgha", "ABCDEFGH"),
     }
-    rocks = [
+    rocks_quixel = [
         rock_set("small_stones_pack_vdjkbfmiw_high", "Small_Stones_Pack_vdjkbfmiw_High_", "Small_Stones_Pack_vdjkbfmiw_High.fbx", "SmallStones"),
         rock_set("military_trenches_scatter_rock_s_06_ydzrebd_high", "Military_Trenches_Scatter_Rock_S_06_ydzrebd_High_", "Military_Trenches_Scatter_Rock_S_06_ydzrebd_High.fbx", "Rock06"),
         rock_set("military_trenches_scatter_rock_s_03_ydzsbbr_high", "Military_Trenches_Scatter_Rock_S_03_ydzsbbr_High_", "Military_Trenches_Scatter_Rock_S_03_ydzsbbr_High.fbx", "Rock03"),
     ]
+
+    rocks = [(rock_tx, sm_rock)]
 
     log("materials")
     master = m_surface(t["l1"])
@@ -591,7 +784,10 @@ def build():
                  {"BaseColor": t["l2"]["bc"], "Normal": t["l2"]["n"], "Roughness": t["l2"]["r"], "AO": t["l2"]["ao"]})
     mi_beam = mi("MI_Beam", master, {"Wet": 0.4}, {"Tint": (0.5, 0.48, 0.48)}, {"BaseColor": t["bm"]["bc"], "Normal": t["bm"]["n"], "Roughness": t["bm"]["r"], "AO": t["bm"]["ao"]})
     mi_rope = mi("MI_Rope", master, {"Wet": 0.3, "UVScale": 6.0}, {"Tint": (0.9, 0.78, 0.55)}, {"BaseColor": t["bm"]["bc"], "Normal": t["bm"]["n"], "Roughness": t["bm"]["r"], "AO": t["bm"]["ao"]})
-    m_mud = m_ground(t["mud"])
+    mi_l1 = mi("MI_Log_A", master, {"Wet": 0.4}, {"Tint": (0.70, 0.68, 0.66)}, dt1)
+    mi_l2 = mi("MI_Log_B", master, {"Wet": 0.4}, {"Tint": (0.60, 0.58, 0.56)}, dt1)
+    mi_dark = mi("MI_Log_Dark", master, {"Wet": 0.5}, {"Tint": (0.40, 0.39, 0.38)}, dt1)
+    m_mud = m_ground(ph["brown_mud_leaves_01"])
     m_gr = m_foliage(t["gr"])
     m_carve = m_decal("M_CroatoanCarving", t["carve"], carving=True)
     m_mdec = m_decal("M_MudDecal", t["dec"])
@@ -615,7 +811,7 @@ def build():
     # ==========================================================================================
     mi_bark = mi("MI_Log_PostBark", master, {"Wet": 0.45}, {"Tint": (0.30, 0.28, 0.27)},
                  {"BaseColor": t["l2"]["bc"], "Normal": t["l2"]["n"], "Roughness": t["l2"]["r"], "AO": t["l2"]["ao"]})
-    HEWN["mat"] = mi("MI_Log_Hewn", master, {"Pale": 0.1, "PaleBright": 1.1, "Wet": 0.5}, {"Tint": (0.38, 0.37, 0.38)},
+    HEWN["mat"] = mi("MI_Log_Hewn", master, {"Pale": 0.25, "PaleBright": 1.0, "Wet": 0.5}, {"Tint": (0.50, 0.48, 0.46)},
                      {"BaseColor": t["l2"]["bc"], "Normal": t["l2"]["n"], "Roughness": t["l2"]["r"], "AO": t["l2"]["ao"]})
     mi_daub = mi("MI_Daub", master, {"Wet": 0.2, "UVScale": 3.0}, {"Tint": (0.30, 0.30, 0.31)},
                  {"BaseColor": t["bm"]["bc"], "Normal": t["bm"]["n"], "Roughness": t["bm"]["r"], "AO": t["bm"]["ao"]})
@@ -637,6 +833,35 @@ def build():
         """World point for an offset (dx, dy, dz) in a frame at origin turned by yaw."""
         c, s = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
         return (origin[0] + dx * c - dy * s, origin[1] + dx * s + dy * c, origin[2] + dz)
+
+    def shingle_roof(label, folder, ridge, yaw, length, run, slope, mat, course=18.0, width=(14.0, 28.0), under=None):
+        """A pitched roof of individual split shingles. ridge = centre of the ridge line; the ridge runs along the
+        frame's local Y (yaw), each side falls away along local +-X for `run` cm at `slope` degrees. Courses overlap;
+        each shingle's butt end rests on the course below, so it sits a little flatter than the roof and catches light."""
+        cs, sn = math.cos(math.radians(slope)), math.sin(math.radians(slope))
+        for side in (-1, 1):
+            if under is not None:                       # dark underlay so the gaps never show sky
+                d = run / 2
+                box(label + "_Underlay", folder, local(ridge, yaw, side * cs * d + side * sn * 3, 0, -sn * d - cs * 3),
+                    (run, length, 2), under, rot=(0, -side * slope, yaw))
+            d = run - course * 0.6
+            while d > course * 0.3:
+                y = -length / 2 + rng.uniform(0, 8)
+                while y < length / 2:
+                    w = rng.uniform(*width)
+                    w = min(w, length / 2 - y)
+                    if w > 5:
+                        ln = course * rng.uniform(2.1, 2.5)
+                        dd = d - ln / 2 + course + rng.uniform(-1.5, 1.5)
+                        lift = 2.0 + rng.uniform(0, 1.2)
+                        box(label + "_Shingle", folder,
+                            local(ridge, yaw, side * cs * dd + side * sn * lift, y + w / 2, -sn * dd + cs * lift),
+                            (ln, w - rng.uniform(0.6, 2.0), rng.uniform(1.6, 2.6)), mat,
+                            rot=(rng.uniform(-1.5, 1.5), -side * (slope - rng.uniform(2.0, 4.5)), yaw + rng.uniform(-1.2, 1.2)))
+                    y += w
+                d -= course
+        place_between(label + "_Ridge", folder, sm_bm, V(*local(ridge, yaw, 0, -length / 2 - 10, 4)),
+                      V(*local(ridge, yaw, 0, length / 2 + 10, 4)), 14, mi_dark)
 
     def lash_at(cx, cy, cz, ux, uy, folder, dia=22.0):
         """Three turns of rope binding a rail to a trunk, wound diagonally across the rail."""
@@ -676,7 +901,7 @@ def build():
     g = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(1500, 0, 0), unreal.Rotator(0, 0, 0))
     g.static_mesh_component.set_static_mesh(PLANE)
     g.static_mesh_component.set_world_scale3d(V(80, 80, 1))
-    g.static_mesh_component.set_material(0, mi("MI_Mud", m_mud, {"UVScale": 22.0, "PuddleLevel": 0.52, "PuddleSharpness": 10.0,
+    g.static_mesh_component.set_material(0, mi("MI_Mud", m_mud, {"UVScale": 34.0, "PuddleLevel": 0.50, "PuddleSharpness": 10.0,
                                                                "WetDarken": 0.62, "RoughnessMult": 0.55}))
     tag(g, "Ground_Mud", "Ground")
 
@@ -689,7 +914,9 @@ def build():
     post.static_mesh_component.set_static_mesh(sm_post)
     l2 = {"BaseColor": t["l2"]["bc"], "Normal": t["l2"]["n"], "Roughness": t["l2"]["r"], "AO": t["l2"]["ao"]}
     post_mats = {
-        "Bark": mi("MI_Post_Bark", master, {"Wet": 0.4}, {"Tint": (0.10, 0.095, 0.09)}, l2),
+        "Bark": mi("MI_Post_Bark", master, {"Wet": 0.4}, {"Tint": (0.42, 0.40, 0.38)},
+                   {"BaseColor": ph["knotted_pine_bark"]["bc"], "Normal": ph["knotted_pine_bark"]["n"],
+                    "Roughness": ph["knotted_pine_bark"]["r"], "AO": ph["knotted_pine_bark"]["ao"]}),
         "Panel": mi("MI_Post_Panel", master, {"Pale": 1.0, "PaleBright": 2.8, "Wet": 0.05}, {"PaleColor": (0.80, 0.79, 0.76)}, l2),
         "Cut": mi("MI_Post_CutWood", master, {"Pale": 0.8, "PaleBright": 1.0, "Wet": 0.2}, {"PaleColor": (0.55, 0.42, 0.30)}, l2),
     }
@@ -754,19 +981,9 @@ def build():
     eave, ridge, half = 760.0, 900.0, 250.0
     slope = math.degrees(math.atan2(ridge - eave, half))
     run = half / math.cos(math.radians(slope))
+    shingle_roof("Tower_Roof", T, (TX, TY, ridge + 2), 90.0, 560, run, slope, mi_shingle, course=17.0, width=(13.0, 26.0), under=m_iron)
     for side in (-1, 1):
-        for row in range(8):
-            f = (row + 0.5) / 8
-            yy = TY + side * half * f
-            zz = ridge - (ridge - eave) * f + 3
-            for k in range(7):
-                bx = TX - 270 + (k + 0.5) * (540 / 7) + rng.uniform(-5, 5)
-                box("Tower_Shingle", T, (bx, yy, zz), (540 / 7 + 3, run / 8 * 1.45, 4), mi_shingle,
-                    rot=(side * (slope + 5) + rng.uniform(-2, 2), rng.uniform(-1.5, 1.5), rng.uniform(-2, 2)))
-        # dark underside and a fascia board along the eave
-        box("Tower_Soffit", T, (TX, TY + side * half / 2, (eave + ridge) / 2 - 9), (540, run, 3), m_iron, rot=(side * slope, 0, 0))
         place_between("Tower_Fascia", T, sm_bm, V(TX - 275, TY + side * half, eave - 4), V(TX + 275, TY + side * half, eave - 4), 12, mi_dark)
-    place_between("Tower_Ridge", T, sm_bm, V(TX - 280, TY, ridge + 6), V(TX + 280, TY, ridge + 6), 16, mi_dark)
     wl = (TX - 140, TY + 140, 610)
     place_between("Tower_LampHook", T, sm_bm, V(wl[0], wl[1], wl[2] + 14), V(wl[0], wl[1], wl[2] + 45), 1.6, m_iron)
     box("Tower_Lamp", T, wl, (14, 14, 22), m_lamp)
@@ -796,8 +1013,8 @@ def build():
         hbox("House_Transom", 305, dy_, dz_ + 10, (5, 92, 6), mi_dark)
         point("House_WindowLight", B, hloc(330, dy_, dz_), 60, 2000, radius=600, source=30, vol=0.15)
     hbox("House_Door", 302, -330, 105, (4, 100, 200), mi_dark)
-    for side in (-1, 1):                                               # steep dark roof, ridge along the front
-        hbox("House_Roof", side * 160, 0, 760, (470, 980, 22), mi_dark, pitch=-side * 42)
+    # steep shingle roof, ridge along the front (local Y), eaves over the walls
+    shingle_roof("House_Roof", B, hloc(0, 0, 918), hy, 990, 460, 42.0, mi_shingle, course=22.0, width=(18.0, 34.0), under=m_iron)
     hbox("House_Chimney", -90, 330, 760, (90, 90, 300), mi_dark)
     hbox("House_ChimneyCap", -90, 330, 915, (110, 110, 14), mi_dark)
 
@@ -829,7 +1046,7 @@ def build():
                    {"BaseColor": tx["bc"], "Normal": tx["n"], "Roughness": tx["r"], "AO": tx["ao"]}) for i, (tx, _) in enumerate(rocks)]
     placed = 0
     while placed < int(os.environ.get("LETHE_ROCKS", "55")):
-        dist, brg = rng.uniform(120, 480), CAM_YAW + rng.uniform(-30, 2)      # left and centre foreground only
+        dist, brg = rng.uniform(220, 520), CAM_YAW + rng.uniform(-30, 2)      # left and centre foreground only
         x, y_ = CAM[0] + math.cos(math.radians(brg)) * dist, CAM[1] + math.sin(math.radians(brg)) * dist
         if x > PX - 60:
             continue
@@ -837,7 +1054,7 @@ def build():
         a = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(x, y_, rng.uniform(-10, -3)),
                                           unreal.Rotator(rng.uniform(-20, 20), rng.uniform(-20, 20), rng.uniform(0, 360)))
         a.static_mesh_component.set_static_mesh(rocks[j][1])
-        sc = rng.uniform(0.5, 1.2) if j else rng.uniform(0.6, 0.9)
+        sc = rng.uniform(0.10, 0.22)
         a.static_mesh_component.set_world_scale3d(V(sc, sc, sc))
         for k in range(max(1, a.static_mesh_component.get_num_materials())):
             a.static_mesh_component.set_material(k, rock_mis[j])
@@ -859,6 +1076,10 @@ def build():
         dist, brg = rng.uniform(150, 900), CAM_YAW + rng.uniform(-28, 26)
         ground_decal("MudPatch", mi_md, CAM[0] + math.cos(math.radians(brg)) * dist, CAM[1] + math.sin(math.radians(brg)) * dist,
                      rng.uniform(150, 280), rng.uniform(120, 220), rng.uniform(0, 360))
+    for _ in range(10):                             # break up the left foreground
+        dist, brg = rng.uniform(110, 520), CAM_YAW + rng.uniform(-30, -8)
+        ground_decal("MudPatch", mi_md, CAM[0] + math.cos(math.radians(brg)) * dist, CAM[1] + math.sin(math.radians(brg)) * dist,
+                     rng.uniform(110, 240), rng.uniform(90, 180), rng.uniform(0, 360))
     ry = math.degrees(math.atan2(20 - 430, 650 - 140))
     for off in (-70, 70):
         nx_, ny_ = -math.sin(math.radians(ry)), math.cos(math.radians(ry))
@@ -866,15 +1087,25 @@ def build():
 
     # --- sky, moon, fog ---------------------------------------------------------------------------
     L = "Lighting"
-    sky = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(9000, -4000, 1500), unreal.Rotator(0, 90, 0))
-    sky.static_mesh_component.set_static_mesh(PLANE)
-    sky.static_mesh_component.set_world_scale3d(V(500, 500, 1))
+    # The moon sits top left, behind the watchtower (frame x ~0.24, y ~0.10), half lost in thin cloud.
+    def along(yaw, pitch, dist):
+        cp = math.cos(math.radians(pitch))
+        return (CAM[0] + dist * cp * math.cos(math.radians(yaw)), CAM[1] + dist * cp * math.sin(math.radians(yaw)),
+                CAM[2] + dist * math.sin(math.radians(pitch)))
+    MYAW, MPITCH = CAM_YAW - 1.8, CAM_PITCH + 14.3            # open sky above the gate (frame ~0.47, 0.06)
+    mdir = (math.cos(math.radians(MPITCH)) * math.cos(math.radians(MYAW)), math.cos(math.radians(MPITCH)) * math.sin(math.radians(MYAW)),
+            math.sin(math.radians(MPITCH)))
+    m_sky = m_hdri_sky("M_SkyHDRI", sky_hdri, mdir, float(os.environ.get("LETHE_SKY_YAW", "0.15")),
+                       float(os.environ.get("LETHE_SKY_BRIGHT", "4.0")))
+    sky = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(*CAM), unreal.Rotator(0, 0, 0))
+    sky.static_mesh_component.set_static_mesh(SPHERE)
+    sky.static_mesh_component.set_world_scale3d(V(4000, 4000, 4000))       # 2 km round the camera
     sky.static_mesh_component.set_material(0, m_sky)
     sky.static_mesh_component.set_editor_property("cast_shadow", False)
     tag(sky, "NightSky", L)
 
     # The moon, high behind the tower: backlights the fog cold blue-grey
-    _, moon = light(unreal.DirectionalLight, "Moon", L, (0, 0, 2000), (0, -34, 100))   # from behind-left: rims the stakes
+    _, moon = light(unreal.DirectionalLight, "Moon", L, (0, 0, 2000), (0, -28, MYAW + 180.0 - 25.0))   # from the moon, behind-left
     safe_set(moon, "intensity", float(os.environ.get("LETHE_MOON", "2.2")))
     safe_set(moon, "use_temperature", True)
     safe_set(moon, "temperature", 10000.0)
@@ -931,24 +1162,57 @@ def build():
 
     fog = actors.spawn_actor_from_class(unreal.ExponentialHeightFog, V(0, 0, 0), unreal.Rotator(0, 0, 0))
     fc = fog.component
-    safe_set(fc, "fog_density", float(os.environ.get("LETHE_FOG", "0.022")))
-    safe_set(fc, "fog_height_falloff", 0.55)
-    safe_set(fc, "fog_inscattering_luminance", unreal.LinearColor(0.022, 0.028, 0.040, 1))
+    safe_set(fc, "fog_density", float(os.environ.get("LETHE_FOG", "0.035")))
+    safe_set(fc, "fog_height_falloff", 25.0)             # dense on the ground, thin by tree-top height
+    safe_set(fc, "fog_inscattering_luminance", unreal.LinearColor(0.034, 0.044, 0.062, 1))
     safe_set(fc, "enable_volumetric_fog", True)
     safe_set(fc, "volumetric_fog_albedo", unreal.Color(r=150, g=165, b=190, a=255))
     safe_set(fc, "volumetric_fog_emissive", unreal.LinearColor(0.0012, 0.0015, 0.0021, 1))
     safe_set(fc, "volumetric_fog_extinction_scale", 0.6)
     safe_set(fc, "volumetric_fog_scattering_distribution", 0.35)
     safe_set(fc, "volumetric_fog_distance", 8000.0)
+    safe_set(fc, "fog_cutoff_distance", 9000.0)              # the sky, moon and cloud stay clear of the ground fog
     tag(fog, "NightFog", L)
+    # Fir forest behind the settlement (Poly Haven fir_tree_01), thinning into the fog with distance
+    fir_mats = {"bark": mi("MI_Fir_Bark", master, {"Wet": 0.3}, {"Tint": (0.45, 0.43, 0.42)}, fir_bark),
+                "twig": mi("MI_Fir_Twig", m_gr, None, {"Tint": (0.30, 0.34, 0.30)},
+                           {"BaseColor": fir_twig["bc"], "Opacity": fir_twig["op"], "Normal": fir_twig["n"], "Translucency": fir_twig["tr"]})}
+    fbb = sm_fir.get_bounding_box()
+    fir_h = max(1.0, fbb.max.z - fbb.min.z)
+    placed = 0
+    tries = 0
+    while placed < 26 and tries < 2000:
+        tries += 1
+        brg = CAM_YAW + rng.uniform(-34, 30)
+        dist = rng.uniform(2700, 7000)
+        x, y_ = CAM[0] + math.cos(math.radians(brg)) * dist, CAM[1] + math.sin(math.radians(brg)) * dist
+        if math.hypot(x - 1450, y_ + 1350) < 500 or math.hypot(x - 2975, y_ + 99) < 800:
+            continue
+        if abs(brg - (-13.0)) < 10 and dist < 3800:
+            continue
+        if abs(brg - MYAW) < 6.0:
+            continue
+        h = rng.uniform(1300, 2400)
+        sc = h / fir_h
+        a = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(x, y_, -30), unreal.Rotator(rng.uniform(-2, 2), rng.uniform(-2, 2), rng.uniform(0, 360)))
+        a.static_mesh_component.set_static_mesh(sm_fir)
+        a.static_mesh_component.set_world_scale3d(V(sc, sc, sc))
+        for k, slot in enumerate(sm_fir.static_materials):
+            nm = str(slot.material_slot_name).lower()
+            a.static_mesh_component.set_material(k, fir_mats["twig"] if ("twig" in nm or "leaf" in nm or "needle" in nm) else fir_mats["bark"])
+        tag(a, "Fir", "Forest")
+        placed += 1
+
     lfv_cls = unreal.load_class(None, "/Script/Engine.LocalFogVolume")
-    if lfv_cls:                                    # low mist lying along the wall foot
-        for (x, y_) in ((760, -700), (780, 400), (1200, -200)):
+    if lfv_cls and not os.environ.get("LETHE_NOMIST"):   # low mist lying along the wall foot
+        for (x, y_, sx, sz) in ((760, -700, 12, 1.6), (780, 400, 12, 1.6), (1200, -200, 12, 1.6),
+                                (2400, -1600, 22, 4.0), (3300, 300, 24, 5.0), (5200, -2600, 40, 9.0)):   # layers in depth
             v = actors.spawn_actor_from_class(lfv_cls, V(x, y_, 0), unreal.Rotator(0, 0, 0))
-            v.set_actor_scale3d(V(12, 12, 1.6))
+            v.set_actor_scale3d(V(sx, sx, sz))
+            ext = 0.25 if sx < 20 else 0.022                 # thick ground mist near; thin veils far off
             for comp in v.get_components_by_class(unreal.LocalFogVolumeComponent):
-                safe_set(comp, "radial_fog_extinction", 0.25)
-                safe_set(comp, "height_fog_extinction", 0.25)
+                safe_set(comp, "radial_fog_extinction", ext)
+                safe_set(comp, "height_fog_extinction", ext)
             tag(v, "GroundMist", L)
 
     ppv = actors.spawn_actor_from_class(unreal.PostProcessVolume, V(0, 0, 0), unreal.Rotator(0, 0, 0))
@@ -1074,7 +1338,7 @@ def shoot(cam):
                 state["at"] = now
             elif ph == "wait":
                 p = queue[state["i"]][1]
-                if os.path.exists(p) or now - state["at"] > 300:
+                if os.path.exists(p) or now - state["at"] > 900:
                     log("shot %s %s" % ("saved" if os.path.exists(p) else "MISSING", p))
                     state["i"] += 1
                     state["phase"] = "set"
@@ -1087,8 +1351,83 @@ def shoot(cam):
     state["handle"] = unreal.register_slate_post_tick_callback(tick)
 
 
+def render_mrq(cam):
+    """One cinematic still through Movie Render Queue: 64 warm-up frames for Lumen and the fog, 32 temporal samples."""
+    seq_dir = "/Game/Lethe/Cinematics"
+    if eal.does_asset_exist(seq_dir + "/LS_GateFull"):
+        eal.delete_asset(seq_dir + "/LS_GateFull")
+    seq = assets.create_asset("LS_GateFull", seq_dir, unreal.LevelSequence, unreal.LevelSequenceFactoryNew())
+    seq.set_display_rate(unreal.FrameRate(24, 1))
+    seq.set_playback_start(0)
+    seq.set_playback_end(1)
+    binding = seq.add_possessable(cam)
+    cut = seq.add_track(unreal.MovieSceneCameraCutTrack)
+    sec = cut.add_section()
+    sec.set_range(0, 1)
+    try:
+        bid = unreal.MovieSceneSequenceExtensions.get_portable_binding_id(seq, seq, binding)
+    except Exception:  # noqa: BLE001
+        bid = unreal.MovieSceneSequenceExtensions.get_binding_id(seq, binding)
+    sec.set_camera_binding_id(bid)
+    eal.save_loaded_asset(seq)
+    levels.save_current_level()
+
+    sub = unreal.get_editor_subsystem(unreal.MoviePipelineQueueSubsystem)
+    q = sub.get_queue()
+    q.delete_all_jobs()
+    job = q.allocate_new_job(unreal.MoviePipelineExecutorJob)
+    job.sequence = unreal.SoftObjectPath(seq.get_path_name())
+    job.map = unreal.SoftObjectPath(MAP + "." + MAP.split("/")[-1])
+    job.job_name = "GateFull"
+    cfg = job.get_configuration()
+    o = cfg.find_or_add_setting_by_class(unreal.MoviePipelineOutputSetting)
+    o.output_resolution = unreal.IntPoint(2560, 1440)
+    o.output_directory = unreal.DirectoryPath(OUT)
+    o.file_name_format = "croatoan_gate_" + os.environ.get("LETHE_SHOT_TAG", "full") + "_mrq_{frame_number}"
+    o.override_existing_output = True
+    cfg.find_or_add_setting_by_class(unreal.MoviePipelineDeferredPassBase)
+    cfg.find_or_add_setting_by_class(unreal.MoviePipelineImageSequenceOutput_PNG)
+    cfg.find_or_add_setting_by_class(unreal.MoviePipelineGameOverrideSetting)
+    aa = cfg.find_or_add_setting_by_class(unreal.MoviePipelineAntiAliasingSetting)
+    aa.override_anti_aliasing = True
+    aa.anti_aliasing_method = unreal.AntiAliasingMethod.AAM_NONE
+    aa.spatial_sample_count = 1
+    aa.temporal_sample_count = int(os.environ.get("LETHE_MRQ_SAMPLES", "32"))
+    aa.render_warm_up_count = 64
+    aa.engine_warm_up_count = 64
+    cv = cfg.find_or_add_setting_by_class(unreal.MoviePipelineConsoleVariableSetting)
+    for k, v in (("r.VolumetricFog.GridPixelSize", 4), ("r.VolumetricFog.GridSizeZ", 128), ("r.VolumetricFog.HistoryMissSupersampleCount", 16),
+                 ("r.Lumen.ScreenProbeGather.ScreenSpaceBentNormal", 1), ("r.Shadow.Virtual.ResolutionLodBiasLocal", -1),
+                 ("r.Tonemapper.Sharpen", 0.6), ("r.DepthOfFieldQuality", 4)):
+        try:
+            cv.add_or_update_console_variable(k, float(v))
+        except Exception as e:  # noqa: BLE001
+            unreal.log_warning("LETHE beauty: cvar %s: %s" % (k, e))
+    state = {}
+
+    def done(executor, success):
+        log("mrq finished, success=%s" % success)
+        unreal.SystemLibrary.quit_editor()
+
+    ex = sub.render_queue_with_executor(unreal.MoviePipelinePIEExecutor)
+    state["ex"] = ex
+    if ex:
+        ex.on_executor_finished_delegate.add_callable_unique(done)
+    unreal._lethe_mrq_state = state
+    log("mrq started")
+
+
 if not getattr(unreal, "_lethe_beauty_started", False):
     unreal._lethe_beauty_started = True
     c = build()
-    if not os.environ.get("LETHE_BEAUTY_NOSHOOT"):
+    if os.environ.get("LETHE_MRQ"):
+        st = {"t0": time.time(), "h": None}
+
+        def go(dt):                                   # PIE cannot start while the editor is still loading
+            if time.time() - st["t0"] > 45:
+                unreal.unregister_slate_post_tick_callback(st["h"])
+                render_mrq(c)
+        st["h"] = unreal.register_slate_post_tick_callback(go)
+        unreal._lethe_mrq_tick = st
+    elif not os.environ.get("LETHE_BEAUTY_NOSHOOT"):
         shoot(c)
