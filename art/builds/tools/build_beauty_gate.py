@@ -540,6 +540,49 @@ def m_unlit(name, rgb, strength):
     return m
 
 
+def m_beam(name, rgb, strength):
+    """A torch beam's visible shaft: unlit, additive, soft at the silhouette, fading with distance from the lamp."""
+    m = new_material(name)
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_ADDITIVE)
+    fr = E(m, unreal.MaterialExpressionFresnel, -900, 100)
+    safe_set(fr, "exponent", 1.2)
+    soft = E(m, unreal.MaterialExpressionOneMinus, -750, 100)
+    link(fr, "", soft, "")
+    soft2 = mul(m, soft, soft, -620, 100)
+    wp = E(m, unreal.MaterialExpressionWorldPosition, -1100, 300)
+    d = E(m, unreal.MaterialExpressionDistance, -900, 300)
+    link(wp, "", d, "A")
+    link(vparam(m, "LampPos", (0.0, 0.0, 0.0), -1100, 400), "", d, "B")
+    dv = E(m, unreal.MaterialExpressionDivide, -750, 300)
+    link(d, "", dv, "A")
+    link(sparam(m, "Length", 50.0, -900, 420), "", dv, "B")
+    fade = E(m, unreal.MaterialExpressionOneMinus, -620, 300)
+    link(dv, "", fade, "")
+    fs = E(m, unreal.MaterialExpressionSaturate, -500, 300)
+    link(fade, "", fs, "")
+    k = mul(m, soft2, fs, -350, 200)
+    to_prop(mul(m, vparam(m, "Color", (rgb[0] * strength, rgb[1] * strength, rgb[2] * strength), -400, 0), k, -200, 50), "", MP.MP_EMISSIVE_COLOR)
+    mel.recompile_material(m)
+    return m
+
+
+def m_curlcard(name, tex_, tint):
+    """Hair cards: the ringlet texture's alpha cuts the curls out; two-sided, a little sheen."""
+    m = new_material(name)
+    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
+    m.set_editor_property("two_sided", True)
+    safe_set(m, "opacity_mask_clip_value", 0.4)
+    t_ = E(m, unreal.MaterialExpressionTextureSample, -900, 0)
+    t_.set_editor_property("texture", tex_)
+    to_prop(mul(m, t_, vparam(m, "Tint", tint, -700, -150), -500, -50, "RGB"), "", MP.MP_BASE_COLOR)
+    to_prop(t_, "A", MP.MP_OPACITY_MASK)
+    to_prop(E(m, unreal.MaterialExpressionConstant, -400, 200, r=0.42), "", MP.MP_ROUGHNESS)
+    to_prop(E(m, unreal.MaterialExpressionConstant, -400, 300, r=0.45), "", MP.MP_SPECULAR)
+    mel.recompile_material(m)
+    return m
+
+
 def m_char(name, bc_t, n_t, orm_t, tint, rough_mult=1.0):
     """A character surface from a glTF texture set: base colour x tint, normal, ORM (AO in R, roughness in G)."""
     m = new_material(name)
@@ -901,7 +944,7 @@ def build():
     m_lglass = m_glass("M_LanternGlassSoft", (1.0, 0.45, 0.16), 0.10, 0.45)
     m_flame = m_unlit("M_LanternFlame", (1.0, 0.52, 0.18), 1.6)
     m_win = m_unlit("M_WindowGlow", (1.0, 0.45, 0.22), 0.05)
-    m_uvlens = m_unlit("M_UVLens", (0.42, 0.26, 1.0), 2.2)
+    m_uvlens = m_unlit("M_UVLens", (0.42, 0.26, 1.0), 4.0)
     m_sky = m_unlit("M_NightSky", (0.060, 0.075, 0.100), 1.0)
     m_iron = mi("MI_IronDark", master, {"Wet": 0.6, "UVScale": 3.0}, {"Tint": (0.08, 0.08, 0.085)},
                 {"BaseColor": WHITE, "Normal": ph["rough_wood"]["n"], "Roughness": ph["rough_wood"]["r"], "AO": WHITE})
@@ -1437,7 +1480,8 @@ def build():
             safe_set(nrm, "flip_green_channel", True)
             return m_char("M_Nysa_" + slot, ntx(slot + "_BaseColor.jpeg", "color"), nrm, ntx(slot + "_ORM.jpeg", "linear"), tint, rough_mult)
         nm_ = {"armor": nmat("M_armor", (0.17, 0.16, 0.18), 1.1), "hair": nmat("M_hair", (0.30, 0.20, 0.17), 0.9),
-               "body": nmat("M_body1", (0.85, 0.80, 0.80), 1.0)}
+               "body": nmat("M_body1", (0.85, 0.80, 0.80), 1.0),
+               "curl": m_curlcard("M_Nysa_Curls", ntx("M_curls_BaseColor.png", "color"), (2.6, 2.2, 2.0))}
         # measure the import: height, and which horizontal axis she faces along (the raised arm reaches forward)
         lo_ = [1e9] * 3; hi_ = [-1e9] * 3
         for a_ in parts:
@@ -1470,10 +1514,21 @@ def build():
             c_.set_world_scale3d(V(nsc, nsc, nsc))
             for k_, slot in enumerate(a_.static_materials):
                 s_ = str(slot.material_slot_name).lower()
-                c_.set_material(k_, nm_["hair"] if "hair" in s_ else nm_["body"] if "body" in s_ else nm_["armor"])
+                c_.set_material(k_, nm_["curl"] if "curl" in s_ else nm_["hair"] if "hair" in s_ else nm_["body"] if "body" in s_ else nm_["armor"])
             tag(act, "Nysa_" + a_.get_name(), N)
         s100 = nsc * hgt / max(1.0, info["hi"][1] - info["lo"][1])          # glTF centimetres -> world
         NYSA_HAND = (NX + (fwx * hz_ - rtx * hx_) * s100, NY + (fwy * hz_ - rty * hx_) * s100, hy_ * s100)
+        # warm rim from the gate lantern's side, behind her and to the left: catches the curls and her shoulder
+        cfx, cfy = unit(CAM_YAW); clx, cly = unit(CAM_YAW - 90.0)
+        rim_ = (NX + cfx * 130 + clx * 70, NY + cfy * 130 + cly * 70, 215.0)
+        ra_, rl_ = light(unreal.SpotLight, "Nysa_Rim", N, rim_)
+        ra_.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*rim_), V(NX, NY, 150.0 * s100)), False)
+        safe_set(rl_, "intensity_units", unreal.LightUnits.LUMENS)
+        safe_set(rl_, "intensity", float(os.environ.get("LETHE_NYSA_RIM", "22")))
+        safe_set(rl_, "light_color", unreal.Color(r=255, g=168, b=105, a=255))
+        safe_set(rl_, "outer_cone_angle", 22.0)
+        safe_set(rl_, "attenuation_radius", 260.0)
+        safe_set(rl_, "volumetric_scattering_intensity", 0.0)
         # a long dark coat skirt from the waist to the mud, over the trousers
         mi_coat = m_cloth("M_Nysa_Coat", (0.030, 0.028, 0.032), 0.85, plaster_tx.get("BaseColor"), 0.3)
         cb = CONE.get_bounding_box()
@@ -1502,7 +1557,7 @@ def build():
         tg_ = (PX - 38 * fx, PY - 38 * fy, 187.0)
         dv_ = [h_ - t_ for h_, t_ in zip(NYSA_HAND, tg_)]
         dd_ = math.sqrt(sum(x * x for x in dv_))
-        k_ = max(dd_, float(os.environ.get("LETHE_UV_STANDOFF", "45"))) / dd_
+        k_ = max(dd_, float(os.environ.get("LETHE_UV_STANDOFF", "90"))) / dd_
         src = tuple(t_ + x * k_ for t_, x in zip(tg_, dv_))
         log("uv: hand %.0f cm from the letters, light at %s" % (dd_, str([round(x) for x in src])))
     uva, uv = light(unreal.SpotLight, "UVLantern", L, src)
@@ -1514,6 +1569,7 @@ def build():
     safe_set(uv, "outer_cone_angle", 30.0 if NYSA_HAND else 17.0)
     if NYSA_HAND:
         safe_set(uv, "cast_shadows", False)          # her own hand and sleeve sit right at the lamp
+        safe_set(uv, "volumetric_scattering_intensity", float(os.environ.get("LETHE_UV_VOL", "6")))
     safe_set(uv, "attenuation_radius", 320.0)
     safe_set(uv, "volumetric_scattering_intensity", 0.1)
     safe_set(uv, "source_radius", 4.0)
@@ -1534,6 +1590,16 @@ def build():
         safe_set(sl, "attenuation_radius", 320.0)
         safe_set(sl, "source_radius", 4.0)
         safe_set(sl, "volumetric_scattering_intensity", 0.1)
+
+    if NYSA_HAND and float(os.environ.get("LETHE_UV_SHAFT", "0.6")) > 0:
+        # the beam's visible shaft from the lamp lens to the letters
+        mi_beam = m_beam("M_UVBeam", (0.42, 0.26, 1.0), float(os.environ.get("LETHE_UV_SHAFT", "0.6")))
+        lens_ = (NYSA_HAND[0] + fwx * 8, NYSA_HAND[1] + fwy * 8, NYSA_HAND[2] + 4)
+        bl_ = math.sqrt(sum((a_ - b_) ** 2 for a_, b_ in zip(lens_, tg_)))
+        bm = mi("MI_UVBeam", mi_beam, {"Length": bl_ * 0.93}, {"LampPos": lens_})
+        ba = place_between("Nysa_UVBeam", N, CONE, V(*[l_ + (t_ - l_) * 0.93 for l_, t_ in zip(lens_, tg_)]), V(*lens_), 2 * bl_ * math.tan(math.radians(13)), bm)
+        ba.static_mesh_component.set_editor_property("cast_shadow", False)
+        log("uv beam: %.0f cm long" % bl_)
 
     wf = (250.0, -1500.0, 480.0)
     wfa, wfl = light(unreal.SpotLight, "WallFill", L, wf)

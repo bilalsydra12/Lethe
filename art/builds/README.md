@@ -505,3 +505,33 @@ Edge agreement with the painting: round 3 50.6%, round 4 50.0% (Nysa's outline s
 2. She sits a little low and right in the frame (head at 0.51, 0.53 against about 0.57, 0.45 in the painting).
 3. The beam's visible shaft in the air is missing: the painting shows a bright violet cone between lamp and post.
 4. The house chimney is still out of frame, and the far-left wall still runs to the frame edge.
+
+## Painting match · round 5 · Nysa's hair and the beam
+
+![painting match round 5](2026-11-03_gate_painting_match_r5.png)
+
+Side by side, painting left: [compare/2026-11-03_painting_vs_match_r5.jpg](compare/2026-11-03_painting_vs_match_r5.jpg).
+
+Six test renders; this is the last. Nothing bought or downloaded.
+
+**What changed:**
+- **Long curly hair.** `tools/make_curl_texture.ps1` draws a ringlet texture with alpha: clumps of strands that share one curl, with ragged ends. `tools/nysa_pose.py` adds three curved hair layers to her model. They start low on the back of her head, so her face and the side of her head still show, and hang to mid-back. The layers are cut out by the texture's alpha. (Stretched spheres were tried first and read as black balloons.)
+- **Warm rim light** on her from behind-left (the gate lantern's side). It picks out the curls and her shoulder as the painting does.
+- **UV beam.** The light sits 90 cm back from the letters, on the line through her lamp, which gives a large soft pool. A faint additive cone runs from the lens toward the post and fades to nothing at the bark. The lens glows brighter.
+
+| Band | Painting | Round 4 | Round 5 |
+|---|---|---|---|
+| 0-20% | 71.1% | 78.1% | 77.7% |
+| 20-40% | 27.5% | 18.2% | 18.5% |
+| 40-60% | 1.2% | 2.5% | 2.6% |
+| 60-80% | 0.2% | 1.0% | 1.0% |
+| 80-100% | 0.0% | 0.1% | 0.2% |
+| Average | #272427 | #262227 | #272227 |
+
+Edge agreement with the painting: round 4 50.0%, round 5 49.4% (the hair adds edges where the painting has none).
+
+**Still different:**
+1. The beam is a soft glow on the post rather than the painting's distinct violet shaft from the lamp: her lamp sits too close to the bark for a long shaft. Her raised sleeve also picks up violet light.
+2. The curls are a little too regular and too long; the painting's hair is fuller around the head.
+3. She has no shoulder bag, and her skirt is shorter than the painting's long coat.
+4. She sits a little low and right in the frame. The house chimney is still out of frame, and the far-left wall still runs to the frame edge.

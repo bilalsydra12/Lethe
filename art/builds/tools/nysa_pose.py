@@ -146,6 +146,51 @@ for ni, n in enumerate(nodes):
     meshes.append({"name": "Nysa_" + m["name"].replace("_M_", "_").rstrip("_0"), "primitives": prims})
     gnodes.append({"name": meshes[-1]["name"], "mesh": len(meshes) - 1})
 
+# Long curly hair: three curved card layers wrapped round the back of the head and hanging down her back,
+# textured by Scripts/make_curl_texture.ps1 (alpha-cut ringlets). The model's own hair is short and tied back.
+import random as _r
+_rng = _r.Random(5)
+def _rad(y):          # head radius at the crown, widening over the shoulders
+    if y > 168: return 11.6
+    if y > 145: return 10.8 + (168 - y) / 23.0 * 6.5
+    return 17.3 + (145 - y) / 40.0 * 1.5
+cprims, mat_c = [], len(j["materials"])
+for layer, (dr, th0, th1, u0) in enumerate(((0.0, -112, 112, 0.0), (1.6, -96, 100, 0.37), (3.0, -80, 86, 0.71))):
+    NT, NY_, Y0, Y1 = 26, 22, 171.0 - layer * 2.0, 106.0 - layer * 3.0
+    pp, nn, uv, ix = bytearray(), bytearray(), bytearray(), bytearray()
+    xs = []
+    for iy in range(NY_ + 1):
+        y = Y0 + (Y1 - Y0) * iy / NY_
+        for it in range(NT + 1):
+            sp_ = 0.55 + 0.45 * min(1.0, max(0.0, (Y0 - y) / 22.0))      # behind the skull only at the top
+            th = math.radians((th0 + (th1 - th0) * it / NT) * sp_)
+            r = _rad(y) + dr + _rng.uniform(-0.4, 0.4)
+            p = (r * math.sin(th) - 0.8, y, -r * math.cos(th) - 0.5)
+            xs.append(p)
+            pp += struct.pack("<3f", *p); nn += struct.pack("<3f", math.sin(th), 0.0, -math.cos(th))
+            uv += struct.pack("<2f", u0 + 1.7 * it / NT, iy / NY_)
+    for iy in range(NY_):
+        for it in range(NT):
+            a0 = iy * (NT + 1) + it; b0 = a0 + 1; c0 = a0 + NT + 1; d0 = c0 + 1
+            ix += struct.pack("<6I", a0, c0, b0, b0, c0, d0)
+    n_ = len(xs); ni = NY_ * NT * 6
+    vp = add_view(pp, 34962); vn = add_view(nn, 34962); vu = add_view(uv, 34962); vi = add_view(ix, 34963)
+    for r_ in (lo, hi):
+        pass
+    for p in xs:
+        for k in range(3):
+            lo[k] = min(lo[k], p[k]); hi[k] = max(hi[k], p[k])
+    accessors.append({"bufferView": vp, "componentType": 5126, "count": n_, "type": "VEC3",
+                      "min": [min(x[k] for x in xs) for k in range(3)], "max": [max(x[k] for x in xs) for k in range(3)]})
+    accessors.append({"bufferView": vn, "componentType": 5126, "count": n_, "type": "VEC3"})
+    accessors.append({"bufferView": vu, "componentType": 5126, "count": n_, "type": "VEC2"})
+    accessors.append({"bufferView": vi, "componentType": 5125, "count": ni, "type": "SCALAR"})
+    a0 = len(accessors) - 4
+    cprims.append({"attributes": {"POSITION": a0, "NORMAL": a0 + 1, "TEXCOORD_0": a0 + 2}, "indices": a0 + 3, "material": mat_c})
+meshes.append({"name": "Nysa_Curls", "primitives": cprims})
+gnodes.append({"name": "Nysa_Curls", "mesh": len(meshes) - 1})
+j["materials"] = j["materials"] + [{"name": "M_curls", "doubleSided": True}]
+
 hand = pt(D[byname["hand_r"]], pos(B[byname["hand_r"]]))
 head = pt(D[byname["head"]], pos(B[byname["head"]]))
 out = {"asset": {"version": "2.0", "generator": "LETHE nysa_pose.py"},
