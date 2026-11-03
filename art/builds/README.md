@@ -475,3 +475,33 @@ Edge agreement with the painting: round 2 50.2%, round 3 50.6%.
 3. The house chimney sits behind the post, out of frame. Getting the painting's chimney at top right needs the house roof moved, not just the chimney.
 4. Yellow-green leaf specks in the mud texture (`brown_mud_leaves_01`) still show.
 5. The far-left wall still runs to the frame edge, lower, rather than ending in the painting's short, leaning bundle.
+
+## Painting match · round 4 · Nysa
+
+![painting match round 4](2026-11-03_gate_painting_match_r4.png)
+
+Side by side, painting left: [compare/2026-11-03_painting_vs_match_r4.jpg](compare/2026-11-03_painting_vs_match_r4.jpg).
+
+**Nysa is in.** She is built from ["Free Medieval Assassin Girl"](https://www.fab.com/listings/2986b290-90ed-4a0e-a891-cacf442033f9) by Dimentrius3dArtist (Fab, free, CC BY 4.0), with the hood, mask and weapons removed. `tools/nysa_pose.py` (with `tools/mat4.py`, no numpy needed) poses her offline: her right arm is raised to shoulder height holding the UV lamp, and her left arm hangs down. It writes a static glTF that the build script imports. Her clothes and hair are darkened toward the painting. She stands with her back to the camera, left of the post.
+
+**What else changed:**
+- The UV beam now comes from her lamp. It is held at least 45 cm off the letters, so it never starts inside the bark, and it casts no shadow, so her own sleeve can't block it. The beam is wider to keep the pool the painting's size from that close.
+- Post face panel 3.1 → 2.5 and fill 18 → 12; UV colour deeper violet.
+- The mud texture is 70% desaturated and tinted warm, which removes the green leaf specks.
+
+| Band | Painting | Round 3 | Round 4 |
+|---|---|---|---|
+| 0-20% | 71.1% | 74.9% | 78.1% |
+| 20-40% | 27.5% | 20.1% | 18.2% |
+| 40-60% | 1.2% | 3.2% | 2.5% |
+| 60-80% | 0.2% | 1.5% | 1.0% |
+| 80-100% | 0.0% | 0.4% | 0.1% |
+| Average | #272427 | #2B262A | #262227 |
+
+Edge agreement with the painting: round 3 50.6%, round 4 50.0% (Nysa's outline sits a little right of the painting's).
+
+**Still different:**
+1. Nysa's hair is short and tied back; the painting has long dark curls down her back. She also has no shoulder bag, and her skirt is shorter than the painting's long coat.
+2. She sits a little low and right in the frame (head at 0.51, 0.53 against about 0.57, 0.45 in the painting).
+3. The beam's visible shaft in the air is missing: the painting shows a bright violet cone between lamp and post.
+4. The house chimney is still out of frame, and the far-left wall still runs to the frame edge.

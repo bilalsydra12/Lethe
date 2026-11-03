@@ -13,6 +13,7 @@ Env LETHE_BEAUTY_NOSHOOT=1 builds without rendering.  World: +X away from camera
 
 import math
 import os
+import json
 import random
 import time
 import unreal
@@ -223,7 +224,10 @@ def m_ground(d):
                  macro, -750, -500, "", "", "R")
     wetbase = mul(m, wetbase, patch, -700, -380)
     base = lerp(m, wetbase, mul(m, wetbase, E(m, unreal.MaterialExpressionConstant, -700, -150, r=0.22), -600, -200), pud, -400, -300)
-    to_prop(base, "", MP.MP_BASE_COLOR)
+    ds_ = E(m, unreal.MaterialExpressionDesaturation, -250, -300)
+    link(base, "", ds_, "")
+    link(sparam(m, "Desat", 0.0, -400, -420), "", ds_, "Fraction")
+    to_prop(mul(m, ds_, vparam(m, "MudTint", (1.0, 1.0, 1.0), -250, -420), -120, -300), "", MP.MP_BASE_COLOR)
     r = mul(m, ro, sparam(m, "RoughnessMult", 0.7, -1000, 300), -900, 250, "R")
     to_prop(lerp(m, r, E(m, unreal.MaterialExpressionConstant, -700, 380, r=0.03), pud, -400, 250), "", MP.MP_ROUGHNESS)
     flat = E(m, unreal.MaterialExpressionConstant3Vector, -900, 120, constant=unreal.LinearColor(0, 0, 1, 1))
@@ -532,6 +536,23 @@ def m_unlit(name, rgb, strength):
     m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
     m.set_editor_property("two_sided", True)
     to_prop(vparam(m, "Color", (rgb[0] * strength, rgb[1] * strength, rgb[2] * strength), -400, 0), "", MP.MP_EMISSIVE_COLOR)
+    mel.recompile_material(m)
+    return m
+
+
+def m_char(name, bc_t, n_t, orm_t, tint, rough_mult=1.0):
+    """A character surface from a glTF texture set: base colour x tint, normal, ORM (AO in R, roughness in G)."""
+    m = new_material(name)
+    bc = E(m, unreal.MaterialExpressionTextureSample, -900, -200); bc.set_editor_property("texture", bc_t)
+    nm = E(m, unreal.MaterialExpressionTextureSample, -900, 100); nm.set_editor_property("texture", n_t)
+    nm.set_editor_property("sampler_type", SC.SAMPLERTYPE_NORMAL)
+    orm = E(m, unreal.MaterialExpressionTextureSample, -900, 400); orm.set_editor_property("texture", orm_t)
+    orm.set_editor_property("sampler_type", SC.SAMPLERTYPE_MASKS)
+    to_prop(mul(m, bc, vparam(m, "Tint", tint, -700, -300), -500, -200, "RGB"), "", MP.MP_BASE_COLOR)
+    to_prop(nm, "RGB", MP.MP_NORMAL)
+    to_prop(mul(m, orm, E(m, unreal.MaterialExpressionConstant, -700, 500, r=rough_mult), -500, 400, "G"), "", MP.MP_ROUGHNESS)
+    to_prop(orm, "R", MP.MP_AMBIENT_OCCLUSION)
+    m.set_editor_property("two_sided", True)
     mel.recompile_material(m)
     return m
 
@@ -1071,7 +1092,7 @@ def build():
     g.static_mesh_component.set_static_mesh(PLANE)
     g.static_mesh_component.set_world_scale3d(V(80, 80, 1))
     g.static_mesh_component.set_material(0, mi("MI_Mud", m_mud, {"UVScale": 34.0, "PuddleLevel": 0.50, "PuddleSharpness": 10.0,
-                                                               "WetDarken": 2.4, "RoughnessMult": 0.30}))
+                                                               "WetDarken": 2.4, "RoughnessMult": 0.30, "Desat": 0.7}, {"MudTint": (1.0, 0.90, 0.86)}))
     tag(g, "Ground_Mud", "Ground")
 
     # --- the CROATOAN post: right-hand post of the entrance, a great trunk with its bark taken off in front
@@ -1086,7 +1107,7 @@ def build():
         "Bark": mi("MI_Post_Bark", master, {"Wet": 0.2, "RoughnessMult": 1.4}, {"Tint": (0.62, 0.57, 0.53)},
                    {"BaseColor": ph["knotted_pine_bark"]["bc"], "Normal": ph["knotted_pine_bark"]["n"],
                     "Roughness": ph["knotted_pine_bark"]["r"], "AO": ph["knotted_pine_bark"]["ao"]}),
-        "Panel": ph_mi("MI_Post_Panel", "rough_wood", {"Pale": 0.92, "PaleBright": float(os.environ.get("LETHE_PANEL_BRIGHT", "3.1")),
+        "Panel": ph_mi("MI_Post_Panel", "rough_wood", {"Pale": 0.92, "PaleBright": float(os.environ.get("LETHE_PANEL_BRIGHT", "2.5")),
                                                        "PaleContrast": 1.35, "Wet": 0.08, "RoughnessMult": 1.2},
                        {"PaleColor": (0.66, 0.61, 0.62), "Tint": (1.0, 1.0, 1.0)}),
         "Cut": ph_mi("MI_Post_CutWood", "rough_wood", {"Pale": 0.92, "PaleBright": 1.5, "PaleContrast": 1.15, "Wet": 0.05,
@@ -1225,9 +1246,10 @@ def build():
     hbox("House_Door", 302, -330, 105, (4, 100, 200), mi_dark)
     # steep shingle roof, ridge along the front (local Y), eaves over the walls
     shingle_roof("House_Roof", B, hloc(0, 0, 930), hy, 1010, 480, 45.0, mi_thatch, course=30.0, width=(45.0, 70.0), under=mi_thatch)
-    hbox("House_Chimney", -90, 330, 850, (90, 90, 420), mi_dark)
-    hbox("House_ChimneyCap", -90, 330, 1064, (110, 110, 14), mi_dark)
-    log("chimney top at frame %s" % str(frame_of(*hloc(-90, 330, 1070))))
+    cdy = min(range(-470, 471, 10), key=lambda d_: abs(frame_of(*hloc(-40, d_, 1090))[0] - 0.875))
+    hbox("House_Chimney", -40, cdy, 900, (80, 80, 380), mi_dark)
+    hbox("House_ChimneyCap", -40, cdy, 1094, (100, 100, 12), mi_dark)
+    log("chimney at dy %d, top at frame %s, ridge there %s" % (cdy, str(frame_of(*hloc(-40, cdy, 1100))), str(frame_of(*hloc(0, cdy, 930)))))
 
     for (lbl, fx_, fy_, dep) in (("FarLantern_L", 0.32, 0.215, 2100.0), ("FarLantern_R", 0.935, 0.245, 1750.0)):
         fl_ = at_frame(fx_, fy_, dep)
@@ -1376,7 +1398,7 @@ def build():
     fa, fl = light(unreal.SpotLight, "PanelMoonFill", P, pf)
     fa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*pf), V(PX - 34 * fx, PY - 34 * fy, 115)), False)
     safe_set(fl, "intensity_units", unreal.LightUnits.LUMENS)
-    safe_set(fl, "intensity", float(os.environ.get("LETHE_POST_FILL", "18")))
+    safe_set(fl, "intensity", float(os.environ.get("LETHE_POST_FILL", "12")))
     safe_set(fl, "use_temperature", True)
     safe_set(fl, "temperature", 8500.0)
     safe_set(fl, "inner_cone_angle", 8.0)
@@ -1397,110 +1419,101 @@ def build():
     safe_set(rkl, "source_radius", 1.0)
     safe_set(rkl, "volumetric_scattering_intensity", 0.0)
 
-    # --- Nysa (stand-in): the engine's free female Mannequin in a long dark coat, back to camera, lamp raised to the post
+    # --- Nysa: "Free Medieval Assassin Girl" by Dimentrius3dArtist (Fab, CC BY 4.0), hood, mask and weapons removed,
+    # posed by Scripts/nysa_pose.py (right arm raised with the lamp, left arm down), clothes and hair darkened, a long
+    # coat skirt over the trousers. Back to camera, at the post.
     N = "Nysa"
     NYSA_HAND = None
-    sk_n = unreal.load_asset("/Game/Mannequin/Character/Mesh/SK_Mannequin_Female")
-    idle_n = unreal.load_asset("/Game/Mannequin/Animations/ThirdPersonIdle")
-    if sk_n and not os.environ.get("LETHE_NO_NYSA"):
-        mi_coat = m_cloth("M_Nysa_Coat", (0.045, 0.042, 0.048), 0.85, plaster_tx.get("BaseColor") if isinstance(plaster_tx, dict) else None, 0.3)
-        mi_hair = m_cloth("M_Nysa_Hair", (0.040, 0.024, 0.018), 0.55, None, 0.45)
-        nd = float(os.environ.get("LETHE_NYSA_DEPTH", "255"))
-        nfx = float(os.environ.get("LETHE_NYSA_FX", "0.56"))
+    if not os.environ.get("LETHE_NO_NYSA"):
+        ndir = ROOT + "/Nysa"
+        if not [p_ for p_ in eal.list_assets(ndir, recursive=True)] if eal.does_directory_exist(ndir) else True:
+            import_file(SRC + "/Nysa/gltf/NysaPosed.gltf", ndir)
+        parts = [unreal.load_asset(p_) for p_ in eal.list_assets(ndir, recursive=True)]
+        parts = [a_ for a_ in parts if isinstance(a_, unreal.StaticMesh)]
+        info = json.load(open(SRC + "/Nysa/gltf/NysaPosed_info.json"))
+        ntx = lambda f_, k_: tex("Nysa/gltf/textures", f_, k_)
+        def nmat(slot, tint, rough_mult=1.0):
+            nrm = ntx(slot + "_Normal.png", "normal")
+            safe_set(nrm, "flip_green_channel", True)
+            return m_char("M_Nysa_" + slot, ntx(slot + "_BaseColor.jpeg", "color"), nrm, ntx(slot + "_ORM.jpeg", "linear"), tint, rough_mult)
+        nm_ = {"armor": nmat("M_armor", (0.17, 0.16, 0.18), 1.1), "hair": nmat("M_hair", (0.30, 0.20, 0.17), 0.9),
+               "body": nmat("M_body1", (0.85, 0.80, 0.80), 1.0)}
+        # measure the import: height, and which horizontal axis she faces along (the raised arm reaches forward)
+        lo_ = [1e9] * 3; hi_ = [-1e9] * 3
+        for a_ in parts:
+            bb = a_.get_bounding_box()
+            for k_, (u_, v_) in enumerate(((bb.min.x, bb.max.x), (bb.min.y, bb.max.y), (bb.min.z, bb.max.z))):
+                lo_[k_] = min(lo_[k_], u_); hi_[k_] = max(hi_[k_], v_)
+        hgt = hi_[2] - lo_[2]
+        ax = 0 if abs(hi_[0] + lo_[0]) > abs(hi_[1] + lo_[1]) else 1
+        sg = 1.0 if (hi_[ax] + lo_[ax]) > 0 else -1.0
+        mesh_yaw = math.degrees(math.atan2(sg if ax == 1 else 0.0, sg if ax == 0 else 0.0))      # her forward, in mesh space
+        log("nysa import: %d parts, bbox %s..%s, height %.0f, forward axis %s%d" % (len(parts), str([round(x, 1) for x in lo_]),
+            str([round(x, 1) for x in hi_]), hgt, "+" if sg > 0 else "-", ax))
+        nsc = float(os.environ.get("LETHE_NYSA_H", "180")) / max(1.0, hgt) * (info["hi"][1] - info["lo"][1]) / max(1.0, info["hi"][1] - info["lo"][1])
+        nd = float(os.environ.get("LETHE_NYSA_DEPTH", "340"))
+        nfx = float(os.environ.get("LETHE_NYSA_FX", "0.57"))
         r_ = ray(nfx, 0.5)
         hn = math.hypot(r_[0], r_[1])
         NX, NY = CAM[0] + nd * r_[0] / hn, CAM[1] + nd * r_[1] / hn
-        nyaw = math.degrees(math.atan2(PY - NY, PX - NX)) + float(os.environ.get("LETHE_NYSA_TURN", "-8"))
+        hx_, hy_, hz_ = info["hand_r"]
+        # face so the raised hand points at the word on the post (her hand is off to her right)
+        nyaw = math.degrees(math.atan2(PY - NY, PX - NX)) + float(os.environ.get("LETHE_NYSA_TURN", "8"))
         fwx, fwy = unit(nyaw)
         rtx, rty = unit(nyaw + 90.0)
-        NH = float(os.environ.get("LETHE_NYSA_H", "168"))
-        try:
-            b_ = sk_n.get_bounds()
-            H0 = b_.origin.z + b_.box_extent.z
-        except Exception:
-            H0 = 170.0
-        ns = NH / max(100.0, H0)
-        log("nysa at (%.0f, %.0f) yaw %.0f, mannequin height %.0f, scale %.3f, frame %s" % (NX, NY, nyaw, H0, ns, str(frame_of(NX, NY, NH))))
-        na = actors.spawn_actor_from_class(unreal.SkeletalMeshActor, V(NX, NY, 0), unreal.Rotator(0, 0, nyaw - 90.0))
-        skc = na.skeletal_mesh_component
-        try:
-            skc.set_skeletal_mesh_asset(sk_n)
-        except Exception:
-            skc.set_skeletal_mesh(sk_n)
-        skc.set_world_scale3d(V(ns, ns, ns))
-        for k in range(max(1, skc.get_num_materials())):
-            skc.set_material(k, mi_coat)
-        if idle_n:
-            safe_set(skc, "animation_mode", unreal.AnimationMode.ANIMATION_SINGLE_NODE)
-            pd = unreal.SingleAnimationPlayData()
-            safe_set(pd, "anim_to_play", idle_n)
-            safe_set(pd, "saved_looping", True)
-            safe_set(pd, "saved_playing", True)
-            safe_set(pd, "saved_position", 0.3)
-            safe_set(skc, "animation_data", pd)
-            safe_set(skc, "update_animation_in_editor", True)
-        for bone in ("upperarm_r",):                     # her right arm is raised below; hide the hanging one
-            try:
-                skc.hide_bone_by_name(bone, unreal.PhysBodyOp.PBO_NONE)
-            except Exception as e:
-                log("hide bone failed: %s" % e)
-        tag(na, "Nysa_Body", N)
-        # long A-line coat skirt from the chest to the mud
+        nback = float(os.environ.get("LETHE_NYSA_BACK", "25"))      # step back so the lamp is clear of the bark
+        NX, NY = NX - fwx * nback, NY - fwy * nback
+        for a_ in parts:
+            act = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(NX, NY, -lo_[2] * nsc), unreal.Rotator(0, 0, nyaw - mesh_yaw))
+            c_ = act.static_mesh_component
+            c_.set_static_mesh(a_)
+            c_.set_world_scale3d(V(nsc, nsc, nsc))
+            for k_, slot in enumerate(a_.static_materials):
+                s_ = str(slot.material_slot_name).lower()
+                c_.set_material(k_, nm_["hair"] if "hair" in s_ else nm_["body"] if "body" in s_ else nm_["armor"])
+            tag(act, "Nysa_" + a_.get_name(), N)
+        s100 = nsc * hgt / max(1.0, info["hi"][1] - info["lo"][1])          # glTF centimetres -> world
+        NYSA_HAND = (NX + (fwx * hz_ - rtx * hx_) * s100, NY + (fwy * hz_ - rty * hx_) * s100, hy_ * s100)
+        # a long dark coat skirt from the waist to the mud, over the trousers
+        mi_coat = m_cloth("M_Nysa_Coat", (0.030, 0.028, 0.032), 0.85, plaster_tx.get("BaseColor"), 0.3)
         cb = CONE.get_bounding_box()
         ch, cw = cb.max.z - cb.min.z, cb.max.x - cb.min.x
-        top_, bot_, rb_ = NH * 0.86, -2.0, NH * 0.19
+        top_, bot_, rb_ = 150.0 * s100, -2.0, 36.0 * s100
         szc = (top_ - bot_) / ch
         sk_c = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(NX - fwx * 2, NY - fwy * 2, bot_ - cb.min.z * szc), unreal.Rotator(0, 0, nyaw))
         sk_c.static_mesh_component.set_static_mesh(CONE)
-        sk_c.static_mesh_component.set_world_scale3d(V(2 * rb_ * 0.85 / cw, 2 * rb_ / cw, szc))
+        sk_c.static_mesh_component.set_world_scale3d(V(2 * rb_ * 0.80 / cw, 2 * rb_ / cw, szc))
         sk_c.static_mesh_component.set_material(0, mi_coat)
-        tag(sk_c, "Nysa_Coat", N)
-        # long dark curly hair: a mass over the back of the head and down to the shoulder blades, with curls
-        hz = NH * 0.935
-        for (bk, zz, sz) in ((3.0, hz + 0.5, (21, 19, 23)), (7.5, hz - 22, (13, 29, 40)), (6.5, hz - 40, (11, 25, 22))):
-            h_ = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(NX - fwx * bk, NY - fwy * bk, zz), unreal.Rotator(0, 0, nyaw))
-            h_.static_mesh_component.set_static_mesh(SPHERE)
-            h_.static_mesh_component.set_world_scale3d(V(sz[0] / 100, sz[1] / 100, sz[2] / 100))
-            h_.static_mesh_component.set_material(0, mi_hair)
-            tag(h_, "Nysa_Hair", N)
-        for k in range(70):
-            a_ = math.radians(180 + rng.uniform(-100, 100))
-            zz = rng.uniform(hz - 52, hz + 8)
-            rr = (10.0 if zz > hz - 14 else 7.0) + rng.uniform(-1, 1.5)
-            cx_ = math.cos(a_) * rr
-            cy_ = math.sin(a_) * rr * (1.6 if zz < hz - 14 else 1.0)
-            r2 = rng.uniform(2.6, 4.2)
-            h_ = actors.spawn_actor_from_class(unreal.StaticMeshActor,
-                                               V(NX + fwx * (cx_ - 3) + rtx * cy_, NY + fwy * (cx_ - 3) + rty * cy_, zz), unreal.Rotator(0, 0, rng.uniform(0, 360)))
-            h_.static_mesh_component.set_static_mesh(SPHERE)
-            h_.static_mesh_component.set_world_scale3d(V(r2 / 50, r2 / 50, r2 * 1.5 / 50))
-            h_.static_mesh_component.set_material(0, mi_hair)
-            tag(h_, "Nysa_Curl", N)
-        # the raised right arm (a coat sleeve) holding the UV lamp toward the post
-        sh = (NX + rtx * 17 * ns, NY + rty * 17 * ns, NH * 0.81)
-        NYSA_HAND = (NX + fwx * 50 + rtx * 12, NY + fwy * 50 + rty * 12, float(os.environ.get("LETHE_NYSA_HANDZ", "158")))
-        el = ((sh[0] + NYSA_HAND[0]) / 2 + rtx * 9, (sh[1] + NYSA_HAND[1]) / 2 + rty * 9, (sh[2] + NYSA_HAND[2]) / 2 - 10)
-        place_between("Nysa_Sleeve", N, CYL, V(*sh), V(*el), 11, mi_coat)
-        place_between("Nysa_Sleeve", N, CYL, V(*el), V(*NYSA_HAND), 9, mi_coat)
-        lb = (NYSA_HAND[0] - fwx * 4, NYSA_HAND[1] - fwy * 4, NYSA_HAND[2])
-        lf = (NYSA_HAND[0] + fwx * 12, NYSA_HAND[1] + fwy * 12, NYSA_HAND[2] + 2)
-        place_between("Nysa_Lamp", N, CYL, V(*lb), V(*lf), 6.5, m_iron)
-        lens = place_between("Nysa_LampLens", N, CYL, V(*lf), V(lf[0] + fwx * 1.0, lf[1] + fwy * 1.0, lf[2]), 5.0, m_uvlens)
-        for a_ in [x for x in actors.get_all_level_actors() if x.get_actor_label().startswith(("Nysa_Lamp", "Nysa_LampLens"))]:
+        tag(sk_c, "Nysa_CoatSkirt", N)
+        # the UV lamp in her hand
+        lb = (NYSA_HAND[0] - fwx * 6, NYSA_HAND[1] - fwy * 6, NYSA_HAND[2] + 3)
+        lf = (NYSA_HAND[0] + fwx * 7, NYSA_HAND[1] + fwy * 7, NYSA_HAND[2] + 4)
+        place_between("Nysa_Lamp", N, CYL, V(*lb), V(*lf), 3.6, m_iron)
+        place_between("Nysa_LampLens", N, CYL, V(*lf), V(lf[0] + fwx * 0.8, lf[1] + fwy * 0.8, lf[2]), 3.0, m_uvlens)
+        for a_ in [x for x in actors.get_all_level_actors() if x.get_actor_label().startswith("Nysa_Lamp")]:
             a_.static_mesh_component.set_editor_property("cast_shadow", False)
-        log("nysa hand at %s" % str(frame_of(*NYSA_HAND)))
+        log("nysa at (%.0f, %.0f) yaw %.0f scale %.3f, head frame %s, hand frame %s" % (NX, NY, nyaw, nsc,
+            str(frame_of(NX, NY, info["head"][1] * s100)), str(frame_of(*NYSA_HAND))))
 
     # Nysa's UV Lantern (from where she will stand): a tight violet pool on the post, no spill
     src = (CAM[0] + 300 * math.cos(math.radians(CAM_YAW + 8.5)), CAM[1] + 300 * math.sin(math.radians(CAM_YAW + 8.5)), 168.0)
     if NYSA_HAND:
-        src = (NYSA_HAND[0] + fwx * 16, NYSA_HAND[1] + fwy * 16, NYSA_HAND[2] + 2)
+        # from the letters back toward her hand, at least 45 cm out, so the light never starts inside the bark
+        tg_ = (PX - 38 * fx, PY - 38 * fy, 187.0)
+        dv_ = [h_ - t_ for h_, t_ in zip(NYSA_HAND, tg_)]
+        dd_ = math.sqrt(sum(x * x for x in dv_))
+        k_ = max(dd_, float(os.environ.get("LETHE_UV_STANDOFF", "45"))) / dd_
+        src = tuple(t_ + x * k_ for t_, x in zip(tg_, dv_))
+        log("uv: hand %.0f cm from the letters, light at %s" % (dd_, str([round(x) for x in src])))
     uva, uv = light(unreal.SpotLight, "UVLantern", L, src)
     uva.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*src), V(PX - 38 * fx, PY - 38 * fy, 187)), False)
     safe_set(uv, "intensity_units", unreal.LightUnits.LUMENS)
-    safe_set(uv, "intensity", float(os.environ.get("LETHE_UV", "0.95")))
-    safe_set(uv, "light_color", unreal.Color(r=121, g=97, b=217, a=255))
+    safe_set(uv, "intensity", float(os.environ.get("LETHE_UV", "0.75")))
+    safe_set(uv, "light_color", unreal.Color(r=112, g=72, b=232, a=255))
     safe_set(uv, "inner_cone_angle", 0.0)
-    safe_set(uv, "outer_cone_angle", 17.0)
+    safe_set(uv, "outer_cone_angle", 30.0 if NYSA_HAND else 17.0)
+    if NYSA_HAND:
+        safe_set(uv, "cast_shadows", False)          # her own hand and sleeve sit right at the lamp
     safe_set(uv, "attenuation_radius", 320.0)
     safe_set(uv, "volumetric_scattering_intensity", 0.1)
     safe_set(uv, "source_radius", 4.0)
@@ -1512,10 +1525,12 @@ def build():
         tgt = V(PX - 38 * fx - fy * dside, PY - 38 * fy + fx * dside, 180 + dz)
         sa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*src), tgt), False)
         safe_set(sl, "intensity_units", unreal.LightUnits.LUMENS)
-        safe_set(sl, "intensity", float(os.environ.get("LETHE_UV", "0.95")) * share)
-        safe_set(sl, "light_color", unreal.Color(r=121, g=97, b=217, a=255))
+        safe_set(sl, "intensity", float(os.environ.get("LETHE_UV", "0.75")) * share)
+        safe_set(sl, "light_color", unreal.Color(r=112, g=72, b=232, a=255))
         safe_set(sl, "inner_cone_angle", 0.0)
-        safe_set(sl, "outer_cone_angle", cone)
+        safe_set(sl, "outer_cone_angle", cone * (1.7 if NYSA_HAND else 1.0))
+        if NYSA_HAND:
+            safe_set(sl, "cast_shadows", False)
         safe_set(sl, "attenuation_radius", 320.0)
         safe_set(sl, "source_radius", 4.0)
         safe_set(sl, "volumetric_scattering_intensity", 0.1)
