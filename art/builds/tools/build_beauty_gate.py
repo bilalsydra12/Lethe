@@ -1612,7 +1612,7 @@ def build():
             mir = -1.0 if yhi_ < -ylo_ else 1.0          # the importer may flip Y; the sleeves reach forward (+Y)
             log("coat: %d part(s), y %.1f..%.1f, mirror y %s" % (len(coat_parts), ylo_, yhi_, mir))
             mi_wool = m_cloth("M_Nysa_Wool", (0.034, 0.033, 0.040), 0.82, plaster_tx.get("BaseColor"), 0.25)
-            mi_leather = m_cloth("M_Nysa_Leather", (0.075, 0.048, 0.032), 0.5, plaster_tx.get("BaseColor"), 0.0)
+            mi_leather = m_cloth("M_Nysa_Leather", (0.11, 0.068, 0.042), 0.5, plaster_tx.get("BaseColor"), 0.0)
             for coat_sm in coat_parts:
                 ca_ = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(NX, NY, 0.0), unreal.Rotator(0, 0, myaw))
                 ca_.static_mesh_component.set_static_mesh(coat_sm)

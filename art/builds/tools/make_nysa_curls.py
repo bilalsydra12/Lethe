@@ -96,7 +96,7 @@ CL = []
 for c in clumps:
     CL.append({"len": rng.uniform(36, 58), "rad": rng.uniform(1.6, 3.3), "pitch": rng.uniform(4.2, 7.0),
                "phase": rng.uniform(0, 6.28), "spin": rng.choice((-1, 1)), "drift": rng.uniform(-0.22, 0.22),
-               "lift": rng.uniform(0.8, 2.4), "stand": rng.uniform(0.0, 5.5) ** 1.2, "wob": rng.uniform(0, 6.28),
+               "lift": rng.uniform(1.4, 3.6), "stand": rng.uniform(0.0, 5.5) ** 1.2, "wob": rng.uniform(0, 6.28),
                "wobf": rng.uniform(0.05, 0.12), "wa": rng.uniform(0.6, 2.2)})
 
 
@@ -130,7 +130,10 @@ def clump_path(ci):
         s += step
         # meander a little (no two ringlets hang the same), spread out lower down, and stand off the back by
         # different amounts so the curls pile up in depth instead of lying in one flat sheet
-        x = x0 * (1.0 + 0.007 * s) + c["drift"] * s + c["wa"] * math.sin(c["wob"] + s * c["wobf"])
+        # the mass falls a little toward her left (+X), as painted, leaving the strap on her right shoulder in view;
+        # strands on her right side draw in toward the middle
+        x = x0 * (1.0 + 0.007 * s) * (0.82 if x0 < 0 else 1.0) + c["drift"] * s + c["wa"] * math.sin(c["wob"] + s * c["wobf"]) \
+            + 3.5 * min(1.0, s / 18.0)
         y = min(y0 - 0.02 * s, back_y(x, z) - 1.2 - c["stand"] * min(1.0, s / 15.0) - 0.03 * s) \
             + 0.8 * math.sin(c["wob"] * 1.7 + s * c["wobf"] * 0.8)
         pts.append((x, y, z))
@@ -174,8 +177,10 @@ for r in roots:
         w = min(1.0, max(0.0, (i - n_over) / 10.0))
         hang = max(0.0, i - n_over) * 0.6
         # waves start above the ears, open into ringlets as the hair hangs; the curl size breathes along the length
-        ring = c["rad"] * jitter * min(1.0, (hang + 3.0) / 10.0) * (1.0 - 0.3 * k) * (0.8 + 0.35 * math.sin(hang * 0.21 + c["wob"]))
-        ang = c["phase"] + ph_off + c["spin"] * 2 * math.pi * hang / (c["pitch"] * (1.0 + 0.15 * math.sin(hang * 0.13)))
+        # loose waves already over the crown (the painting's hair is curly right from the top), full ringlets once it hangs
+        sc_ = i * 0.65
+        ring = c["rad"] * jitter * max(0.38, min(1.0, (hang + 3.0) / 10.0)) * (1.0 - 0.3 * k) * (0.8 + 0.35 * math.sin(sc_ * 0.21 + c["wob"]))
+        ang = c["phase"] + ph_off + c["spin"] * 2 * math.pi * sc_ / (c["pitch"] * (1.0 + 0.15 * math.sin(sc_ * 0.13)))
         roff = [ring * (math.cos(ang) * n[j] + math.sin(ang) * b[j]) for j in range(3)]
         q = [p[j] + off0[j] * (1 - w) * (1 - 0.6 * min(1.0, i / max(1, n_over))) + roff[j] + rng.gauss(0, fuzz) for j in range(3)]
         pts.append(q)

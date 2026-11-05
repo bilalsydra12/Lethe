@@ -644,3 +644,19 @@ The painting's left wall is no closer to the camera than ours: measured, both me
 **Still different:**
 1. The rail at the left wall's foot is lost in the mist; the painting shows it as a dark line.
 2. Small things: the painting's coat has a visible strap across the back, and her hair has more defined ringlets near the crown.
+
+## Painting match · round 12 · Nysa's crown, bag and sleeve
+
+![painting match round 12](2026-11-05_gate_painting_match_r12.png)
+
+Side by side, painting left: [compare/2026-11-05_painting_vs_match_r12.jpg](compare/2026-11-05_painting_vs_match_r12.jpg).
+
+**What changed:**
+- **Curly from the crown.** The curls now start as loose waves right at the top of her head and stand fuller off the skull, instead of lying flat until the ears. The hanging mass falls a little toward her left, as painted.
+- **The bag** hangs round on her right flank, a little behind, so in this shot it sits centre-right of her back below the belt, on the post side, as in the painting. Its strap runs cross-body from her left shoulder. Checked from straight behind her first: the shot sees her from behind her left, so her right hip had shown on the far side, under her hair.
+- **Left sleeve** looser and nudged out, running to the wrist; the hanging forearm had shown skin along it.
+- Leather a little lighter.
+
+**Still different:**
+1. The strap across her back is hard to see in this light.
+2. The rail at the left wall's foot is lost in the mist.

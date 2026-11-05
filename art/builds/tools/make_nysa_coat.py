@@ -164,11 +164,17 @@ for sd in ("r", "l"):
     inward = norm((-S[0], 0.0, 0.0))
     S0 = add(add(S, mul(inward, 5.0)), (0, 0, 1.5))          # start inside the shoulder of the coat
     W = add(H, mul(norm(sub(E, H)), 1.5))                    # cuff just short of the wrist bone
+    extra = 0.0
+    if sd == "l":
+        # the hanging arm renders a few cm further out than the solved pose: a looser sleeve, nudged out, to the wrist
+        out_ = (2.5, 0.0, 0.0)
+        E, W = add(E, out_), add(H, mul(out_, 1.2))
+        extra = 1.6
     path = catmull([S0, add(S, (0, 0, 1.0)), E, W], 8)
-    tube(path, lambda t: 9.4 - 3.6 * t + 0.8 * math.sin(math.pi * t), wrinkle=0.06)      # loose coat sleeves, narrower at the wrist
+    tube(path, lambda t: 9.4 + extra - 3.6 * t + 0.8 * math.sin(math.pi * t), wrinkle=0.06)      # loose coat sleeves, narrower at the wrist
     # cuff: a slightly wider short band
     d_ = norm(sub(W, E))
-    tube([add(W, mul(d_, -4.0)), W], lambda t: 5.5, seg=24)
+    tube([add(W, mul(d_, -4.0)), W], lambda t: 5.5 + extra * 0.6, seg=24)
 
 
 # ---------------------------------------------------------------- belt at the waist
@@ -209,15 +215,20 @@ def box(c, size, yaw_deg, mat="Leather", sag=0.0):
 
 bx, bz = -14.0, 84.0
 th_b = math.atan2(-1.0, bx / 16.0)                    # where on the hip ellipse it hangs
-hip = surf(bz, -math.pi / 2 - 0.55, 0.0)
-bag_c = (hip[0] - 1.0, hip[1] - 5.0, bz)
-box(bag_c, (23.0, 8.0, 19.0), 18.0, sag=0.06)                     # body
-box((bag_c[0] + 0.3, bag_c[1] - 4.3, bag_c[2] + 4.5), (24.0, 1.2, 11.0), 18.0)   # flap
-box((bag_c[0] + 0.3, bag_c[1] - 5.0, bag_c[2] + 0.5), (3.0, 0.8, 3.5), 18.0)     # buckle tab
+# round on her right flank, a little behind: the side of her toward the post in this shot, as painted
+TH_BAG = -math.pi / 2 - 1.05
+hip = surf(bz, TH_BAG, 0.0)
+on_ = (math.cos(TH_BAG), math.sin(TH_BAG))                  # outward from her body there
+bag_c = (hip[0] + on_[0] * 4.5, hip[1] + on_[1] * 4.5, bz)
+BY = -60.0                                                  # bag turned so its flap faces outward
+fy_ = (math.sin(math.radians(BY)), -math.cos(math.radians(BY)))   # the bag's local -Y in plan
+box(bag_c, (23.0, 8.0, 19.0), BY, sag=0.06)                         # body
+box((bag_c[0] + fy_[0] * 4.3, bag_c[1] + fy_[1] * 4.3, bag_c[2] + 4.5), (24.0, 1.2, 11.0), BY)   # flap
+box((bag_c[0] + fy_[0] * 5.0, bag_c[1] + fy_[1] * 5.0, bag_c[2] + 0.5), (3.0, 0.8, 3.5), BY)     # buckle tab
 
-# strap: from the left shoulder, diagonally across the back, to the bag's top
-top_l = (10.0, -4.0, 141.5)
-end_ = (bag_c[0] + 8.0, bag_c[1] + 1.0, bag_c[2] + 9.5)
+# strap: cross-body, from her left shoulder diagonally across her back to the bag on her right flank
+top_l = (11.0, -3.5, 141.5)
+end_ = (bag_c[0] + 3.0, bag_c[1] + 2.0, bag_c[2] + 9.5)
 NS = 40
 rows = []
 for i in range(NS + 1):
