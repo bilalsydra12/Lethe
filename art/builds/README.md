@@ -614,3 +614,17 @@ Side by side, painting left: [compare/2026-11-05_painting_vs_match_r9.jpg](compa
 **Still different:**
 1. The tower itself, its legs, gallery and roof, is mostly lost in the fog; the painting shows its shape clearly.
 2. The warm glints on the mud are fainter than the painting's.
+
+## Painting match · round 10 · the watchtower
+
+![painting match round 10](2026-11-05_gate_painting_match_r10.png)
+
+Side by side, painting left: [compare/2026-11-05_painting_vs_match_r10.jpg](compare/2026-11-05_painting_vs_match_r10.jpg).
+
+**What changed:**
+- **The tower stands nearer.** It was 32 m away, at the painting's frame position, so the fog swallowed it. It is now built at 0.62 scale about its foot and stands about 18 m away in the same frame position. Its roof, railed gallery, lamp and log walls read through the fog, as painted. Its lights are dimmed to match the nearer distance (a first try at the old strength became an orange haze).
+- **Mud light:** the cool glint is halved and the warm one doubled, so the wet mud is darker and warmer.
+
+**Still different:**
+1. The painting's left wall comes nearer the camera, with a heavy log along its foot; ours recedes.
+2. The painting's stake tips are rounded and pencil-sharpened; ours are faceted.

@@ -1248,8 +1248,9 @@ def build():
 
     # --- the watchtower, top left: legs, platform, railed walk, shingled pitched roof, a lantern
     T = "Watchtower"
-    _wl = at_frame_z(0.19, 0.14, 850.0)
-    TX, TY = _wl[0] + 140.0, _wl[1] - 140.0
+    TS = float(os.environ.get("LETHE_TOWER_SCALE", "0.62"))
+    _wl = at_frame_z(0.19, 0.14, 850.0 * TS)
+    TX, TY = _wl[0] + 140.0 * TS, _wl[1] - 140.0 * TS
     log("tower at (%.0f, %.0f), lantern depth %.0f" % (TX, TY, frame_of(*_wl)[2]))
     mi_shingle = ph_mi("MI_Shingle", "wood_trunk_wall", {"Wet": 0.35, "UVScale": 1.5}, {"Tint": (0.40, 0.38, 0.36)})
     _unused_shingle = (
@@ -1286,8 +1287,8 @@ def build():
         place_between("Tower_Fascia", T, sm_bm, V(TX - 275, TY + side * half, eave - 4), V(TX + 275, TY + side * half, eave - 4), 12, mi_dark)
     wl = (TX - 140, TY + 140, 850)
     place_between("Tower_LampHook", T, sm_bm, V(wl[0], wl[1], wl[2] + 14), V(wl[0], wl[1], wl[2] + 45), 1.6, m_iron)
-    lantern("Tower_Lamp", T, wl, 44, float(os.environ.get("LETHE_TOWER_LAMP", "170")), kelvin=2200, radius=900, vol=1.1, flame=1.4)
-    point("Tower_GalleryGlow", T, (TX, TY, 790), float(os.environ.get("LETHE_TOWER_GLOW", "300")), 2200, radius=520, source=30, vol=0.9)     # warm light inside the gallery
+    lantern("Tower_Lamp", T, wl, 44, float(os.environ.get("LETHE_TOWER_LAMP", "60")), kelvin=2200, radius=900, vol=0.45, flame=1.2)
+    point("Tower_GalleryGlow", T, (TX, TY, 790), float(os.environ.get("LETHE_TOWER_GLOW", "90")), 2200, radius=520, source=30, vol=0.3)     # warm light inside the gallery
     # the tower stands on a log-walled lower storey down to the ground (solid below the gallery, as painted)
     for (ax, ay, bx_, by_) in ((-185, -185, 185, -185), (185, -185, 185, 185), (185, 185, -185, 185), (-185, 185, -185, -185)):
         zz = 4.0
@@ -1295,6 +1296,17 @@ def build():
             place_between("Tower_WallLog", T, sm_l1, V(TX + ax * 1.04, TY + ay * 1.04, zz), V(TX + bx_ * 1.04, TY + by_ * 1.04, zz + rng.uniform(-3, 3)),
                           30, mi_dark, spin=rng.uniform(0, 360))
             zz += 28.0
+    if abs(TS - 1.0) > 1e-3:
+        for a_ in actors.get_all_level_actors():
+            if str(a_.get_folder_path()) != T:
+                continue
+            l_ = a_.get_actor_location()
+            a_.set_actor_location(V(TX + (l_.x - TX) * TS, TY + (l_.y - TY) * TS, l_.z * TS), False, False)
+            s_ = a_.get_actor_scale3d()
+            a_.set_actor_scale3d(V(s_.x * TS, s_.y * TS, s_.z * TS))
+            for lc_ in a_.get_components_by_class(unreal.LocalLightComponent):
+                lc_.set_editor_property("attenuation_radius", lc_.get_editor_property("attenuation_radius") * TS)
+        log("tower scaled %.2f about its foot, lantern frame %s" % (TS, str(frame_of(*_wl))))
 
     # --- the house behind, top right (painting: a gabled two-storey house well behind the palisade, seen at an angle,
     # its roof and two chimneys dark against the fog, a warm window high in the left gable and a lit door below it)
@@ -1896,7 +1908,7 @@ def build():
     wga, wgl = light(unreal.SpotLight, "MudGlintWarm", L, _ws)
     wga.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*_ws), V(*_wt)), False)
     safe_set(wgl, "intensity_units", unreal.LightUnits.LUMENS)
-    safe_set(wgl, "intensity", float(os.environ.get("LETHE_MUD_WARM", "28")))
+    safe_set(wgl, "intensity", float(os.environ.get("LETHE_MUD_WARM", "60")))
     safe_set(wgl, "use_temperature", True)
     safe_set(wgl, "temperature", 2300.0)
     safe_set(wgl, "inner_cone_angle", 12.0)
@@ -1908,7 +1920,7 @@ def build():
     ga, gl_ = light(unreal.SpotLight, "MudGlint", L, _gs)
     ga.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*_gs), V(*_gt)), False)
     safe_set(gl_, "intensity_units", unreal.LightUnits.LUMENS)
-    safe_set(gl_, "intensity", float(os.environ.get("LETHE_MUD_GLINT", "90")))
+    safe_set(gl_, "intensity", float(os.environ.get("LETHE_MUD_GLINT", "45")))
     safe_set(gl_, "use_temperature", True)
     safe_set(gl_, "temperature", 7000.0)
     safe_set(gl_, "inner_cone_angle", 10.0)
