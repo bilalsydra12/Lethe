@@ -1286,8 +1286,8 @@ def build():
         place_between("Tower_Fascia", T, sm_bm, V(TX - 275, TY + side * half, eave - 4), V(TX + 275, TY + side * half, eave - 4), 12, mi_dark)
     wl = (TX - 140, TY + 140, 850)
     place_between("Tower_LampHook", T, sm_bm, V(wl[0], wl[1], wl[2] + 14), V(wl[0], wl[1], wl[2] + 45), 1.6, m_iron)
-    lantern("Tower_Lamp", T, wl, 44, 90, kelvin=2200, radius=800, vol=0.9, flame=1.3)
-    point("Tower_GalleryGlow", T, (TX, TY, 790), 110, 2200, radius=460, source=30, vol=0.6)     # warm light inside the gallery
+    lantern("Tower_Lamp", T, wl, 44, float(os.environ.get("LETHE_TOWER_LAMP", "170")), kelvin=2200, radius=900, vol=1.1, flame=1.4)
+    point("Tower_GalleryGlow", T, (TX, TY, 790), float(os.environ.get("LETHE_TOWER_GLOW", "300")), 2200, radius=520, source=30, vol=0.9)     # warm light inside the gallery
     # the tower stands on a log-walled lower storey down to the ground (solid below the gallery, as painted)
     for (ax, ay, bx_, by_) in ((-185, -185, 185, -185), (185, -185, 185, 185), (185, 185, -185, 185), (-185, 185, -185, -185)):
         zz = 4.0
@@ -1890,6 +1890,21 @@ def build():
     _gt = at_frame_z(0.28, 0.90, 0.0)
     _gs = at_frame_z(0.36, 0.74, 0.0)
     _gs = (_gs[0], _gs[1], 260.0)
+    _wt = at_frame_z(0.20, 0.88, 0.0)
+    _ws = at_frame_z(0.28, 0.66, 0.0)                       # off to the left of Nysa, so it never lights her
+    _ws = (_ws[0], _ws[1], 90.0)
+    wga, wgl = light(unreal.SpotLight, "MudGlintWarm", L, _ws)
+    wga.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*_ws), V(*_wt)), False)
+    safe_set(wgl, "intensity_units", unreal.LightUnits.LUMENS)
+    safe_set(wgl, "intensity", float(os.environ.get("LETHE_MUD_WARM", "28")))
+    safe_set(wgl, "use_temperature", True)
+    safe_set(wgl, "temperature", 2300.0)
+    safe_set(wgl, "inner_cone_angle", 12.0)
+    safe_set(wgl, "outer_cone_angle", 34.0)
+    safe_set(wgl, "attenuation_radius", 1200.0)
+    safe_set(wgl, "source_radius", 15.0)
+    safe_set(wgl, "volumetric_scattering_intensity", 0.0)
+    safe_set(wgl, "cast_shadows", True)
     ga, gl_ = light(unreal.SpotLight, "MudGlint", L, _gs)
     ga.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*_gs), V(*_gt)), False)
     safe_set(gl_, "intensity_units", unreal.LightUnits.LUMENS)
@@ -1974,6 +1989,15 @@ def build():
                 safe_set(comp, "radial_fog_extinction", ext)
                 safe_set(comp, "height_fog_extinction", ext)
             tag(v, "GroundMist", L)
+        # the painting's bright mist bank at the far left, lying on the wall foot
+        for (fx_, fy_, sx_, sz_, ext_) in ((0.02, 0.63, 7.0, 0.95, 0.55), (0.12, 0.66, 6.0, 0.8, 0.45), (0.22, 0.70, 4.5, 0.55, 0.30)):
+            gx, gy, _ = at_frame_z(fx_, fy_, 0.0)
+            v = actors.spawn_actor_from_class(lfv_cls, V(gx, gy, 0), unreal.Rotator(0, 0, 0))
+            v.set_actor_scale3d(V(sx_, sx_, sz_))
+            for comp in v.get_components_by_class(unreal.LocalFogVolumeComponent):
+                safe_set(comp, "radial_fog_extinction", ext_ * float(os.environ.get("LETHE_MIST_LEFT", "1.0")))
+                safe_set(comp, "height_fog_extinction", ext_ * float(os.environ.get("LETHE_MIST_LEFT", "1.0")))
+            tag(v, "GroundMist_Left", L)
 
     ppv = actors.spawn_actor_from_class(unreal.PostProcessVolume, V(0, 0, 0), unreal.Rotator(0, 0, 0))
     ppv.set_editor_property("unbound", True)

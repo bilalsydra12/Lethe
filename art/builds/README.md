@@ -599,3 +599,18 @@ Side by side, painting left: [compare/2026-11-05_painting_vs_match_r8.jpg](compa
 1. The painting's mud has more broken, glossy highlights from the lantern; ours is lit mostly by the cool fill.
 2. The far left: the painting's wall foot is lost in thick low mist; ours is clearer.
 3. The tower top left is less visible than in the painting.
+
+## Painting match · round 9 · mist, tower, mud light
+
+![painting match round 9](2026-11-05_gate_painting_match_r9.png)
+
+Side by side, painting left: [compare/2026-11-05_painting_vs_match_r9.jpg](compare/2026-11-05_painting_vs_match_r9.jpg).
+
+**What changed:**
+- **Mist at the far left.** Three more low fog volumes lie on the foot of the left wall, so it fades into a pale bank as painted.
+- **Watchtower.** Its lamp and the warm light in its gallery are brighter, so the tower reads as a glow in the fog top left.
+- **Warm light on the mud.** A low, shadowed warm spot from the gate side, off to Nysa's left, puts a little of the lantern's colour in the wet mud. A first try sat right behind her: it turned her hair ginger and burnt a hotspot into the mud, so it was moved and dimmed.
+
+**Still different:**
+1. The tower itself, its legs, gallery and roof, is mostly lost in the fog; the painting shows its shape clearly.
+2. The warm glints on the mud are fainter than the painting's.
