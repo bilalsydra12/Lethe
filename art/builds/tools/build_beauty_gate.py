@@ -1238,7 +1238,7 @@ def build():
     lx, ly, lz = at_frame(float(os.environ.get("LETHE_GLANTERN_FX", "0.505")), float(os.environ.get("LETHE_GLANTERN_FY", "0.355")), _ld)
     log("gate lantern at (%.0f, %.0f, %.0f), frame %s" % (lx, ly, lz, str(frame_of(lx, ly, lz))))
     place_between("GateLantern_Hook", G, sm_bm, V(lx, ly, lz + 18), V(lx, ly, lz + 40), 1.6, m_iron)
-    lantern("GateLantern", G, (lx, ly, lz), 50, float(os.environ.get("LETHE_GLANTERN_LM", "16")), radius=520, vol=0.45, flame=1.15)
+    lantern("GateLantern", G, (lx, ly, lz), 50, float(os.environ.get("LETHE_GLANTERN_LM", "11")), radius=520, vol=0.45, flame=1.15)
 
     # --- the palisade -------------------------------------------------------------------------
     # left: a tight bundle of 35-50 cm trunks leaning toward the gate ("/" in frame), two roped rails, a row behind
@@ -1314,11 +1314,11 @@ def build():
     # --- the house behind, top right (painting: a gabled two-storey house well behind the palisade, seen at an angle,
     # its roof and two chimneys dark against the fog, a warm window high in the left gable and a lit door below it)
     B = "House"
-    _rg = at_frame(float(os.environ.get("LETHE_HOUSE_FX", "0.885")), float(os.environ.get("LETHE_HOUSE_FY", "0.115")),
+    _rg = at_frame(float(os.environ.get("LETHE_HOUSE_FX", "0.78")), float(os.environ.get("LETHE_HOUSE_FY", "0.115")),
                    float(os.environ.get("LETHE_HOUSE_DEPTH", "2650")))
     HX, HY = _rg[0], _rg[1]
     HS = max(0.45, min(1.1, _rg[2] / 930.0))              # scale so the ridge lands where the painting has it
-    hy = math.degrees(math.atan2(CAM[1] - HY, CAM[0] - HX)) - float(os.environ.get("LETHE_HOUSE_TURN", "50"))
+    hy = math.degrees(math.atan2(CAM[1] - HY, CAM[0] - HX)) - float(os.environ.get("LETHE_HOUSE_TURN", "-62"))
 
     def hloc(dx, dy, dz):
         return local((HX, HY, 0.0), hy, dx * HS, dy * HS, dz * HS)
@@ -1335,9 +1335,27 @@ def build():
     for (dy_, dz_, s_) in ((-335, 150, 1), (335, 150, -1), (-112, 445, -1), (112, 445, 1)):
         hbox("House_Brace", 304, dy_, dz_, (12, 18, 300), mi_dark, roll=s_ * 35)
     hbox("House_Door", 302, -330, 105, (4, 100, 200), mi_dark)
+    # warm windows on the front, high enough to show over the stakes (the painting's glow just above the palisade)
+    for (lbl, dy_, dz_, lum) in (("House_FrontWindow1", -260, 470, 30), ("House_FrontWindow2", 120, 470, 18), ("House_FrontWindow3", -260, 250, 12)):
+        hbox(lbl, 302, dy_, dz_, (4, 85, 105), m_win)
+        hbox(lbl + "_Mullion", 305, dy_, dz_, (5, 6, 107), mi_dark)
+        hbox(lbl + "_Transom", 305, dy_, dz_ + 10, (5, 87, 6), mi_dark)
+        point(lbl + "_Light", B, hloc(360, dy_, dz_), lum, 2000, radius=500 * HS, source=25, vol=0.7)
+    # cool moonlight on the house, so its wall and roof read against the fog
+    _hc = hloc(0, 0, 450)
+    _hm = (CAM[0] + 200.0, CAM[1] - 600.0, 1400.0)
+    hma, hml = light(unreal.SpotLight, "House_MoonFill", B, _hm)
+    hma.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*_hm), V(*_hc)), False)
+    safe_set(hml, "intensity_units", unreal.LightUnits.LUMENS)
+    safe_set(hml, "intensity", float(os.environ.get("LETHE_HOUSE_FILL", "900")))
+    safe_set(hml, "use_temperature", True)
+    safe_set(hml, "temperature", 8500.0)
+    safe_set(hml, "outer_cone_angle", 14.0)
+    safe_set(hml, "attenuation_radius", 6000.0)
+    safe_set(hml, "volumetric_scattering_intensity", 0.0)
     # the left gable end: a warm window high up, a lit doorway below
-    for (lbl, dx_, dz_, w_, h_, lum) in (("House_GableWindow", 0, 700, 80, 95, 16), ("House_GableWindow2", -150, 330, 70, 90, 6),
-                                          ("House_GableDoor", 150, 110, 95, 200, 10)):
+    for (lbl, dx_, dz_, w_, h_, lum) in (("House_GableWindow", 0, 700, 80, 95, 40), ("House_GableWindow2", -150, 330, 70, 90, 15),
+                                          ("House_GableDoor", 150, 110, 95, 200, 25)):
         hbox(lbl, dx_, -452, dz_, (w_, 4, h_), m_win)
         hbox(lbl + "_Frame", dx_, -455, dz_, (6, 5, h_ + 4), mi_dark)
         hbox(lbl + "_Head", dx_, -455, dz_ + h_ / 2, (w_ + 10, 6, 8), mi_dark)
@@ -1355,7 +1373,7 @@ def build():
     for (lbl, fx_, fy_, dep) in (("FarLantern_L", 0.32, 0.215, 2100.0), ("FarLantern_R", 0.935, 0.245, 1750.0)):
         fl_ = at_frame(fx_, fy_, dep)
         place_between(lbl + "_Pole", "Lights", sm_l1, V(fl_[0], fl_[1], -20), V(fl_[0], fl_[1] + 1, fl_[2] + 30), 16, mi_dark)
-        lantern(lbl, "Lights", (fl_[0] - 14, fl_[1], fl_[2]), 40, 30 if fx_ < 0.5 else 12, kelvin=2300, radius=600,
+        lantern(lbl, "Lights", (fl_[0] - 14, fl_[1], fl_[2]), 40, 30 if fx_ < 0.5 else 30, kelvin=2300, radius=600,
                 vol=0.8 if fx_ < 0.5 else 0.2, flame=1.3)        # the right one dim: no glowing fog between house and post
         log("%s at %s" % (lbl, str(frame_of(*fl_))))
 
@@ -1464,7 +1482,7 @@ def build():
     mdir = (math.cos(math.radians(MPITCH)) * math.cos(math.radians(MYAW)), math.cos(math.radians(MPITCH)) * math.sin(math.radians(MYAW)),
             math.sin(math.radians(MPITCH)))
     m_sky = m_hdri_sky("M_SkyHDRI", sky_hdri, (0.0, 0.0, -1.0), float(os.environ.get("LETHE_SKY_YAW", "0.15")),
-                       float(os.environ.get("LETHE_SKY_BRIGHT", "0.30")))
+                       float(os.environ.get("LETHE_SKY_BRIGHT", "0.45")))
     sky = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(*CAM), unreal.Rotator(0, 0, 0))
     sky.static_mesh_component.set_static_mesh(SPHERE)
     sky.static_mesh_component.set_world_scale3d(V(4000, 4000, 4000))       # 2 km round the camera
@@ -1890,6 +1908,19 @@ def build():
         ba.static_mesh_component.set_editor_property("cast_shadow", False)
         log("uv beam: %.0f cm long" % bl_)
 
+    _rw = (1072.0, 274.0, 250.0)
+    _rs = (CAM[0] - 150.0, CAM[1] - 350.0, 650.0)
+    rwa, rwl = light(unreal.SpotLight, "RightWallFill", L, _rs)
+    rwa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*_rs), V(*_rw)), False)
+    safe_set(rwl, "intensity_units", unreal.LightUnits.LUMENS)
+    safe_set(rwl, "intensity", float(os.environ.get("LETHE_RIGHT_FILL", "220")))
+    safe_set(rwl, "use_temperature", True)
+    safe_set(rwl, "temperature", 8000.0)
+    safe_set(rwl, "inner_cone_angle", 10.0)
+    safe_set(rwl, "outer_cone_angle", 26.0)
+    safe_set(rwl, "attenuation_radius", 2600.0)
+    safe_set(rwl, "source_radius", 60.0)
+    safe_set(rwl, "volumetric_scattering_intensity", 0.0)
     wf = (250.0, -1500.0, 480.0)
     wfa, wfl = light(unreal.SpotLight, "WallFill", L, wf)
     wfa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*wf), V(712, -700, 250)), False)
@@ -1934,12 +1965,13 @@ def build():
 
     fog = actors.spawn_actor_from_class(unreal.ExponentialHeightFog, V(0, 0, 0), unreal.Rotator(0, 0, 0))
     fc = fog.component
-    safe_set(fc, "fog_density", float(os.environ.get("LETHE_FOG", "0.040")))
+    safe_set(fc, "fog_density", float(os.environ.get("LETHE_FOG", "0.032")))
     safe_set(fc, "fog_height_falloff", 25.0)             # dense on the ground, thin by tree-top height
     safe_set(fc, "fog_inscattering_luminance", unreal.LinearColor(0.052, 0.050, 0.056, 1))
     safe_set(fc, "enable_volumetric_fog", True)
     safe_set(fc, "volumetric_fog_albedo", unreal.Color(r=150, g=165, b=190, a=255))
-    safe_set(fc, "volumetric_fog_emissive", unreal.LinearColor(0.016, 0.0165, 0.020, 1))
+    _fe = float(os.environ.get("LETHE_FOG_GLOW", "0.5"))
+    safe_set(fc, "volumetric_fog_emissive", unreal.LinearColor(0.016 * _fe, 0.0165 * _fe, 0.020 * _fe, 1))
     safe_set(fc, "volumetric_fog_extinction_scale", 0.6)
     safe_set(fc, "volumetric_fog_scattering_distribution", 0.35)
     safe_set(fc, "volumetric_fog_distance", 8000.0)

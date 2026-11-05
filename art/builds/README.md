@@ -660,3 +660,29 @@ Side by side, painting left: [compare/2026-11-05_painting_vs_match_r12.jpg](comp
 **Still different:**
 1. The strap across her back is hard to see in this light.
 2. The rail at the left wall's foot is lost in the mist.
+
+## Painting match · round 13 · tone, the right wall, the house
+
+![painting match round 13](2026-11-05_gate_painting_match_r13.png)
+
+Side by side, painting left: [compare/2026-11-05_painting_vs_match_r13.jpg](compare/2026-11-05_painting_vs_match_r13.jpg).
+
+**Measured first.** Average colour in a 3 x 3 grid showed round 12 was 1.5 to 2.5 times brighter than the painting almost everywhere, worst round the gate and on the left: the doubled fog was glowing.
+
+**What changed:**
+- **Darker, as painted.** Exposure bias 1.9 → 1.1 (`LETHE_BEAUTY_EV`; higher is brighter). Fog 0.040 → 0.032, its glow halved, gate lantern 16 → 11 lm, sky a little brighter. Seven of the nine grid cells are now within about 10 levels of the painting.
+
+| Cell | Painting | Round 12 | Round 13 |
+|---|---|---|---|
+| top left | 65 62 68 | 93 81 88 | 56 46 51 |
+| left | 40 39 42 | 72 70 85 | 39 37 48 |
+| centre | 27 23 25 | 70 58 57 | 37 30 31 |
+| post | 36 31 40 | 52 49 57 | 31 28 34 |
+| bottom left | 41 40 42 | 67 63 68 | 40 38 41 |
+
+- **The right-hand wall** gets cool moonlight, so its stakes read grey-blue with bark, not as black silhouettes.
+- **The house** is turned with its gable end toward us and placed so its high gable window shows above the stakes, top right, as painted. It has warm windows and a cool moon fill on its wall and roof.
+
+**Still different:**
+1. The top right is still darker than the painting's lit fog.
+2. The centre, through the gate, is a little brighter than the painting's.
