@@ -58,17 +58,24 @@ def center_y(z):
     return SP[-1][1]
 
 
-NA = 72
+NA = 144
 PH = [rng.uniform(0, 6.28) for _ in range(6)]
 
 
 def fold(z, th):
     """Radial fold factor: deep soft folds below the belt, a few creases above."""
     below = max(0.0, min(1.0, (96.0 - z) / 70.0))
-    a = 0.012 + 0.065 * below
+    a = 0.015 + 0.10 * below
     back = 0.5 + 0.5 * max(0.0, -math.sin(th))          # fuller folds at the back
-    return 1.0 + a * back * (0.55 * math.sin(7 * th + PH[0] + z * 0.01) + 0.30 * math.sin(12 * th + PH[1] - z * 0.02)
-                             + 0.25 * math.sin(4 * th + PH[2])) + 0.006 * math.sin(23 * th + PH[3] + z * 0.2)
+    # soft rolling folds plus sharper ridges (|sin|), which catch the light the way heavy wool does
+    ridge = abs(math.sin(5 * th + PH[4] + z * 0.006)) - 0.62
+    k = 1.0 + a * back * (0.50 * math.sin(7 * th + PH[0] + z * 0.01) + 0.28 * math.sin(12 * th + PH[1] - z * 0.02)
+                          + 0.22 * math.sin(4 * th + PH[2]) + 0.55 * ridge) + 0.006 * math.sin(23 * th + PH[3] + z * 0.2)
+    # the centre-back seam: a shallow line down the back, with a vent opening below the hips
+    db = abs(((th + math.pi / 2 + math.pi) % (2 * math.pi)) - math.pi)
+    if db < 0.07 and z < 140:
+        k -= (0.022 if z > 60 else 0.045) * (1 - db / 0.07)
+    return k
 
 
 def ring_point(z, th, grow=0.0):

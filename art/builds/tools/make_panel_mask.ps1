@@ -68,6 +68,78 @@ public static class Panel {
         return s;
     }
 
+    // A scratched alphabet for the settlers' names: thin straight cuts, cap height 1, x to the right, y up.
+    static List<float[][]> NameStrokes(char c, out float w) {
+        var s = new List<float[][]>();
+        Func<float[], float[][]> L = a => { var p = new float[a.Length / 2][]; for (int i = 0; i < p.Length; i++) p[i] = new[] { a[2 * i], a[2 * i + 1] }; return p; };
+        Func<float, float, float, float, float, float, int, float[][]> arc = (cx, cy, rx, ry, a0, a1, n) => {
+            var pts = new float[n + 1][]; for (int i = 0; i <= n; i++) { double t = (a0 + (a1 - a0) * i / n) * Math.PI / 180; pts[i] = new float[] { cx + rx * (float)Math.Cos(t), cy + ry * (float)Math.Sin(t) }; } return pts; };
+        switch (c) {
+            case 'A': w = 0.60f; s.Add(L(new[] { 0f, 0f, 0.30f, 1f, 0.60f, 0f })); s.Add(L(new[] { 0.13f, 0.38f, 0.47f, 0.38f })); break;
+            case 'B': w = 0.50f; s.Add(L(new[] { 0f, 0f, 0f, 1f, 0.30f, 1f, 0.42f, 0.86f, 0.42f, 0.64f, 0.30f, 0.52f, 0f, 0.52f }));
+                      s.Add(L(new[] { 0.30f, 0.52f, 0.46f, 0.38f, 0.46f, 0.13f, 0.32f, 0f, 0f, 0f })); break;
+            case 'C': w = 0.55f; s.Add(arc(0.30f, 0.5f, 0.29f, 0.5f, 48, 312, 7)); break;
+            case 'D': w = 0.55f; s.Add(L(new[] { 0f, 0f, 0f, 1f, 0.25f, 1f, 0.46f, 0.80f, 0.52f, 0.5f, 0.46f, 0.2f, 0.25f, 0f, 0f, 0f })); break;
+            case 'E': w = 0.48f; s.Add(L(new[] { 0.46f, 1f, 0f, 1f, 0f, 0f, 0.46f, 0f })); s.Add(L(new[] { 0f, 0.52f, 0.36f, 0.52f })); break;
+            case 'F': w = 0.46f; s.Add(L(new[] { 0.46f, 1f, 0f, 1f, 0f, 0f })); s.Add(L(new[] { 0f, 0.52f, 0.36f, 0.52f })); break;
+            case 'G': w = 0.58f; s.Add(arc(0.30f, 0.5f, 0.29f, 0.5f, 48, 320, 7)); s.Add(L(new[] { 0.55f, 0.12f, 0.55f, 0.42f, 0.34f, 0.42f })); break;
+            case 'H': w = 0.54f; s.Add(L(new[] { 0f, 0f, 0f, 1f })); s.Add(L(new[] { 0.52f, 0f, 0.52f, 1f })); s.Add(L(new[] { 0f, 0.52f, 0.52f, 0.52f })); break;
+            case 'I': w = 0.16f; s.Add(L(new[] { 0.06f, 0f, 0.06f, 1f })); break;
+            case 'J': w = 0.44f; s.Add(L(new[] { 0.40f, 1f, 0.40f, 0.2f, 0.30f, 0f, 0.10f, 0f, 0f, 0.16f })); break;
+            case 'K': w = 0.50f; s.Add(L(new[] { 0f, 0f, 0f, 1f })); s.Add(L(new[] { 0.46f, 1f, 0f, 0.44f })); s.Add(L(new[] { 0.14f, 0.60f, 0.50f, 0f })); break;
+            case 'L': w = 0.44f; s.Add(L(new[] { 0f, 1f, 0f, 0f, 0.42f, 0f })); break;
+            case 'M': w = 0.66f; s.Add(L(new[] { 0f, 0f, 0f, 1f, 0.32f, 0.36f, 0.64f, 1f, 0.64f, 0f })); break;
+            case 'N': w = 0.56f; s.Add(L(new[] { 0.03f, 0f, 0.03f, 1f, 0.53f, 0f, 0.53f, 1f })); break;
+            case 'O': w = 0.60f; s.Add(arc(0.30f, 0.5f, 0.29f, 0.5f, 0, 360, 9)); break;
+            case 'P': w = 0.50f; s.Add(L(new[] { 0f, 0f, 0f, 1f, 0.32f, 1f, 0.45f, 0.87f, 0.45f, 0.63f, 0.32f, 0.50f, 0f, 0.50f })); break;
+            case 'R': w = 0.52f; s.Add(L(new[] { 0f, 0f, 0f, 1f, 0.32f, 1f, 0.45f, 0.87f, 0.45f, 0.63f, 0.32f, 0.50f, 0f, 0.50f })); s.Add(L(new[] { 0.22f, 0.50f, 0.52f, 0f })); break;
+            case 'S': w = 0.50f; s.Add(L(new[] { 0.45f, 0.88f, 0.32f, 1f, 0.12f, 1f, 0f, 0.86f, 0.03f, 0.62f, 0.45f, 0.40f, 0.48f, 0.14f, 0.35f, 0f, 0.12f, 0f, 0f, 0.13f })); break;
+            case 'T': w = 0.56f; s.Add(L(new[] { 0f, 1f, 0.56f, 1f })); s.Add(L(new[] { 0.28f, 1f, 0.28f, 0f })); break;
+            case 'U': w = 0.54f; s.Add(L(new[] { 0f, 1f, 0f, 0.2f, 0.15f, 0f, 0.37f, 0f, 0.52f, 0.2f, 0.52f, 1f })); break;
+            case 'V': w = 0.58f; s.Add(L(new[] { 0f, 1f, 0.29f, 0f, 0.58f, 1f })); break;
+            case 'W': w = 0.80f; s.Add(L(new[] { 0f, 1f, 0.19f, 0f, 0.40f, 0.72f, 0.61f, 0f, 0.80f, 1f })); break;
+            case 'X': w = 0.52f; s.Add(L(new[] { 0f, 0f, 0.52f, 1f })); s.Add(L(new[] { 0f, 1f, 0.52f, 0f })); break;
+            case 'Y': w = 0.56f; s.Add(L(new[] { 0f, 1f, 0.28f, 0.5f, 0.56f, 1f })); s.Add(L(new[] { 0.28f, 0.5f, 0.28f, 0f })); break;
+            case 'Z': w = 0.50f; s.Add(L(new[] { 0f, 1f, 0.50f, 1f, 0f, 0f, 0.50f, 0f })); break;
+            case '.': w = 0.18f; s.Add(L(new[] { 0.06f, 0f, 0.09f, 0.07f })); break;
+            default:  w = 0.34f; break;      // space
+        }
+        return s;
+    }
+
+    // The later names, scratched smaller and shallower around CROATOAN: (text, height above the post base cm, centre x cm, cap cm)
+    static readonly object[][] NAMES = {
+        new object[] { "AGNES WOOD", 201.5f, -6f, 4.2f }, new object[] { "ELIZABETH", 211f, -2f, 4.6f }, new object[] { "WINIFRED", 220.5f, -9f, 4.0f },
+        new object[] { "DIONYSE", 229.5f, -4f, 4.3f }, new object[] { "R.BAILIE", 238.5f, -11f, 3.8f }, new object[] { "M.HARVIE", 247f, -3f, 3.6f },
+        new object[] { "MARGERY", 172f, -8f, 4.1f }, new object[] { "ANANIAS", 162.5f, -3f, 4.4f }, new object[] { "THOMAS", 153f, -10f, 4.5f },
+        new object[] { "ELEANOR", 143.5f, -5f, 4.0f }, new object[] { "ELIZABETH", 134f, -7f, 4.2f }, new object[] { "VIRGINIA", 124.5f, -2f, 3.8f } };
+
+    static void CutNames(Graphics g, Random r) {
+        foreach (var nm in NAMES) {
+            string text = (string)nm[0]; float zc = (float)nm[1], xc = (float)nm[2], cap = (float)nm[3] * PXCM;
+            float xs = 0.72f, gap = 0.18f, total = 0; var ws = new float[text.Length];
+            for (int i = 0; i < text.Length; i++) { float w; NameStrokes(text[i], out w); ws[i] = w * xs; total += ws[i] + (i > 0 ? gap : 0); }
+            float x0 = X(xc) - total * cap / 2f, lineTilt = (float)((r.NextDouble() - 0.5) * 5.0 * Math.PI / 180);
+            float sw = 0.12f * cap, xstart = x0;
+            for (int i = 0; i < text.Length; i++) {
+                float w; var st = NameStrokes(text[i], out w); w *= xs;
+                float size = cap * (0.9f + 0.2f * (float)r.NextDouble()), rot = lineTilt + (float)((r.NextDouble() - 0.5) * 7.0 * Math.PI / 180);
+                float by = Y(zc) + cap / 2f - (x0 - xstart) * (float)Math.Tan(lineTilt) + (float)(r.NextDouble() - 0.5) * 0.10f * cap;
+                foreach (var line in st) {
+                    var pts = new PointF[line.Length];
+                    for (int k = 0; k < line.Length; k++) {
+                        float lx = (line[k][0] * xs - w / 2) * size + (float)(r.NextDouble() - 0.5) * 0.06f * cap;
+                        float ly = (line[k][1] - 0.5f) * size + (float)(r.NextDouble() - 0.5) * 0.06f * cap;
+                        float rx = lx * (float)Math.Cos(rot) - ly * (float)Math.Sin(rot), ry = lx * (float)Math.Sin(rot) + ly * (float)Math.Cos(rot);
+                        pts[k] = new PointF(x0 + w * cap / 2 + rx, by - cap / 2 - ry);
+                    }
+                    for (int k = 0; k + 1 < pts.Length; k++) Cut(g, pts[k], pts[k + 1], sw * (0.7f + 0.6f * (float)r.NextDouble()), r);
+                }
+                x0 += (w * (size / cap) + gap * (0.8f + 0.5f * (float)r.NextDouble())) * cap;
+            }
+        }
+    }
+
     public static void Make(string path, int seed) {
         var r = new Random(seed);
         // ---- red: CROATOAN, cap height 10 cm, centred 150 cm above the ground
@@ -108,6 +180,7 @@ public static class Panel {
             }
             x0 += (w * (size / cap) + gap * (0.9f + 0.6f * (float)r.NextDouble())) * cap;
         }
+        CutNames(g, r);
         // a few long dry cracks running with the grain, kept off the word
         for (int c = 0; c < 6; c++) {
             float cx = -21f + 42f * (float)r.NextDouble(), z0 = 20f + 290f * (float)r.NextDouble(), len = 15f + 45f * (float)r.NextDouble();
@@ -209,7 +282,7 @@ public static class Panel {
         var inv = System.Globalization.CultureInfo.InvariantCulture;
         double half = Math.PI * RAD;
         var cols = new List<float>(); for (double s = -half; s < half - 0.01; ) { cols.Add((float)s); s += Math.Abs(s) < 39 ? 0.25 : 1.5; }
-        var rows = new List<float>(); for (double z = -60; z <= 700.01; ) { rows.Add((float)z); z += (z >= 173 && z < 202) ? 0.25 : (z >= -5 && z < 365) ? 1.0 : 2.5; }
+        var rows = new List<float>(); for (double z = -60; z <= 700.01; ) { rows.Add((float)z); z += (z >= 173 && z < 202) ? 0.25 : (z >= 118 && z < 253) ? 0.3 : (z >= -5 && z < 365) ? 1.0 : 2.5; }
         int nc = cols.Count, nr = rows.Count, cap = nc * nr;   // cap = index of the top centre vertex
         var P = new double[cap + 1][]; var G = new float[cap]; var C = new float[cap];
         for (int j = 0; j < nr; j++) for (int i = 0; i < nc; i++) {
@@ -270,7 +343,7 @@ public static class Panel {
 "@
 $out = 'C:\LETHE\SourceArt\Carving\T_CroatoanPanel_Mask.png'
 [Panel]::MeshPath = 'C:\LETHE\SourceArt\Carving\CroatoanPost.obj'
-[Panel]::Conv = $env:LETHE_OBJ_CONV; if (-not [Panel]::Conv) { [Panel]::Conv = 'x,z,-y' }
+[Panel]::Conv = $env:LETHE_OBJ_CONV; if (-not [Panel]::Conv) { [Panel]::Conv = 'x,-y,z' }    # what the post has always been written with
 [Panel]::Flip = ($env:LETHE_OBJ_FLIP -eq '1')
 [Panel]::Make($out, 1590)
 "panel mask written: $out"

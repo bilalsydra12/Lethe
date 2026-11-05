@@ -583,3 +583,19 @@ Side by side, painting left: [compare/2026-11-05_painting_vs_match_r7.jpg](compa
 1. The panel shows CROATOAN only; the painting has many other names carved above and below it.
 2. The mud is flat; the painting's is churned and rutted.
 3. Her coat is plain wool, with none of the painting's folds or seams in the light.
+
+## Painting match · round 8 · the names, the mud, the coat
+
+![painting match round 8](2026-11-05_gate_painting_match_r8.png)
+
+Side by side, painting left: [compare/2026-11-05_painting_vs_match_r8.jpg](compare/2026-11-05_painting_vs_match_r8.jpg).
+
+**What changed:**
+- **The other names.** `tools/make_panel_mask.ps1` has a scratched alphabet now. It cuts twelve names of the 1587 colonists into the panel, six above CROATOAN and six below: Agnes Wood, Elizabeth, Winifred, Dionyse, R. Bailie, M. Harvie, Margery, Ananias, Thomas, Eleanor, Elizabeth, Virginia. They are smaller and shallower than CROATOAN, each line tilted a little, each letter cut on its own. The post mesh is finer over the whole carved band, so the cuts are real geometry. The script's default axis order is fixed to the one the post has always used (x, -y, z).
+- **Sculpted mud.** `tools/make_mud_patch.py` builds the foreground as a heightfield mesh, 5 cm grid over 15 x 20 m. It has two shallow cart ruts running into the gate on the left, about 300 old footprints trodden in, clods, and Nysa's own fresh prints leading up to where she stands. The flat ground sits 6 cm lower and only shows beyond it.
+- **Coat folds.** Deeper, sharper folds in the skirt that catch the light, a centre-back seam with a vent below the hips, and twice the resolution around.
+
+**Still different:**
+1. The painting's mud has more broken, glossy highlights from the lantern; ours is lit mostly by the cool fill.
+2. The far left: the painting's wall foot is lost in thick low mist; ours is clearer.
+3. The tower top left is less visible than in the painting.

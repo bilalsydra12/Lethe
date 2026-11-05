@@ -1146,12 +1146,35 @@ def build():
     dark_logs = [(sm_l1, mi_dark), (sm_l1, mi_shadow)]
 
     # Ground: dark wet mud, puddles in the low spots of the scan
-    g = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(1500, 0, 0), unreal.Rotator(0, 0, 0))
+    MUDPATCH = os.environ.get("LETHE_MUDPATCH", "1") == "1" and os.path.exists(SRC + "/Ground/MudPatch.obj")
+    g = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(1500, 0, -6.0 if MUDPATCH else 0.0), unreal.Rotator(0, 0, 0))
     g.static_mesh_component.set_static_mesh(PLANE)
     g.static_mesh_component.set_world_scale3d(V(80, 80, 1))
-    g.static_mesh_component.set_material(0, mi("MI_Mud", m_mud, {"UVScale": 34.0, "PuddleLevel": 0.50, "PuddleSharpness": 10.0,
-                                                               "WetDarken": 2.4, "RoughnessMult": 0.30, "Desat": 0.7}, {"MudTint": (1.0, 0.90, 0.86)}))
+    mi_mud = mi("MI_Mud", m_mud, {"UVScale": 34.0, "PuddleLevel": 0.50, "PuddleSharpness": 10.0,
+                                  "WetDarken": 2.4, "RoughnessMult": 0.30, "Desat": 0.7}, {"MudTint": (1.0, 0.90, 0.86)})
+    g.static_mesh_component.set_material(0, mi_mud)
     tag(g, "Ground_Mud", "Ground")
+    if MUDPATCH:
+        # the foreground mud sculpted (Scripts/make_mud_patch.py): cart ruts to the gate, footprints, clods; the flat
+        # plane above sits 6 cm lower and only shows beyond it
+        mdir = ROOT + "/Meshes/MudPatch"
+        if eal.does_directory_exist(mdir):
+            eal.delete_directory(mdir)
+        import_file(SRC + "/Ground/MudPatch.obj", mdir)
+        mp_sm = next((a_ for a_ in (unreal.load_asset(p_) for p_ in eal.list_assets(mdir, recursive=True))
+                      if isinstance(a_, unreal.StaticMesh)), None)
+        if mp_sm:
+            bb_ = mp_sm.get_bounding_box()
+            cy_ = (bb_.min.y + bb_.max.y) / 2
+            mir_ = -1.0 if cy_ < 0 else 1.0                  # it should centre near y = +210; the importer may flip Y
+            mpa = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(0, 0, 0), unreal.Rotator(0, 0, 0))
+            mpa.static_mesh_component.set_static_mesh(mp_sm)
+            mpa.set_actor_scale3d(V(1, mir_, 1))
+            mpa.static_mesh_component.set_material(0, mi_mud)
+            tag(mpa, "Ground_MudSculpt", "Ground")
+            log("mud patch: bbox %s..%s, mirror y %s" % (bb_.min, bb_.max, mir_))
+        else:
+            log("MUD PATCH IMPORT FAILED")
 
     # --- the CROATOAN post: right-hand post of the entrance, a great trunk with its bark taken off in front
     P = "CroatoanPost"
