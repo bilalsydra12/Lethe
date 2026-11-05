@@ -535,3 +535,31 @@ Edge agreement with the painting: round 4 50.0%, round 5 49.4% (the hair adds ed
 2. The curls are a little too regular and too long; the painting's hair is fuller around the head.
 3. She has no shoulder bag, and her skirt is shorter than the painting's long coat.
 4. She sits a little low and right in the frame. The house chimney is still out of frame, and the far-left wall still runs to the frame edge.
+
+## Painting match · round 6 · a realistic Nysa, the painting's camera
+
+![painting match round 6](2026-11-04_gate_painting_match_r6.png)
+
+Side by side, painting left: [compare/2026-11-04_painting_vs_match_r6.jpg](compare/2026-11-04_painting_vs_match_r6.jpg).
+
+**Nysa is now a MetaHuman.** The stand-in from rounds 4 and 5 is no longer in the scene (its credit stays above, since those two renders still show it). MetaHuman Creator Core Data (free, from the Epic Games Launcher) is installed, and the character is built entirely by script:
+- `tools/make_nysa_mh.py` creates her: skin, dark eyes, 1.70 m, long hair, brows, lashes. Epic's MetaHuman service rigs the face and sends the skin textures (needs the editor's Epic login), then builds `BP_MH_Nysa`.
+- `tools/make_nysa_mh_hair.py` sets the hair and brows to near-black brown (Melanin 0.92), then rebuilds.
+- `tools/make_nysa_pose_anim.py` solves her arms and writes a one-frame pose: right arm raised with the lamp to the letters, left arm hanging.
+- `tools/make_nysa_coat.py` builds her long dark coat around that pose: sleeves, belt, shoulder bag and strap. MetaHuman ships no coat.
+
+**The camera now matches the painting's.** Measured against the painting, the old camera was too high and too close: Nysa filled the frame and was cut off at the thighs. It is now 1.3 m high and 78 cm further back, and the post sits 35 cm lower, so CROATOAN is at her chin. Nysa is 3/5 of the frame tall, head to feet, as painted.
+
+**Also changed:**
+- Fog density doubled.
+- The house behind is rebuilt at the painting's size and place: a gabled house well behind the palisade, roof and two chimneys against the fog, warm windows in its gable.
+- Fewer, smaller, mud-coloured stones in the foreground, and smaller puddles.
+- The UV light now comes from the lamp's lens, not from inside her arm.
+
+`tools/close_bp_error_dialog.ps1` answers Unreal's "Blueprint Asset Compilation Error" prompt with *Play in Editor*. The MetaHuman's Live Link face blueprint fails to compile after every rebuild, and that prompt otherwise stops the render.
+
+**Still different:**
+1. Her hair is long but straight and wavy, not the painting's ringlets, and the warm rim light makes it read auburn.
+2. The stripped panel on the post is grey; the painting's is pale cream with many names carved above CROATOAN.
+3. The puddles read as dark holes; the painting's mud is churned, with the lantern's light in the wet.
+4. The gate lantern sits behind her head; in the painting it is just left of it, smaller.

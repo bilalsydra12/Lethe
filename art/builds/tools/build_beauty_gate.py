@@ -970,8 +970,11 @@ def build():
     _unused_daub = (
                  {"BaseColor": t["bm"]["bc"], "Normal": t["bm"]["n"], "Roughness": t["bm"]["r"], "AO": t["bm"]["ao"]})
 
-    CAM = (-143.0, 621.0, 160.0)
-    CAM_YAW, CAM_PITCH = -35.0, 1.7                          # spec: horizon at y 0.55
+    _cb = float(os.environ.get("LETHE_CAM_BACK", "78"))          # cm further back, along the line to the post
+    _pd = math.hypot(225.0 + 143.0, 465.0 - 621.0)
+    CAM = (-143.0 - _cb * (225.0 + 143.0) / _pd, 621.0 - _cb * (465.0 - 621.0) / _pd, float(os.environ.get("LETHE_CAM_Z", "130")))
+    CAM_YAW, CAM_PITCH = -35.0, float(os.environ.get("LETHE_CAM_PITCH", "1.0"))
+    SINK = float(os.environ.get("LETHE_POST_SINK", "35"))     # the post stands this much lower: CROATOAN at chin height
     _cy, _sy = math.cos(math.radians(CAM_YAW)), math.sin(math.radians(CAM_YAW))
     _cp, _sp = math.cos(math.radians(CAM_PITCH)), math.sin(math.radians(CAM_PITCH))
     CF, CR, CU = (_cp * _cy, _cp * _sy, _sp), (-_sy, _cy, 0.0), (-_sp * _cy, -_sp * _sy, _cp)
@@ -1143,7 +1146,7 @@ def build():
     PX, PY = 225.0, 465.0
     face = -12.0                                      # the panel faces yaw 168, the word centred in view
     fx, fy = unit(face)
-    post = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(PX, PY, 0), unreal.Rotator(0, 0, face + 180))
+    post = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(PX, PY, -SINK), unreal.Rotator(0, 0, face + 180))
     post.static_mesh_component.set_static_mesh(sm_post)
     l2 = {"BaseColor": t["l2"]["bc"], "Normal": t["l2"]["n"], "Roughness": t["l2"]["r"], "AO": t["l2"]["ao"]}
     post_mats = {
@@ -1255,44 +1258,46 @@ def build():
                           30, mi_dark, spin=rng.uniform(0, 360))
             zz += 28.0
 
-    # --- the house behind, top right: timber frame, chimney, two lit windows, softened by the fog
+    # --- the house behind, top right (painting: a gabled two-storey house well behind the palisade, seen at an angle,
+    # its roof and two chimneys dark against the fog, a warm window high in the left gable and a lit door below it)
     B = "House"
-    HZ = 137.0                                           # raised floor; a dark sill wall carries it to the ground
-    _win = at_frame_z(0.85, 0.20, HZ + 430.0)          # spec: window at frame (0.85, 0.20)
-    HX, HY = _win[0], _win[1]
-    for _ in range(4):                                 # the window sits 302 cm in front of the house centre, 150 cm to its side
-        hy = math.degrees(math.atan2(CAM[1] - HY, CAM[0] - HX))      # local +X faces the camera
-        c_, s_ = math.cos(math.radians(hy)), math.sin(math.radians(hy))
-        HX, HY = _win[0] - (302 * c_ + 150 * s_), _win[1] - (302 * s_ - 150 * c_)
-    hy = math.degrees(math.atan2(CAM[1] - HY, CAM[0] - HX))
-    log("house at (%.0f, %.0f), window frame %s" % (HX, HY, str(frame_of(*local((HX, HY, HZ), hy, 302, -150, 430)))))
+    _rg = at_frame(float(os.environ.get("LETHE_HOUSE_FX", "0.885")), float(os.environ.get("LETHE_HOUSE_FY", "0.115")),
+                   float(os.environ.get("LETHE_HOUSE_DEPTH", "2650")))
+    HX, HY = _rg[0], _rg[1]
+    HS = max(0.45, min(1.1, _rg[2] / 930.0))              # scale so the ridge lands where the painting has it
+    hy = math.degrees(math.atan2(CAM[1] - HY, CAM[0] - HX)) - float(os.environ.get("LETHE_HOUSE_TURN", "50"))
 
     def hloc(dx, dy, dz):
-        return local((HX, HY, HZ), hy, dx, dy, dz)
+        return local((HX, HY, 0.0), hy, dx * HS, dy * HS, dz * HS)
 
     def hbox(label, dx, dy, dz, size, mat, roll=0.0, pitch=0.0):
-        return box(label, B, hloc(dx, dy, dz), size, mat, rot=(roll, pitch, hy))
+        return box(label, B, hloc(dx, dy, dz), tuple(s_ * HS for s_ in size), mat, rot=(roll, pitch, hy))
 
     hbox("House_Walls", 0, 0, 300, (600, 900, 600), mi_daub)
-    hbox("House_Sill", 0, 0, -HZ / 2 - 2, (606, 906, HZ + 8), mi_dark)            # stands on the ground, no floating floor
+    hbox("House_Attic", 0, 0, 600, (440, 880, 440), mi_daub, pitch=45.0)          # fills the gables under the roof
     for dy_ in (-445, -225, 0, 225, 445):
-        hbox("House_Stud", 304, dy_, 300 - HZ / 2, (14, 22, 600 + HZ), mi_dark)
+        hbox("House_Stud", 304, dy_, 300, (14, 22, 600), mi_dark)
     for dz_ in (12, 300, 590):
         hbox("House_Rail", 303, 0, dz_, (14, 910, 20), mi_dark)
     for (dy_, dz_, s_) in ((-335, 150, 1), (335, 150, -1), (-112, 445, -1), (112, 445, 1)):
         hbox("House_Brace", 304, dy_, dz_, (12, 18, 300), mi_dark, roll=s_ * 35)
-    for (dy_, dz_) in ((-150, 430),):                                  # one dim warm window
-        hbox("House_Window", 302, dy_, dz_, (4, 90, 110), m_win)
-        hbox("House_Mullion", 305, dy_, dz_, (5, 6, 112), mi_dark)
-        hbox("House_Transom", 305, dy_, dz_ + 10, (5, 92, 6), mi_dark)
-        point("House_WindowLight", B, hloc(330, dy_, dz_), 8, 2000, radius=400, source=30, vol=0.15)
     hbox("House_Door", 302, -330, 105, (4, 100, 200), mi_dark)
-    # steep shingle roof, ridge along the front (local Y), eaves over the walls
-    shingle_roof("House_Roof", B, hloc(0, 0, 930), hy, 1010, 480, 45.0, mi_thatch, course=30.0, width=(45.0, 70.0), under=mi_thatch)
-    cdy = min(range(-470, 471, 10), key=lambda d_: abs(frame_of(*hloc(-40, d_, 1090))[0] - 0.875))
-    hbox("House_Chimney", -40, cdy, 900, (80, 80, 380), mi_dark)
-    hbox("House_ChimneyCap", -40, cdy, 1094, (100, 100, 12), mi_dark)
-    log("chimney at dy %d, top at frame %s, ridge there %s" % (cdy, str(frame_of(*hloc(-40, cdy, 1100))), str(frame_of(*hloc(0, cdy, 930)))))
+    # the left gable end: a warm window high up, a lit doorway below
+    for (lbl, dx_, dz_, w_, h_, lum) in (("House_GableWindow", 0, 700, 80, 95, 16), ("House_GableWindow2", -150, 330, 70, 90, 6),
+                                          ("House_GableDoor", 150, 110, 95, 200, 10)):
+        hbox(lbl, dx_, -452, dz_, (w_, 4, h_), m_win)
+        hbox(lbl + "_Frame", dx_, -455, dz_, (6, 5, h_ + 4), mi_dark)
+        hbox(lbl + "_Head", dx_, -455, dz_ + h_ / 2, (w_ + 10, 6, 8), mi_dark)
+        point(lbl + "_Light", B, hloc(dx_, -520, dz_), lum, 2000, radius=420 * HS, source=25, vol=0.6)
+    for (dx_, dz_) in ((-230, 300), (230, 300), (0, 12)):
+        hbox("House_EndRail", dx_ * 0 + 0, -453, dz_, (600, 12, 18), mi_dark) if dx_ == 0 else None
+    shingle_roof("House_Roof", B, hloc(0, 0, 930), hy, 1010 * HS, 480 * HS, 45.0, mi_thatch, course=30.0 * HS,
+                 width=(45.0 * HS, 70.0 * HS), under=mi_thatch)
+    for (cdy, ch_) in ((-250, 360), (290, 320)):                                       # two chimneys on the ridge
+        hbox("House_Chimney", -30, cdy, 900 + ch_ / 2 - 120, (75, 75, ch_), mi_dark)
+        hbox("House_ChimneyCap", -30, cdy, 900 + ch_ - 120 + 6, (92, 92, 12), mi_dark)
+    log("house at (%.0f, %.0f) scale %.2f, ridge frame %s, gable window frame %s" % (HX, HY, HS, str(frame_of(*hloc(0, 0, 930))),
+        str(frame_of(*hloc(0, -452, 700)))))
 
     for (lbl, fx_, fy_, dep) in (("FarLantern_L", 0.32, 0.215, 2100.0), ("FarLantern_R", 0.935, 0.245, 1750.0)):
         fl_ = at_frame(fx_, fy_, dep)
@@ -1351,10 +1356,10 @@ def build():
             r_ = bd * 0.5 + rng.uniform(4, 16)
             plant(rng.choice(["grass", "grass", "weed"]), bx + nx / ln * r_, by + ny / ln * r_, rng.uniform(0.7, 1.3))
 
-    rock_mis = [mi("MI_Rock_%d" % i, master, {"Wet": 0.7}, {"Tint": (0.40, 0.30, 0.33)},
+    rock_mis = [mi("MI_Rock_%d" % i, master, {"Wet": 0.5}, {"Tint": (0.55, 0.46, 0.42)},
                    {"BaseColor": tx["bc"], "Normal": tx["n"], "Roughness": tx["r"], "AO": tx["ao"]}) for i, (tx, _) in enumerate(rocks)]
     placed = 0
-    while placed < int(os.environ.get("LETHE_ROCKS", "70")):
+    while placed < int(os.environ.get("LETHE_ROCKS", "28")):
         fx_, fy_ = rng.uniform(-0.02, 1.02), rng.uniform(0.80, 1.02) ** 1.0         # the visible foreground mud
         if 0.60 < fx_ < 0.80 or (fx_ > 0.55 and rng.random() < 0.5):
             continue
@@ -1363,7 +1368,7 @@ def build():
         a = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(x, y_, rng.uniform(-10, -3)),
                                           unreal.Rotator(rng.uniform(-20, 20), rng.uniform(-20, 20), rng.uniform(0, 360)))
         a.static_mesh_component.set_static_mesh(rocks[j][1])
-        sc = rng.uniform(0.07, 0.17)
+        sc = rng.uniform(0.04, 0.09)
         a.static_mesh_component.set_world_scale3d(V(sc, sc, sc))
         for k in range(max(1, a.static_mesh_component.get_num_materials())):
             a.static_mesh_component.set_material(k, rock_mis[j])
@@ -1380,7 +1385,7 @@ def build():
     for (fx_, fy_, ln, wd) in ((0.38, 0.88, 240, 120), (0.45, 0.83, 260, 110), (0.33, 0.95, 160, 90), (0.22, 0.90, 180, 90),
                                (0.53, 0.86, 200, 100), (0.10, 0.96, 140, 80), (0.88, 0.90, 200, 100), (0.41, 0.80, 220, 90)):
         x, y_, _ = at_frame_z(fx_, fy_, 0.0)
-        ground_decal("Puddle", mi_pud, x, y_, ln, wd, rng.uniform(0, 180))
+        ground_decal("Puddle", mi_pud, x, y_, ln * 0.55, wd * 0.55, rng.uniform(0, 180))     # smaller: the camera is closer to the ground now
     mi_md = mi("MI_MudPatch", m_mdec)
     for _ in range(0):
         dist, brg = rng.uniform(150, 900), CAM_YAW + rng.uniform(-28, 26)
@@ -1439,7 +1444,7 @@ def build():
     # Cool moonlit fill on the stripped panel: the pale wood is the brightest surface in the shot
     pf = (PX - 393.0, PY - 275.0, 430.0)
     fa, fl = light(unreal.SpotLight, "PanelMoonFill", P, pf)
-    fa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*pf), V(PX - 34 * fx, PY - 34 * fy, 115)), False)
+    fa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*pf), V(PX - 34 * fx, PY - 34 * fy, 115 - SINK)), False)
     safe_set(fl, "intensity_units", unreal.LightUnits.LUMENS)
     safe_set(fl, "intensity", float(os.environ.get("LETHE_POST_FILL", "12")))
     safe_set(fl, "use_temperature", True)
@@ -1449,9 +1454,9 @@ def build():
     safe_set(fl, "attenuation_radius", 1600.0)
     safe_set(fl, "source_radius", 40.0)
     safe_set(fl, "volumetric_scattering_intensity", 0.0)
-    rk = (PX - 52 * fx, PY - 52 * fy, 330.0)
+    rk = (PX - 52 * fx, PY - 52 * fy, 330.0 - SINK)
     rka, rkl = light(unreal.SpotLight, "CarveRake", P, rk)
-    rka.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*rk), V(PX - 35 * fx, PY - 35 * fy, 187)), False)
+    rka.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*rk), V(PX - 35 * fx, PY - 35 * fy, 187 - SINK)), False)
     safe_set(rkl, "intensity_units", unreal.LightUnits.LUMENS)
     safe_set(rkl, "intensity", float(os.environ.get("LETHE_RAKE", "1.0")))
     safe_set(rkl, "use_temperature", True)
@@ -1467,7 +1472,155 @@ def build():
     # coat skirt over the trousers. Back to camera, at the post.
     N = "Nysa"
     NYSA_HAND = None
-    if not os.environ.get("LETHE_NO_NYSA"):
+    if not os.environ.get("LETHE_NO_NYSA") and os.environ.get("LETHE_NYSA_MH", "1") == "1":
+        # Nysa as a MetaHuman (Scripts/make_nysa_mh.py builds BP_MH_Nysa; make_nysa_pose_anim.py makes her lamp pose).
+        # MetaHumans face +Y in their own space, feet at the origin, real centimetres.
+        pose = json.load(open("C:/LETHE/Saved/nysa_mh_pose.json"))
+        nfx = float(os.environ.get("LETHE_NYSA_FX", "0.565"))
+        ngap = float(os.environ.get("LETHE_NYSA_GAP", "88"))         # her root to the post's axis
+        r_ = ray(nfx, 0.5)
+        hn = math.hypot(r_[0], r_[1])
+        best = None
+        for k_ in range(1500):
+            d_ = 100.0 + k_ * 0.5
+            qx, qy = CAM[0] + d_ * r_[0] / hn, CAM[1] + d_ * r_[1] / hn
+            e_ = abs(math.hypot(PX - qx, PY - qy) - ngap)
+            if best is None or e_ < best[0] - 1e-6:
+                best = (e_, qx, qy)
+            if e_ < 1.0:
+                break                                               # the near side of the post, not behind it
+        NX, NY = best[1], best[2]
+        nyaw = math.degrees(math.atan2(PY - NY, PX - NX)) + float(os.environ.get("LETHE_NYSA_TURN", "8"))
+        fwx, fwy = unit(nyaw)
+        rtx, rty = unit(nyaw + 90.0)
+        nsc = float(os.environ.get("LETHE_NYSA_SCALE", "1.0"))
+        myaw = nyaw - 90.0
+        # A MetaHuman rebuild can leave its face anim blueprints without a skeleton; any blueprint with errors makes PIE
+        # (and so the movie render) stop on a modal dialog. Repoint them to the face skeleton and recompile first.
+        _fsk = unreal.load_asset("/Game/Lethe/MetaHumans/Common/Face/Face_Archetype_Skeleton")
+        for _ad in unreal.AssetRegistryHelpers.get_asset_registry().get_assets_by_path("/Game/Lethe/MetaHumans", recursive=True):
+            if str(_ad.asset_class_path.asset_name) != "AnimBlueprint":
+                continue
+            _abp = unreal.load_asset(str(_ad.package_name))
+            if _abp.get_editor_property("target_skeleton") is None and _fsk:
+                _abp.set_editor_property("target_skeleton", _fsk)
+                unreal.BlueprintEditorLibrary.compile_blueprint(_abp)
+                eal.save_loaded_asset(_abp, False)
+                log("anim blueprint %s: skeleton restored, status %s" % (_ad.asset_name, _abp.get_editor_property("status")))
+            if str(_abp.get_editor_property("status")).find("ERROR") >= 0:
+                # still failing: use the skeleton of the pose asset its pose-blend node reads
+                _opts = unreal.AssetRegistryDependencyOptions(include_soft_package_references=True, include_hard_package_references=True)
+                _deps = unreal.AssetRegistryHelpers.get_asset_registry().get_dependencies(_ad.package_name, _opts) or []
+                for _dp in _deps:
+                    _da = unreal.load_asset(str(_dp)) if str(_dp).startswith("/Game") else None
+                    if isinstance(_da, unreal.PoseAsset) and _da.get_editor_property("skeleton"):
+                        _abp.set_editor_property("target_skeleton", _da.get_editor_property("skeleton"))
+                        unreal.BlueprintEditorLibrary.compile_blueprint(_abp)
+                        log("anim blueprint %s: skeleton from pose asset %s -> status %s" % (_ad.asset_name, _da.get_name(),
+                                                                                           _abp.get_editor_property("status")))
+                        break
+                else:
+                    log("anim blueprint %s still in error; deps %s" % (_ad.asset_name, [str(d_) for d_ in _deps][:12]))
+                if str(_abp.get_editor_property("status")).find("ERROR") < 0:
+                    eal.save_loaded_asset(_abp, False)
+        bp_cls = unreal.EditorAssetLibrary.load_blueprint_class("/Game/Lethe/MetaHumans/MH_Nysa/BP_MH_Nysa")
+        mh = actors.spawn_actor_from_class(bp_cls, V(NX, NY, 0.0), unreal.Rotator(0, 0, myaw))
+        mh.set_actor_scale3d(V(nsc, nsc, nsc))
+        tag(mh, "Nysa_MH", N)
+        seq = unreal.load_asset("/Game/Lethe/Characters/AS_Nysa_LampPose")
+        body = [c_ for c_ in mh.get_components_by_class(unreal.SkeletalMeshComponent) if c_.get_name() == "Body"][0]
+        body.set_animation_mode(unreal.AnimationMode.ANIMATION_SINGLE_NODE)
+        body.set_animation(seq)
+        ad = unreal.SingleAnimationPlayData()
+        ad.set_editor_property("anim_to_play", seq)
+        ad.set_editor_property("saved_playing", False)
+        ad.set_editor_property("saved_position", 0.0)
+        body.set_editor_property("animation_data", ad)
+        body.set_position(0.0, False)
+        mi_coat = m_cloth("M_Nysa_Coat", (0.030, 0.028, 0.032), 0.85, plaster_tx.get("BaseColor"), 0.3)
+
+        def mh_world(p_):
+            yr = math.radians(myaw)
+            x_, y_ = p_[0] * nsc, p_[1] * nsc
+            return (NX + x_ * math.cos(yr) - y_ * math.sin(yr), NY + x_ * math.sin(yr) + y_ * math.cos(yr), p_[2] * nsc)
+        NYSA_HAND = mh_world(pose["hand_r"])
+        s100 = nsc
+        # her long coat with sleeves, belt, shoulder bag and strap (Scripts/make_nysa_coat.py, shaped to the lamp pose);
+        # the MetaHuman's stock t-shirt and shorts are hidden under it
+        cdir = ROOT + "/NysaCoat"
+        if eal.does_directory_exist(cdir):
+            eal.delete_directory(cdir)
+        import_file(SRC + "/Nysa/coat/NysaCoat.obj", cdir)
+        coat_parts = [a_ for a_ in (unreal.load_asset(p_) for p_ in eal.list_assets(cdir, recursive=True))
+                      if isinstance(a_, unreal.StaticMesh)]
+        if coat_parts:
+            ylo_ = min(a_.get_bounding_box().min.y for a_ in coat_parts)
+            yhi_ = max(a_.get_bounding_box().max.y for a_ in coat_parts)
+            mir = -1.0 if yhi_ < -ylo_ else 1.0          # the importer may flip Y; the sleeves reach forward (+Y)
+            log("coat: %d part(s), y %.1f..%.1f, mirror y %s" % (len(coat_parts), ylo_, yhi_, mir))
+            mi_wool = m_cloth("M_Nysa_Wool", (0.034, 0.033, 0.040), 0.82, plaster_tx.get("BaseColor"), 0.25)
+            mi_leather = m_cloth("M_Nysa_Leather", (0.075, 0.048, 0.032), 0.5, plaster_tx.get("BaseColor"), 0.0)
+            for coat_sm in coat_parts:
+                ca_ = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(NX, NY, 0.0), unreal.Rotator(0, 0, myaw))
+                ca_.static_mesh_component.set_static_mesh(coat_sm)
+                ca_.set_actor_scale3d(V(nsc, nsc * mir, nsc))
+                for k_, slot in enumerate(coat_sm.static_materials):
+                    nm_s = (str(slot.material_slot_name) + coat_sm.get_name()).lower()
+                    ca_.static_mesh_component.set_material(k_, mi_leather if "leather" in nm_s else mi_wool)
+                tag(ca_, "Nysa_Coat_" + coat_sm.get_name(), N)
+        else:
+            log("COAT IMPORT FAILED")
+        for c_ in mh.get_components_by_class(unreal.SkeletalMeshComponent):
+            if c_.get_name() == "SkeletalMesh":
+                c_.set_visibility(False, False)
+                c_.set_hidden_in_game(True, False)
+        # darker hair: find the groom material's melanin / redness and make an instance
+        for g_ in mh.get_components_by_class(unreal.GroomComponent):
+            if g_.get_name() != "Hair":
+                continue
+            for k_ in range(g_.get_num_materials()):
+                m0 = g_.get_material(k_)
+                if not m0:
+                    continue
+                # MetaHuman hair takes its colour from the "hairDye" vector: a deep, nearly black brown. The MetaHuman
+                # component re-applies its own materials when play starts, so dye the built material instances themselves.
+                if not isinstance(m0, unreal.MaterialInstanceConstant):
+                    continue
+                dye = [float(x) for x in os.environ.get("LETHE_HAIR_DYE", "0.035,0.020,0.013,1.0").split(",")]
+                mel.set_material_instance_vector_parameter_value(m0, "hairDye", unreal.LinearColor(*dye))
+                mel.update_material_instance(m0)
+                eal.save_loaded_asset(m0, False)
+                log("hair material %s dyed %s" % (m0.get_name(), dye))
+
+        cfx, cfy = unit(CAM_YAW); clx, cly = unit(CAM_YAW - 90.0)
+        rim_ = (NX + cfx * 130 + clx * 70, NY + cfy * 130 + cly * 70, 215.0)
+        ra_, rl_ = light(unreal.SpotLight, "Nysa_Rim", N, rim_)
+        ra_.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*rim_), V(NX, NY, 150.0 * s100)), False)
+        safe_set(rl_, "intensity_units", unreal.LightUnits.LUMENS)
+        safe_set(rl_, "intensity", float(os.environ.get("LETHE_NYSA_RIM", "22")))
+        safe_set(rl_, "light_color", unreal.Color(r=255, g=168, b=105, a=255))
+        safe_set(rl_, "outer_cone_angle", 22.0)
+        safe_set(rl_, "attenuation_radius", 260.0)
+        safe_set(rl_, "volumetric_scattering_intensity", 0.0)
+        if os.environ.get("LETHE_NYSA_SKIRT", "0") == "1":
+            cb = CONE.get_bounding_box()
+            ch, cw = cb.max.z - cb.min.z, cb.max.x - cb.min.x
+            top_, bot_, rb_ = 100.0 * s100, -2.0, 34.0 * s100
+            szc = (top_ - bot_) / ch
+            sk_c = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(NX - fwx * 2, NY - fwy * 2, bot_ - cb.min.z * szc), unreal.Rotator(0, 0, nyaw))
+            sk_c.static_mesh_component.set_static_mesh(CONE)
+            sk_c.static_mesh_component.set_world_scale3d(V(2 * rb_ * 0.80 / cw, 2 * rb_ / cw, szc))
+            sk_c.static_mesh_component.set_material(0, mi_coat)
+            tag(sk_c, "Nysa_CoatSkirt", N)
+        lb = (NYSA_HAND[0] - fwx * 6, NYSA_HAND[1] - fwy * 6, NYSA_HAND[2] + 3)
+        lf = (NYSA_HAND[0] + fwx * 7, NYSA_HAND[1] + fwy * 7, NYSA_HAND[2] + 4)
+        place_between("Nysa_Lamp", N, CYL, V(*lb), V(*lf), 3.6, m_iron)
+        place_between("Nysa_LampLens", N, CYL, V(*lf), V(lf[0] + fwx * 0.8, lf[1] + fwy * 0.8, lf[2]), 3.0, m_uvlens)
+        for a_ in [x for x in actors.get_all_level_actors() if x.get_actor_label().startswith("Nysa_Lamp")]:
+            a_.static_mesh_component.set_editor_property("cast_shadow", False)
+        log("nysa MH at (%.0f, %.0f) yaw %.0f, head frame %s, hand frame %s" % (NX, NY, nyaw,
+            str(frame_of(*mh_world(pose["head"]))), str(frame_of(*NYSA_HAND))))
+    elif not os.environ.get("LETHE_NO_NYSA"):
         ndir = ROOT + "/Nysa"
         if not [p_ for p_ in eal.list_assets(ndir, recursive=True)] if eal.does_directory_exist(ndir) else True:
             import_file(SRC + "/Nysa/gltf/NysaPosed.gltf", ndir)
@@ -1551,17 +1704,19 @@ def build():
             str(frame_of(NX, NY, info["head"][1] * s100)), str(frame_of(*NYSA_HAND))))
 
     # Nysa's UV Lantern (from where she will stand): a tight violet pool on the post, no spill
-    src = (CAM[0] + 300 * math.cos(math.radians(CAM_YAW + 8.5)), CAM[1] + 300 * math.sin(math.radians(CAM_YAW + 8.5)), 168.0)
+    src = (CAM[0] + 300 * math.cos(math.radians(CAM_YAW + 8.5)), CAM[1] + 300 * math.sin(math.radians(CAM_YAW + 8.5)), 168.0 - SINK)
     if NYSA_HAND:
         # from the letters back toward her hand, at least 45 cm out, so the light never starts inside the bark
-        tg_ = (PX - 38 * fx, PY - 38 * fy, 187.0)
+        tg_ = (PX - 38 * fx, PY - 38 * fy, 187.0 - SINK)
         dv_ = [h_ - t_ for h_, t_ in zip(NYSA_HAND, tg_)]
         dd_ = math.sqrt(sum(x * x for x in dv_))
         k_ = max(dd_, float(os.environ.get("LETHE_UV_STANDOFF", "90"))) / dd_
+        if os.environ.get("LETHE_NYSA_MH", "1") == "1":
+            k_ = max(0.2, (dd_ - 10.0) / dd_)               # the lens, 10 cm out from her hand toward the letters
         src = tuple(t_ + x * k_ for t_, x in zip(tg_, dv_))
         log("uv: hand %.0f cm from the letters, light at %s" % (dd_, str([round(x) for x in src])))
     uva, uv = light(unreal.SpotLight, "UVLantern", L, src)
-    uva.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*src), V(PX - 38 * fx, PY - 38 * fy, 187)), False)
+    uva.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*src), V(PX - 38 * fx, PY - 38 * fy, 187 - SINK)), False)
     safe_set(uv, "intensity_units", unreal.LightUnits.LUMENS)
     safe_set(uv, "intensity", float(os.environ.get("LETHE_UV", "0.75")))
     safe_set(uv, "light_color", unreal.Color(r=112, g=72, b=232, a=255))
@@ -1578,7 +1733,7 @@ def build():
     # a little brighter on the side it is held from. (An IES profile here came out aimed off the light's axis.)
     for k, (dz, dside, cone, share) in enumerate(((7.0, -9.0, 11.0, 0.45), (-6.0, 8.0, 19.0, 0.30))):
         sa, sl = light(unreal.SpotLight, "UVLantern_Lobe%d" % k, L, src)
-        tgt = V(PX - 38 * fx - fy * dside, PY - 38 * fy + fx * dside, 180 + dz)
+        tgt = V(PX - 38 * fx - fy * dside, PY - 38 * fy + fx * dside, 180 - SINK + dz)
         sa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*src), tgt), False)
         safe_set(sl, "intensity_units", unreal.LightUnits.LUMENS)
         safe_set(sl, "intensity", float(os.environ.get("LETHE_UV", "0.75")) * share)
@@ -1630,7 +1785,7 @@ def build():
 
     fog = actors.spawn_actor_from_class(unreal.ExponentialHeightFog, V(0, 0, 0), unreal.Rotator(0, 0, 0))
     fc = fog.component
-    safe_set(fc, "fog_density", float(os.environ.get("LETHE_FOG", "0.020")))
+    safe_set(fc, "fog_density", float(os.environ.get("LETHE_FOG", "0.040")))
     safe_set(fc, "fog_height_falloff", 25.0)             # dense on the ground, thin by tree-top height
     safe_set(fc, "fog_inscattering_luminance", unreal.LinearColor(0.052, 0.050, 0.056, 1))
     safe_set(fc, "enable_volumetric_fog", True)
@@ -1731,6 +1886,13 @@ def build():
 
     # --- the camera: eye height, 35 mm, slight upward tilt -----------------------------------------
     cam = actors.spawn_actor_from_class(unreal.CineCameraActor, V(*CAM), unreal.Rotator(0, CAM_PITCH, CAM_YAW))
+    if os.environ.get("LETHE_DEBUG_CAM") and NYSA_HAND:
+        # close-up check of Nysa from behind her left shoulder (does not move anything else)
+        dyaw = float(os.environ.get("LETHE_DEBUG_CAM"))
+        bx_, by_ = unit(nyaw + 180.0 + dyaw)
+        dloc = (NX + bx_ * 190.0, NY + by_ * 190.0, 125.0)
+        cam.set_actor_location(V(*dloc), False, False)
+        cam.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*dloc), V(NX + fwx * 15, NY + fwy * 15, 105.0)), False)
     cc = cam.get_cine_camera_component()
     fb = unreal.CameraFilmbackSettings()
     safe_set(fb, "sensor_width", 36.0)
