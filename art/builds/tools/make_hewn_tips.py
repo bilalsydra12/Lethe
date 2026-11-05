@@ -16,7 +16,22 @@ RADII = 10
 RAD = 50.0
 
 
+PENCIL = os.environ.get("LETHE_TIP_STYLE", "pencil") == "pencil"
+
+
 def planes(r):
+    if PENCIL:
+        # whittled all round, like a pencil: many narrow cuts, a long round-looking point, nearly centred
+        n = r.choice((9, 10, 11, 12, 13, 14))
+        base = r.uniform(0, 2 * math.pi)
+        apex = (r.uniform(-6, 6), r.uniform(-6, 6))
+        height = r.uniform(150, 215)
+        ps = []
+        for i in range(n):
+            a = base + 2 * math.pi * i / n + r.uniform(-0.12, 0.12)
+            slope = height / (RAD * r.uniform(0.9, 1.12))
+            ps.append((math.cos(a), math.sin(a), slope))
+        return apex, height, ps
     n = r.choice((3, 3, 4, 4, 4))
     base = r.uniform(0, 2 * math.pi)
     apex = (r.uniform(-12, 12), r.uniform(-12, 12))

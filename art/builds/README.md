@@ -628,3 +628,19 @@ Side by side, painting left: [compare/2026-11-05_painting_vs_match_r10.jpg](comp
 **Still different:**
 1. The painting's left wall comes nearer the camera, with a heavy log along its foot; ours recedes.
 2. The painting's stake tips are rounded and pencil-sharpened; ours are faceted.
+
+## Painting match · round 11 · pencil-sharpened stakes
+
+![painting match round 11](2026-11-05_gate_painting_match_r11.png)
+
+Side by side, painting left: [compare/2026-11-05_painting_vs_match_r11.jpg](compare/2026-11-05_painting_vs_match_r11.jpg).
+
+**What changed:**
+- **Stake tips.** `tools/make_hewn_tips.py` now whittles each point all round with 9 to 14 narrow cuts, instead of 3 or 4 axe strokes. The result is a long, round-looking point, nearly centred, like the painting's pencil-sharpened logs. The build re-imports the tips every time.
+- **Left wall.** A heavy 36 cm rail log runs along its foot, at 58 cm, with a second rail higher up. More moonlight falls on it, so the bark reads blue-grey.
+
+The painting's left wall is no closer to the camera than ours: measured, both meet the left frame edge with their foot about 13 m away. The difference was in the stakes and the light.
+
+**Still different:**
+1. The rail at the left wall's foot is lost in the mist; the painting shows it as a dark line.
+2. Small things: the painting's coat has a visible strap across the back, and her hair has more defined ringlets near the crown.

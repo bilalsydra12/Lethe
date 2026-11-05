@@ -807,6 +807,9 @@ def build():
     for i in range(6):                         # always re-import: the tips are regenerated between rounds
         if eal.does_directory_exist(ROOT + "/Meshes/HewnTip_%d" % i):
             eal.delete_directory(ROOT + "/Meshes/HewnTip_%d" % i)
+    for i in range(6):
+        if eal.does_directory_exist(ROOT + "/Meshes/HewnTip_%d" % i):
+            eal.delete_directory(ROOT + "/Meshes/HewnTip_%d" % i)
     TIPS[:] = [mesh("../Hewn", "HewnTip_%d.obj" % i, "HewnTip_%d" % i) for i in range(6)]
     # The CROATOAN post as real geometry (Scripts/make_panel_mask.ps1): bark, sunken panel, V-cut letters
     if eal.does_directory_exist(ROOT + "/Meshes/CroatoanPost"):
@@ -1239,8 +1242,8 @@ def build():
 
     # --- the palisade -------------------------------------------------------------------------
     # left: a tight bundle of 35-50 cm trunks leaning toward the gate ("/" in frame), two roped rails, a row behind
-    curtain("Trunk_L", 712, -300, -90, 1500, (430, 505), (35, 50), 3.0, (95, 315), rail_every=3, lean_along=-14.0,
-            back_row=True, rail_dia=27, taper=0.40)
+    curtain("Trunk_L", 712, -300, -90, 1500, (430, 505), (35, 50), 3.0, (58, 300), rail_every=3, lean_along=-14.0,
+            back_row=True, rail_dia=36, taper=0.40)
     for yy_ in (-200, -224, -248, -272):                           # upright stakes closing the foot of the wall against the gatepost
         upright("Trunk_LG", "Palisade", sm_l1, 714 + rng.uniform(-4, 4), yy_, rng.uniform(400, 440), rng.uniform(36, 44), mi_dark)
     # right: tall, more upright, separate pointed stakes, set back so the barrel stands in front of them
@@ -1891,7 +1894,7 @@ def build():
     wfa, wfl = light(unreal.SpotLight, "WallFill", L, wf)
     wfa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*wf), V(712, -700, 250)), False)
     safe_set(wfl, "intensity_units", unreal.LightUnits.LUMENS)
-    safe_set(wfl, "intensity", float(os.environ.get("LETHE_WALL_FILL", "150")))
+    safe_set(wfl, "intensity", float(os.environ.get("LETHE_WALL_FILL", "260")))
     safe_set(wfl, "use_temperature", True)
     safe_set(wfl, "temperature", 8000.0)
     safe_set(wfl, "inner_cone_angle", 15.0)
