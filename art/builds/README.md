@@ -563,3 +563,23 @@ Side by side, painting left: [compare/2026-11-04_painting_vs_match_r6.jpg](compa
 2. The stripped panel on the post is grey; the painting's is pale cream with many names carved above CROATOAN.
 3. The puddles read as dark holes; the painting's mud is churned, with the lantern's light in the wet.
 4. The gate lantern sits behind her head; in the painting it is just left of it, smaller.
+
+## Painting match · round 7 · Nysa's curls
+
+![painting match round 7](2026-11-05_gate_painting_match_r7.png)
+
+Side by side, painting left: [compare/2026-11-05_painting_vs_match_r7.jpg](compare/2026-11-05_painting_vs_match_r7.jpg).
+
+**What changed:**
+- **Long dark ringlets.** MetaHuman has no long curly style, so `tools/make_nysa_curls.py` generates one: 14,000 strands in 254 clumps, written as a USD groom (curves with Unreal's GroomAPI). The USD importer plugin is now on. Roots cover the top, sides and back of her head. The hair flows over the skull, then hangs down her back over the coat in loose ringlets of varied size and length, standing off the back by different amounts so it has depth. It renders with a dark brown strand material, with simulation off so it doesn't sag during the render.
+- **Gate lantern** moved left of her head as painted, with a smaller glow.
+- **Post panel:** paler and warmer (cream rather than grey), lit more strongly.
+- **Lamp:** a small violet glow at its lens, so you see where the beam comes from.
+- **Rim light** on her: weaker and cooler, so the hair reads dark brown, not auburn.
+- **Puddles:** dull sky reflection instead of black holes; the two nearest are removed.
+- **Sleeve cuffs** slimmer.
+
+**Still different:**
+1. The panel shows CROATOAN only; the painting has many other names carved above and below it.
+2. The mud is flat; the painting's is churned and rutted.
+3. Her coat is plain wool, with none of the painting's folds or seams in the light.

@@ -158,10 +158,10 @@ for sd in ("r", "l"):
     S0 = add(add(S, mul(inward, 5.0)), (0, 0, 1.5))          # start inside the shoulder of the coat
     W = add(H, mul(norm(sub(E, H)), 1.5))                    # cuff just short of the wrist bone
     path = catmull([S0, add(S, (0, 0, 1.0)), E, W], 8)
-    tube(path, lambda t: 9.6 - 2.6 * t + 0.8 * math.sin(math.pi * t), wrinkle=0.06)      # loose coat sleeves
+    tube(path, lambda t: 9.4 - 3.6 * t + 0.8 * math.sin(math.pi * t), wrinkle=0.06)      # loose coat sleeves, narrower at the wrist
     # cuff: a slightly wider short band
     d_ = norm(sub(W, E))
-    tube([add(W, mul(d_, -5.0)), W], lambda t: 7.3, seg=24)
+    tube([add(W, mul(d_, -4.0)), W], lambda t: 5.5, seg=24)
 
 
 # ---------------------------------------------------------------- belt at the waist

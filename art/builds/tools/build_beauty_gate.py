@@ -1,4 +1,4 @@
-"""
+﻿"""
 LETHE Â· Roanoke beauty corner: the CROATOAN gate at final quality (target: art/levels/roanoke/croatoan-gate.jpg).
 
 Free Quixel Megascans from Fab (Standard License, $0 for Unreal), downloaded to C:/LETHE/SourceArt/Megascans:
@@ -254,8 +254,8 @@ def m_puddle(name, h):
     op = E(m, unreal.MaterialExpressionSaturate, -550, 100)
     link(mul(m, edge, E(m, unreal.MaterialExpressionConstant, -700, 200, r=3.0), -650, 100), "", op, "")
     to_prop(op, "", MP.MP_OPACITY)
-    to_prop(E(m, unreal.MaterialExpressionConstant3Vector, -500, -200, constant=unreal.LinearColor(0.012, 0.013, 0.015, 1)), "", MP.MP_BASE_COLOR)
-    to_prop(E(m, unreal.MaterialExpressionConstant, -500, -100, r=0.03), "", MP.MP_ROUGHNESS)
+    to_prop(E(m, unreal.MaterialExpressionConstant3Vector, -500, -200, constant=unreal.LinearColor(0.030, 0.031, 0.036, 1)), "", MP.MP_BASE_COLOR)
+    to_prop(E(m, unreal.MaterialExpressionConstant, -500, -100, r=0.10), "", MP.MP_ROUGHNESS)
     to_prop(E(m, unreal.MaterialExpressionConstant3Vector, -500, 0, constant=unreal.LinearColor(0, 0, 1, 1)), "", MP.MP_NORMAL)
     mel.recompile_material(m)
     return m
@@ -596,6 +596,18 @@ def m_char(name, bc_t, n_t, orm_t, tint, rough_mult=1.0):
     to_prop(mul(m, orm, E(m, unreal.MaterialExpressionConstant, -700, 500, r=rough_mult), -500, 400, "G"), "", MP.MP_ROUGHNESS)
     to_prop(orm, "R", MP.MP_AMBIENT_OCCLUSION)
     m.set_editor_property("two_sided", True)
+    mel.recompile_material(m)
+    return m
+
+
+def m_hair_strands(name, rgb, rough=0.42, spec=0.35):
+    """Strand hair (groom): the Hair shading model, dark brown, a soft highlight."""
+    m = new_material(name)
+    safe_set(m, "shading_model", unreal.MaterialShadingModel.MSM_HAIR)
+    safe_set(m, "used_with_hair_strands", True)
+    to_prop(vparam(m, "Tint", rgb, -600, -200), "", MP.MP_BASE_COLOR)
+    to_prop(E(m, unreal.MaterialExpressionConstant, -400, 200, r=rough), "", MP.MP_ROUGHNESS)
+    to_prop(E(m, unreal.MaterialExpressionConstant, -400, 300, r=spec), "", MP.MP_SPECULAR)
     mel.recompile_material(m)
     return m
 
@@ -1153,9 +1165,9 @@ def build():
         "Bark": mi("MI_Post_Bark", master, {"Wet": 0.2, "RoughnessMult": 1.4}, {"Tint": (0.62, 0.57, 0.53)},
                    {"BaseColor": ph["knotted_pine_bark"]["bc"], "Normal": ph["knotted_pine_bark"]["n"],
                     "Roughness": ph["knotted_pine_bark"]["r"], "AO": ph["knotted_pine_bark"]["ao"]}),
-        "Panel": ph_mi("MI_Post_Panel", "rough_wood", {"Pale": 0.92, "PaleBright": float(os.environ.get("LETHE_PANEL_BRIGHT", "2.5")),
+        "Panel": ph_mi("MI_Post_Panel", "rough_wood", {"Pale": 0.92, "PaleBright": float(os.environ.get("LETHE_PANEL_BRIGHT", "4.8")),
                                                        "PaleContrast": 1.35, "Wet": 0.08, "RoughnessMult": 1.2},
-                       {"PaleColor": (0.66, 0.61, 0.62), "Tint": (1.0, 1.0, 1.0)}),
+                       {"PaleColor": (0.80, 0.72, 0.61), "Tint": (1.0, 1.0, 1.0)}),
         "Cut": ph_mi("MI_Post_CutWood", "rough_wood", {"Pale": 0.92, "PaleBright": 1.5, "PaleContrast": 1.15, "Wet": 0.05,
                                                         "RoughnessMult": 1.3, "UVScale": 3.0},
                      {"PaleColor": (0.70, 0.60, 0.55), "Tint": (1.0, 1.0, 1.0)}),
@@ -1196,8 +1208,11 @@ def build():
     box("GateInner_Backing", G, (1010, -140, 200), (20, 620, 420), mi_shadow)
     # A lantern hung on the gate
     lx, ly, lz = 676.0, 92.0, 256.0                      # spec: frame (0.537, 0.38)
+    _ld = frame_of(lx, ly, lz)[2]
+    lx, ly, lz = at_frame(float(os.environ.get("LETHE_GLANTERN_FX", "0.505")), float(os.environ.get("LETHE_GLANTERN_FY", "0.355")), _ld)
+    log("gate lantern at (%.0f, %.0f, %.0f), frame %s" % (lx, ly, lz, str(frame_of(lx, ly, lz))))
     place_between("GateLantern_Hook", G, sm_bm, V(lx, ly, lz + 18), V(lx, ly, lz + 40), 1.6, m_iron)
-    lantern("GateLantern", G, (lx, ly, lz), 50, 26, radius=560, vol=0.8, flame=1.25)
+    lantern("GateLantern", G, (lx, ly, lz), 50, float(os.environ.get("LETHE_GLANTERN_LM", "16")), radius=520, vol=0.45, flame=1.15)
 
     # --- the palisade -------------------------------------------------------------------------
     # left: a tight bundle of 35-50 cm trunks leaning toward the gate ("/" in frame), two roped rails, a row behind
@@ -1382,10 +1397,10 @@ def build():
         d_.decal.set_editor_property("decal_size", V(depth, width / 2, length / 2))
         tag(d_, label, "Ground/Decals")
     mi_pud = mi("MI_Puddle", m_pud)
-    for (fx_, fy_, ln, wd) in ((0.38, 0.88, 240, 120), (0.45, 0.83, 260, 110), (0.33, 0.95, 160, 90), (0.22, 0.90, 180, 90),
-                               (0.53, 0.86, 200, 100), (0.10, 0.96, 140, 80), (0.88, 0.90, 200, 100), (0.41, 0.80, 220, 90)):
+    for (fx_, fy_, ln, wd) in ((0.38, 0.88, 240, 120), (0.45, 0.83, 260, 110), (0.22, 0.90, 180, 90),
+                               (0.53, 0.86, 200, 100), (0.88, 0.90, 200, 100), (0.41, 0.80, 220, 90)):
         x, y_, _ = at_frame_z(fx_, fy_, 0.0)
-        ground_decal("Puddle", mi_pud, x, y_, ln * 0.55, wd * 0.55, rng.uniform(0, 180))     # smaller: the camera is closer to the ground now
+        ground_decal("Puddle", mi_pud, x, y_, ln * 0.45, wd * 0.45, rng.uniform(0, 180))     # smaller: the camera is closer to the ground now
     mi_md = mi("MI_MudPatch", m_mdec)
     for _ in range(0):
         dist, brg = rng.uniform(150, 900), CAM_YAW + rng.uniform(-28, 26)
@@ -1446,11 +1461,11 @@ def build():
     fa, fl = light(unreal.SpotLight, "PanelMoonFill", P, pf)
     fa.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*pf), V(PX - 34 * fx, PY - 34 * fy, 115 - SINK)), False)
     safe_set(fl, "intensity_units", unreal.LightUnits.LUMENS)
-    safe_set(fl, "intensity", float(os.environ.get("LETHE_POST_FILL", "12")))
+    safe_set(fl, "intensity", float(os.environ.get("LETHE_POST_FILL", "28")))
     safe_set(fl, "use_temperature", True)
     safe_set(fl, "temperature", 8500.0)
     safe_set(fl, "inner_cone_angle", 8.0)
-    safe_set(fl, "outer_cone_angle", 32.0)
+    safe_set(fl, "outer_cone_angle", 42.0)
     safe_set(fl, "attenuation_radius", 1600.0)
     safe_set(fl, "source_radius", 40.0)
     safe_set(fl, "volumetric_scattering_intensity", 0.0)
@@ -1574,6 +1589,77 @@ def build():
             if c_.get_name() == "SkeletalMesh":
                 c_.set_visibility(False, False)
                 c_.set_hidden_in_game(True, False)
+        # her long dark ringlets: a groom generated by Scripts/make_nysa_curls.py (USD curves), replacing the MetaHuman's
+        # straight hairstyle, in the same component space (so it stands where she does, turned as she is)
+        if os.environ.get("LETHE_NYSA_CURLS", "1") == "1":
+            hdir = ROOT + "/NysaCurls"
+            usd_ = "C:/LETHE/SourceArt/Nysa/curls/NysaCurls.usda"
+            stamp_ = "C:/LETHE/Saved/nysa_curls_imported.txt"
+            need = not eal.does_directory_exist(hdir) or not os.path.exists(stamp_) or \
+                open(stamp_).read().strip() != str(os.path.getmtime(usd_))
+            if need:
+                if eal.does_directory_exist(hdir):
+                    eal.delete_directory(hdir)
+                uopt = unreal.UsdStageImportOptions()
+                for k_, v_ in (("import_actors", False), ("import_geometry", True), ("import_materials", False),
+                               ("import_groom_assets", True), ("import_skeletal_animations", False), ("import_level_sequences", False)):
+                    safe_set(uopt, k_, v_)
+                ut = unreal.AssetImportTask()
+                for k_, v_ in (("filename", usd_), ("destination_path", hdir), ("automated", True), ("save", True),
+                               ("replace_existing", True), ("options", uopt)):
+                    ut.set_editor_property(k_, v_)
+                assets.import_asset_tasks([ut])
+                open(stamp_, "w").write(str(os.path.getmtime(usd_)))
+                log("curls imported")
+            groom_ = next((a_ for a_ in (unreal.load_asset(p_) for p_ in eal.list_assets(hdir, recursive=True))
+                           if isinstance(a_, unreal.GroomAsset)), None)
+            if groom_:
+                m_curls = m_hair_strands("M_Nysa_Curls", [float(x) for x in os.environ.get("LETHE_CURL_RGB", "0.045,0.027,0.018").split(",")])
+                log("curl material: hair strands usage %s" % m_curls.get_editor_property("used_with_hair_strands"))
+                # no simulation (it would let the curls sag flat during the render), and our material on the asset itself
+                # (struct arrays come back as copies: modify, then set them back)
+                try:
+                    phs_ = groom_.get_editor_property("hair_groups_physics")
+                    for ph_ in phs_:
+                        ss_ = ph_.get_editor_property("solver_settings")
+                        ss_.set_editor_property("enable_simulation", False)
+                        ph_.set_editor_property("solver_settings", ss_)
+                    groom_.set_editor_property("hair_groups_physics", phs_)
+                except Exception as e_:  # noqa: BLE001
+                    log("curls physics setting skipped: %s" % e_)
+                try:
+                    gms_ = groom_.get_editor_property("hair_groups_materials")
+                    for gm_ in gms_:
+                        gm_.set_editor_property("material", m_curls)
+                    if not len(gms_):
+                        gm_ = unreal.HairGroupsMaterial()
+                        gm_.set_editor_property("material", m_curls)
+                        gm_.set_editor_property("slot_name", "Hair")
+                        gms_ = [gm_]
+                    groom_.set_editor_property("hair_groups_materials", gms_)
+                    rds_ = groom_.get_editor_property("hair_groups_rendering")
+                    for rd_ in rds_:
+                        rd_.set_editor_property("material_slot_name", gms_[0].get_editor_property("slot_name"))
+                    groom_.set_editor_property("hair_groups_rendering", rds_)
+                    eal.save_loaded_asset(groom_, False)
+                    log("curl groom: %d material slot(s), simulation %s" % (len(gms_), [p_.get_editor_property("solver_settings").get_editor_property("enable_simulation") for p_ in groom_.get_editor_property("hair_groups_physics")]))
+                except Exception as e_:  # noqa: BLE001
+                    log("curls material setting failed: %s" % e_)
+                ga_ = actors.spawn_actor_from_class(unreal.GroomActor, V(NX, NY, 0.0), unreal.Rotator(0, 0, myaw))
+                gc_ = ga_.get_component_by_class(unreal.GroomComponent)
+                gc_.set_editor_property("groom_asset", groom_)
+                for k_ in range(max(1, gc_.get_num_materials())):
+                    gc_.set_material(k_, m_curls)
+                ga_.set_actor_scale3d(V(nsc, nsc, nsc))
+                tag(ga_, "Nysa_Curls", N)
+                for g_ in mh.get_components_by_class(unreal.GroomComponent):
+                    if g_.get_name() == "Hair":
+                        g_.set_visibility(False, False)
+                        g_.set_hidden_in_game(True, False)
+                o_, e_ = ga_.get_actor_bounds(False)
+                log("curls groom placed: bounds centre %s, extent %s" % (o_, e_))
+            else:
+                log("CURLS IMPORT FAILED")
         # darker hair: find the groom material's melanin / redness and make an instance
         for g_ in mh.get_components_by_class(unreal.GroomComponent):
             if g_.get_name() != "Hair":
@@ -1597,8 +1683,8 @@ def build():
         ra_, rl_ = light(unreal.SpotLight, "Nysa_Rim", N, rim_)
         ra_.set_actor_rotation(unreal.MathLibrary.find_look_at_rotation(V(*rim_), V(NX, NY, 150.0 * s100)), False)
         safe_set(rl_, "intensity_units", unreal.LightUnits.LUMENS)
-        safe_set(rl_, "intensity", float(os.environ.get("LETHE_NYSA_RIM", "22")))
-        safe_set(rl_, "light_color", unreal.Color(r=255, g=168, b=105, a=255))
+        safe_set(rl_, "intensity", float(os.environ.get("LETHE_NYSA_RIM", "7")))
+        safe_set(rl_, "light_color", unreal.Color(r=205, g=200, b=220, a=255))
         safe_set(rl_, "outer_cone_angle", 22.0)
         safe_set(rl_, "attenuation_radius", 260.0)
         safe_set(rl_, "volumetric_scattering_intensity", 0.0)
@@ -1616,6 +1702,16 @@ def build():
         lf = (NYSA_HAND[0] + fwx * 7, NYSA_HAND[1] + fwy * 7, NYSA_HAND[2] + 4)
         place_between("Nysa_Lamp", N, CYL, V(*lb), V(*lf), 3.6, m_iron)
         place_between("Nysa_LampLens", N, CYL, V(*lf), V(lf[0] + fwx * 0.8, lf[1] + fwy * 0.8, lf[2]), 3.0, m_uvlens)
+        if os.environ.get("LETHE_NYSA_MH", "1") == "1":
+            # the lens's glow, just clear of her fingers and cuff: the bright violet point the painting shows
+            gp_ = (lf[0] + fwx * 2.0, lf[1] + fwy * 2.0, lf[2] + 1.0)
+            gl_a = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(*gp_), unreal.Rotator(0, 0, 0))
+            gl_a.static_mesh_component.set_static_mesh(SPHERE)
+            gl_a.static_mesh_component.set_world_scale3d(V(0.026, 0.026, 0.026))
+            gl_a.static_mesh_component.set_material(0, m_uvlens)
+            gl_a.static_mesh_component.set_editor_property("cast_shadow", False)
+            tag(gl_a, "Nysa_UVGlow", N)
+            point("Nysa_UVGlowLight", N, gp_, 0.6, 12000, radius=60, source=1.0, vol=1.5, shadows=False)
         for a_ in [x for x in actors.get_all_level_actors() if x.get_actor_label().startswith("Nysa_Lamp")]:
             a_.static_mesh_component.set_editor_property("cast_shadow", False)
         log("nysa MH at (%.0f, %.0f) yaw %.0f, head frame %s, hand frame %s" % (NX, NY, nyaw,
