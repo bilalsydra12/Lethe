@@ -66,6 +66,11 @@ def swing(u, v):
     return tuple(x / l_ for x in q)
 
 
+def rot_about_(axis, ang):
+    s_ = math.sin(ang / 2)
+    return (axis[0] * s_, axis[1] * s_, axis[2] * s_, math.cos(ang / 2))
+
+
 def tq(t):
     r = t.rotation
     return (r.x, r.y, r.z, r.w)
@@ -123,12 +128,78 @@ def run():
                                                                  [round(x) for x in T], L1, L2))
         return T
 
-    t_ = [float(x) for x in os.environ.get("LETHE_POSE_T", "38,6,-4").split(",")]
+    # the torch hand at chest height in front of her right shoulder, elbow down by her side (as painted), not reaching out
+    t_ = [float(x) for x in os.environ.get("LETHE_POSE_T", "29,-11,-2").split(",")]
     hand_r = solve_arm("r", lambda S: add(S, add(add(mulv(fwd, t_[0]), mulv(up, t_[1])), mulv(right, t_[2]))),
-                       add(add(mulv(up, -1.0), mulv(right, 0.7)), mulv(fwd, -0.2)))
+                       add(add(mulv(up, -1.0), mulv(right, 0.35)), mulv(fwd, -0.15)))
+    # her head turns toward the post (her right), so her face shows in profile as painted; neck and head share the turn
+    HEAD_TURN = float(os.environ.get("LETHE_HEAD_TURN", "28"))
+    pivot = tv(cs("neck_01"))
+    up_ax = (0.0, 0.0, -side_r)             # positive turn swings her face toward her right (-X when her right is -X)
+    acc_ = 0.0
+    for b, share in (("neck_01", 0.3), ("neck_02", 0.3), ("head", 0.4)):
+        acc_ += HEAD_TURN * share
+        new_cs[b] = qmul(rot_about_(up_ax, math.radians(acc_)), tq(cs(b)))
+    log("head turned %.0f deg toward her right" % HEAD_TURN)
     left = mulv(right, -1.0)
     hand_l = solve_arm("l", lambda S: add(S, add(add(mulv(up, -50.0), mulv(left, 9.0)), mulv(fwd, 12.0))),
                        add(add(mulv(fwd, -1.0), mulv(left, 0.4)), mulv(up, 0.0)))
+
+    # ---- her right hand closes round the torch, and the wrist turns so the torch points at the letters
+    TORCH = {}
+    target = tuple(float(x) for x in os.environ.get("LETHE_POSE_TARGET", "-11.6,58.5,152").split(","))   # CROATOAN, component space
+
+    def rot_about(axis, ang):
+        s_ = math.sin(ang / 2)
+        return (axis[0] * s_, axis[1] * s_, axis[2] * s_, math.cos(ang / 2))
+
+    def grip(sd):
+        H = "hand_" + sd
+        P = lambda b: tv(cs(b))
+        hp = P(H)
+        D = qmul(new_cs[H], qinv(tq(cs(H))))                         # how the arm solve turned the hand
+        i1, m1, r1, p1 = (P(f + "_01_" + sd) for f in ("index", "middle", "ring", "pinky"))
+        n_ = norm(cross(sub(i1, hp), sub(p1, hp)))
+        to_body = (-1.0 if hp[0] > 0 else 1.0, 0.0, 0.0)
+        palm = n_ if dot(n_, to_body) > 0 else mulv(n_, -1.0)       # in the A-pose the palms face the thighs
+        ref_rot = {}
+        for f, angs in (("index", (68, 92, 55)), ("middle", (74, 95, 55)), ("ring", (80, 95, 55)), ("pinky", (86, 92, 55)),
+                        ("thumb", (22, 34, 30))):
+            chain = [f + "_01_" + sd, f + "_02_" + sd, f + "_03_" + sd]
+            cur = [P(b) for b in chain]
+            cur.append(add(cur[2], mulv(sub(cur[2], cur[1]), 0.8)))
+            acc = (0.0, 0.0, 0.0, 1.0)
+            for j in range(3):
+                d_ = norm(sub(cur[j + 1], cur[j]))
+                ax_ = norm(cross(d_, palm))
+                R_ = rot_about(ax_, math.radians(angs[j]))
+                for k_ in range(j + 1, 4):
+                    cur[k_] = add(cur[j], qrot(R_, sub(cur[k_], cur[j])))
+                acc = qmul(R_, acc)
+                ref_rot[chain[j]] = qmul(acc, tq(cs(chain[j])))
+        # wrist: turn the hand so the knuckle line (pinky to index: the torch's axis in a fist) points at the target
+        k_ref = norm(sub(i1, p1))
+        hand_pos = ARMS[sd]["hand"]
+        W = swing(qrot(D, k_ref), sub(target, hand_pos))
+        WD = qmul(W, D)
+        new_cs[H] = qmul(W, new_cs[H])
+        for b, q_ in ref_rot.items():
+            new_cs[b] = qmul(WD, q_)
+        for f in ("index", "middle", "ring", "pinky"):                # the palm bones ride with the hand
+            mb = f + "_metacarpal_" + sd
+            try:
+                new_cs[mb] = qmul(WD, tq(cs(mb)))
+            except Exception:  # noqa: BLE001
+                pass
+        # the torch sits in the fist: through the palm, a little inside it, along the knuckle line
+        c_ref = add(mulv(add(add(i1, m1), add(r1, p1)), 0.25), mulv(palm, 2.6))
+        c_ = add(hand_pos, qrot(WD, sub(c_ref, hp)))
+        axis = norm(qrot(WD, k_ref))
+        TORCH.update({"centre": c_, "axis": axis, "back": add(c_, mulv(axis, -6.5)), "front": add(c_, mulv(axis, 10.5))})
+        log("grip %s: torch centre %s axis %s, front %s" % (sd, [round(x, 1) for x in c_], [round(x, 2) for x in axis],
+                                                             [round(x, 1) for x in TORCH["front"]]))
+
+    grip("r")
 
     # local rotations: parent's (possibly new) component rotation inverted, times the bone's new one
     keys = {}
@@ -171,7 +242,8 @@ def run():
     log("posed hand_r %s (wanted %s), hand_l %s, head %s" % ([round(x, 1) for x in got_r], [round(x, 1) for x in hand_r],
                                                             [round(x, 1) for x in got_l], [round(x, 1) for x in head]))
     json.dump({"hand_r": hand_r, "hand_l": hand_l, "head": REF["head"], "side_r": side_r, "wanted_r": hand_r,
-               "arms": ARMS, "bones": REF},
+               "arms": ARMS, "bones": REF, "torch": TORCH,
+               "head_turn": HEAD_TURN, "head_axis": up_ax, "head_pivot": pivot},
               open("C:/LETHE/Saved/nysa_mh_pose.json", "w"), indent=1)
     act.destroy_actor()
     log("done")

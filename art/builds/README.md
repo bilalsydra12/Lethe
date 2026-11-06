@@ -711,3 +711,23 @@ Side by side, painting left: [compare/2026-11-06_painting_vs_match_r14.jpg](comp
 
 **Still different:**
 1. The bottom centre (her coat and the mud at her feet) is a little brighter than the painting's; the bottom right, at the post's foot, is darker.
+
+## Painting match · round 15 · Nysa, close up
+
+![painting match round 15](2026-11-06_gate_painting_match_r15.png)
+
+Side by side, painting left: [compare/2026-11-06_painting_vs_match_r15.jpg](compare/2026-11-06_painting_vs_match_r15.jpg). Nysa close up against the painting: [compare/2026-11-06_nysa_close_r15.jpg](compare/2026-11-06_nysa_close_r15.jpg).
+
+**What changed:**
+- **Her pose.** She was reaching out with a straight arm. Now her elbow is down by her side and her hand holds the torch at chest height, as painted. `tools/make_nysa_pose_anim.py` closes her right hand round the torch: each finger curls joint by joint toward the palm and the thumb wraps. The wrist turns so the torch points at the letters, and the torch's place in her fist is written out for the scene build. Her head turns 28 degrees toward the post, so her face shows in profile.
+- **The torch:** a dark metal body with a wider head, a violet lens and a bigger glow, set in her fist and aimed by the pose; the UV light and beam come from its lens.
+- **Gloves.** Only her hands show under the coat, so the MetaHuman body is dark leather: gloved hands, as painted.
+- **Hair.** 26,000 finer strands in 288 ringlets that sway and loosen toward the ends. Each strand gets a slight crimp, one in twenty works loose, and each takes its own shade of dark brown from the groom's per-strand seed. The scalp part turns with her head, and the roots now cover the whole crown down to the brow. (A first try spread the strands loosely and read as a fuzzy pelt.)
+- **Coat:** fitted sleeves (they were thick tubes), the collar at the base of her neck, not a turtleneck.
+- **Satchel:** a soft, rounded, sagging leather bag with a flap, in dark brown, instead of a box.
+- **Light on her:** a soft moon fill on her back and a warm edge from the gate side on her hair. Both are on their own lighting channel, so they light only her (the fill had first burnt the post white).
+
+**Still different:**
+1. The top of her hair catches a cool grey sheen; the painting's highlights are warm brown.
+2. The ringlets still hang as one mass; the painting's fall in separate locks with gaps between.
+3. The painting shows the strap across her back and a belt buckle; ours are hidden or plain.

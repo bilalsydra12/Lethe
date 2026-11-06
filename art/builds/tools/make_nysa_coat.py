@@ -33,8 +33,7 @@ def quad(mat, a, b, c, d):
 # (z, half-width x, depth to the front, depth to the back), smoothed between keys
 PROFILE = [(2, 29.5, 21, 22), (20, 27.5, 19.5, 20.5), (45, 24.5, 17, 18), (70, 21.5, 14.5, 15.5), (86, 19.0, 12.5, 13.0),
            (96, 16.0, 11.5, 10.8), (104, 15.0, 11.0, 10.3), (116, 16.5, 12.8, 10.3), (126, 18.5, 13.0, 10.8),
-           (133, 21.0, 12.0, 11.5), (138, 21.0, 11.5, 11.5), (142, 18.5, 11.5, 12.8), (146, 14.0, 10.0, 11.5), (150, 10.8, 9.0, 10.2),
-           (156, 10.2, 9.0, 9.8)]
+           (133, 21.0, 12.0, 11.5), (138, 21.0, 11.5, 11.5), (142, 18.5, 11.5, 12.8), (146, 13.0, 9.6, 11.0), (149, 10.4, 8.6, 9.6)]      # collar at the base of the neck, as painted
 
 
 def lerp_profile(z):
@@ -86,7 +85,7 @@ def ring_point(z, th, grow=0.0):
     return ((rx + grow) * c * k, center_y(z) + (ry + grow) * s * k, z)
 
 
-ZS = [2.0 + i * 2.5 for i in range(int((156 - 2) / 2.5) + 1)]
+ZS = [2.0 + i * 2.5 for i in range(int((149 - 2) / 2.5) + 1)]
 rings = []
 for zi, z in enumerate(ZS):
     zz = z + (0.8 * math.sin(3 * PH[4] + 5.0) if zi == 0 else 0.0)
@@ -169,12 +168,12 @@ for sd in ("r", "l"):
         # the hanging arm renders a few cm further out than the solved pose: a looser sleeve, nudged out, to the wrist
         out_ = (2.5, 0.0, 0.0)
         E, W = add(E, out_), add(H, mul(out_, 1.2))
-        extra = 1.6
+        extra = 1.3
     path = catmull([S0, add(S, (0, 0, 1.0)), E, W], 8)
-    tube(path, lambda t: 9.4 + extra - 3.6 * t + 0.8 * math.sin(math.pi * t), wrinkle=0.06)      # loose coat sleeves, narrower at the wrist
+    tube(path, lambda t: 7.3 + extra - 2.2 * t + 0.6 * math.sin(math.pi * t), wrinkle=0.05)      # fitted, as painted      # loose coat sleeves, narrower at the wrist
     # cuff: a slightly wider short band
     d_ = norm(sub(W, E))
-    tube([add(W, mul(d_, -4.0)), W], lambda t: 5.5 + extra * 0.6, seg=24)
+    tube([add(W, mul(d_, -4.0)), W], lambda t: 4.9 + extra * 0.6, seg=24)
 
 
 # ---------------------------------------------------------------- belt at the waist
@@ -213,7 +212,7 @@ def box(c, size, yaw_deg, mat="Leather", sag=0.0):
     quad(mat, P[(-1, 1, -1)], P[(1, 1, -1)], P[(1, -1, -1)], P[(-1, -1, -1)])
 
 
-bx, bz = -14.0, 84.0
+bx, bz = -14.0, 78.0
 th_b = math.atan2(-1.0, bx / 16.0)                    # where on the hip ellipse it hangs
 # round on her right flank, a little behind: the side of her toward the post in this shot, as painted
 TH_BAG = -math.pi / 2 - 1.05
@@ -222,9 +221,37 @@ on_ = (math.cos(TH_BAG), math.sin(TH_BAG))                  # outward from her b
 bag_c = (hip[0] + on_[0] * 4.5, hip[1] + on_[1] * 4.5, bz)
 BY = -60.0                                                  # bag turned so its flap faces outward
 fy_ = (math.sin(math.radians(BY)), -math.cos(math.radians(BY)))   # the bag's local -Y in plan
-box(bag_c, (23.0, 8.0, 19.0), BY, sag=0.06)                         # body
-box((bag_c[0] + fy_[0] * 4.3, bag_c[1] + fy_[1] * 4.3, bag_c[2] + 4.5), (24.0, 1.2, 11.0), BY)   # flap
-box((bag_c[0] + fy_[0] * 5.0, bag_c[1] + fy_[1] * 5.0, bag_c[2] + 0.5), (3.0, 0.8, 3.5), BY)     # buckle tab
+def pouch(c, size, yaw_deg, mat="Leather", e=0.32, sag=0.10, front_only=False, seg=28):
+    """A soft leather shape: a rounded box (superellipsoid), bellied and sagging at the bottom like a worn satchel.
+    front_only: just the outer half (for the flap that lies over the body)."""
+    hx, hy, hz = size[0] / 2, size[1] / 2, size[2] / 2
+    cy_, sy_ = math.cos(math.radians(yaw_deg)), math.sin(math.radians(yaw_deg))
+    sp = lambda w, m: math.copysign(abs(w) ** m, w)
+    rows_ = []
+    vs = range(seg + 1)
+    for i in vs:
+        v = -math.pi / 2 + math.pi * i / seg
+        row = []
+        for j in range(seg + 1):
+            u = (-math.pi if not front_only else -math.pi) + (2 * math.pi if not front_only else math.pi) * j / seg
+            x = sp(math.cos(v), e) * sp(math.cos(u), e)
+            y = sp(math.cos(v), e) * sp(math.sin(u), e)
+            z = sp(math.sin(v), e)
+            belly = 1.0 + sag * (1.0 - (z + 1) / 2) * (1 - abs(x))          # fuller low down, toward the middle
+            lx, ly, lz = x * hx * (1 + 0.5 * sag * (1 - (z + 1) / 2)), y * hy * belly, z * hz
+            if front_only:
+                ly = min(ly, 0.0)                                           # the flap's outer half only (local -Y)
+            row.append(vert((c[0] + lx * cy_ - ly * sy_, c[1] + lx * sy_ + ly * cy_, c[2] + lz)))
+        rows_.append(row)
+    for r0, r1 in zip(rows_, rows_[1:]):
+        for j in range(seg):
+            quad(mat, r0[j], r0[j + 1], r1[j + 1], r1[j])
+
+
+pouch(bag_c, (22.0, 8.5, 18.0), BY)                                                  # body: soft, rounded, sagging
+pouch((bag_c[0] + fy_[0] * 0.6, bag_c[1] + fy_[1] * 0.6, bag_c[2] + 4.0), (23.5, 9.6, 11.5), BY, e=0.45, sag=0.0,
+      front_only=True)                                                                # flap lying over the top half
+box((bag_c[0] + fy_[0] * 5.3, bag_c[1] + fy_[1] * 5.3, bag_c[2] - 1.0), (2.6, 0.7, 3.2), BY)    # buckle tab
 
 # strap: cross-body, from her left shoulder diagonally across her back to the bag on her right flank
 top_l = (11.0, -3.5, 141.5)
