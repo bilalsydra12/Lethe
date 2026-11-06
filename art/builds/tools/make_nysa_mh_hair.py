@@ -29,6 +29,13 @@ def start():
     ch = unreal.load_asset(CH)
     if not sub.try_add_object_to_edit(ch):
         raise RuntimeError("cannot edit character")
+    swap = os.environ.get("LETHE_MH_HAIR_ITEM", "")
+    if swap:
+        # change the hairstyle: add the wardrobe item and make it the Hair slot's one selection
+        wi = unreal.load_asset("/MetaHumanCharacter/Optional/Grooms/Bindings/Hair/" + swap)
+        key = ch.internal_collection.try_add_item_from_wardrobe_item("Hair", wi)
+        ch.internal_collection.default_instance.set_single_slot_selection(slot_name="Hair", item_key=key)
+        log("hair swapped to %s" % swap)
     sub.assemble_for_preview(character=ch)
     for sd in ch.internal_collection.default_instance.get_slot_selection_data():
         s = sd.selection
@@ -59,6 +66,20 @@ def try_params():
                 log("%s instance: assembled %s, parameter item paths %s" % (nm, inst.is_assembled(), [str(p) for p in paths]))
             except Exception as e:  # noqa: BLE001
                 log("%s instance query failed: %s" % (nm, e))
+    if "Hair" not in st["done"]:
+        # the hair's parameters can sit under an item path we did not key: find it by its ombre controls (only hair has them)
+        for nm, inst in instances():
+            for ip in inst.get_instance_parameter_item_paths():
+                ps = inst.get_instance_parameters(item_path=ip)
+                if any(str(p.name) == "bUseOmbre" for p in ps):
+                    for p in ps:
+                        if str(p.name) in WANT:
+                            p.set_float(value=WANT[str(p.name)])
+                            log("  Hair.%s = %s (found by its ombre controls on the %s instance)" % (p.name, WANT[str(p.name)], nm))
+                    st["done"].add("Hair")
+                    break
+            if "Hair" in st["done"]:
+                break
     for slot, key in st["keys"].items():
         if slot in st["done"]:
             continue

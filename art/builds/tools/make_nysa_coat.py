@@ -34,6 +34,10 @@ def quad(mat, a, b, c, d):
 PROFILE = [(2, 29.5, 21, 22), (20, 27.5, 19.5, 20.5), (45, 24.5, 17, 18), (70, 21.5, 14.5, 15.5), (86, 19.0, 12.5, 13.0),
            (96, 16.0, 11.5, 10.8), (104, 15.0, 11.0, 10.3), (116, 16.5, 12.8, 10.3), (126, 18.5, 13.0, 10.8),
            (133, 21.0, 12.0, 11.5), (138, 21.0, 11.5, 11.5), (142, 18.5, 11.5, 12.8), (146, 13.0, 9.6, 11.0), (149, 10.4, 8.6, 9.6)]      # collar at the base of the neck, as painted
+# The MetaHuman hair lies close on her back: the coat's upper back sits a little inside it, so the hair falls over the coat
+# (only her dark body is under there). Depth to the back, in cm, taken off between the waist and the collar.
+BACK_IN = float(os.environ.get("LETHE_COAT_BACK_IN", "0.0"))
+PROFILE = [(z, rx, yf, yb - BACK_IN * max(0.0, min(1.0, (z - 104) / 12.0)) * (1.0 if z <= 146 else 0.6)) for (z, rx, yf, yb) in PROFILE]
 
 
 def lerp_profile(z):

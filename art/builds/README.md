@@ -731,3 +731,17 @@ Side by side, painting left: [compare/2026-11-06_painting_vs_match_r15.jpg](comp
 1. The top of her hair catches a cool grey sheen; the painting's highlights are warm brown.
 2. The ringlets still hang as one mass; the painting's fall in separate locks with gaps between.
 3. The painting shows the strap across her back and a belt buckle; ours are hidden or plain.
+
+## Painting match · round 16 · real hair, her face, her hand
+
+![painting match round 16](2026-11-07_gate_painting_match_r16.png)
+
+Nysa close up against the painting: [compare/2026-11-07_nysa_close_r16.jpg](compare/2026-11-07_nysa_close_r16.jpg).
+
+**What changed:**
+- **Real hair first** (the user's choice over tight curls). No free long curly hairstyle on Fab fits the project rules: the curly ones are paid, or marked "Allows usage with AI: No". So the generated curls are off (`LETHE_NYSA_CURLS=0`), and she wears MetaHuman's own **Long Straight** hairstyle in dark brown. `tools/make_nysa_mh_hair.py` can now swap the hairstyle (`LETHE_MH_HAIR_ITEM`) and finds the hair's colour controls itself. The style is bound to her head, so it turns with her face. On her it is shoulder length: a check render without the coat showed nothing hidden under it. ("Messy Clumps" was tried first and is shorter still.)
+- **Her face:** a violet bounce light from the lit post falls on her profile, as painted, on her lighting channel only.
+- **Her hand:** the gloves have a soft leather sheen so the fingers read, and the torch reaches 4 cm further out of her fist.
+
+**Still different:**
+1. Her hair is shoulder length and straight; the painting's falls in curls to mid-back.
