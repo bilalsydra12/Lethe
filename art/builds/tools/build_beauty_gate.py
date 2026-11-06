@@ -1238,7 +1238,7 @@ def build():
     lx, ly, lz = at_frame(float(os.environ.get("LETHE_GLANTERN_FX", "0.505")), float(os.environ.get("LETHE_GLANTERN_FY", "0.355")), _ld)
     log("gate lantern at (%.0f, %.0f, %.0f), frame %s" % (lx, ly, lz, str(frame_of(lx, ly, lz))))
     place_between("GateLantern_Hook", G, sm_bm, V(lx, ly, lz + 18), V(lx, ly, lz + 40), 1.6, m_iron)
-    lantern("GateLantern", G, (lx, ly, lz), 50, float(os.environ.get("LETHE_GLANTERN_LM", "11")), radius=520, vol=0.45, flame=1.15)
+    lantern("GateLantern", G, (lx, ly, lz), 50, float(os.environ.get("LETHE_GLANTERN_LM", "8")), radius=480, vol=0.22, flame=1.15)
 
     # --- the palisade -------------------------------------------------------------------------
     # left: a tight bundle of 35-50 cm trunks leaning toward the gate ("/" in frame), two roped rails, a row behind
@@ -1367,6 +1367,19 @@ def build():
     for (cdy, ch_) in ((-250, 360), (290, 320)):                                       # two chimneys on the ridge
         hbox("House_Chimney", -30, cdy, 900 + ch_ / 2 - 120, (75, 75, ch_), mi_dark)
         hbox("House_ChimneyCap", -30, cdy, 900 + ch_ - 120 + 6, (92, 92, 12), mi_dark)
+    _away = (HX - CAM[0], HY - CAM[1])
+    _al = math.hypot(*_away)
+    _bg = (HX + _away[0] / _al * float(os.environ.get("LETHE_BACKGLOW_DIST", "1600")),
+           HY + _away[1] / _al * float(os.environ.get("LETHE_BACKGLOW_DIST", "1600")), 1000.0)
+    bga, bgl = light(unreal.PointLight, "House_BackGlow", B, _bg)
+    safe_set(bgl, "intensity_units", unreal.LightUnits.LUMENS)
+    safe_set(bgl, "intensity", float(os.environ.get("LETHE_BACKGLOW", "3600")))
+    safe_set(bgl, "use_temperature", True)
+    safe_set(bgl, "temperature", 7000.0)
+    safe_set(bgl, "attenuation_radius", 3200.0)
+    safe_set(bgl, "source_radius", 200.0)
+    safe_set(bgl, "volumetric_scattering_intensity", float(os.environ.get("LETHE_BACKGLOW_VOL", "4.0")))
+    log("house back glow at %s, frame %s" % (str([round(x) for x in _bg]), str(frame_of(*_bg))))
     log("house at (%.0f, %.0f) scale %.2f, ridge frame %s, gable window frame %s" % (HX, HY, HS, str(frame_of(*hloc(0, 0, 930))),
         str(frame_of(*hloc(0, -452, 700)))))
 

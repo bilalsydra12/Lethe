@@ -686,3 +686,28 @@ Side by side, painting left: [compare/2026-11-05_painting_vs_match_r13.jpg](comp
 **Still different:**
 1. The top right is still darker than the painting's lit fog.
 2. The centre, through the gate, is a little brighter than the painting's.
+
+## Painting match · round 14 · the fog behind the house
+
+![painting match round 14](2026-11-06_gate_painting_match_r14.png)
+
+Side by side, painting left: [compare/2026-11-06_painting_vs_match_r14.jpg](compare/2026-11-06_painting_vs_match_r14.jpg).
+
+**What changed:**
+- **Lit fog behind the house.** A broad, cool light 16 m behind the house makes the fog there glow, so the house, its chimney and the right-hand stakes stand dark against it, as painted. 6000 lm overshot (top-right cell 74 against 53); it is 3600 lm.
+- **Darker gate gap.** The gate lantern is down to 8 lm and lights much less of the fog around it.
+
+| Cell | Painting | Round 13 | Round 14 |
+|---|---|---|---|
+| top left | 65 62 68 | 56 46 51 | 57 48 53 |
+| top centre | 45 45 49 | 34 29 33 | 44 40 45 |
+| top right | 53 47 48 | 26 23 27 | 61 56 60 |
+| left | 40 39 42 | 39 37 48 | 38 38 48 |
+| centre | 27 23 25 | 37 30 31 | 32 28 31 |
+| post | 36 31 40 | 31 28 34 | 36 33 40 |
+| bottom left | 41 40 42 | 40 38 41 | 40 37 41 |
+| bottom centre | 22 19 17 | 32 28 29 | 32 29 30 |
+| bottom right | 24 20 16 | 12 10 10 | 14 12 11 |
+
+**Still different:**
+1. The bottom centre (her coat and the mud at her feet) is a little brighter than the painting's; the bottom right, at the post's foot, is darker.
