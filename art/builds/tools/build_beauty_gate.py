@@ -1,4 +1,4 @@
-﻿"""
+"""
 LETHE Â· Roanoke beauty corner: the CROATOAN gate at final quality (target: art/levels/roanoke/croatoan-gate.jpg).
 
 Free Quixel Megascans from Fab (Standard License, $0 for Unreal), downloaded to C:/LETHE/SourceArt/Megascans:
@@ -642,6 +642,36 @@ def m_cloth(name, rgb, rough, tex=None, sheen=0.0):
     mel.recompile_material(m)
     return m
 
+
+def m_fabric(name, rgb, rough, dtex, ntex, tile=1.0, sheen=0.3, nstrength=1.0, metal=0.0):
+    """Cloth / leather with a tiling detail albedo (times the tint) and a weave / grain normal map; skeletal-safe."""
+    m = new_material(name)
+    safe_set(m, "used_with_skeletal_mesh", True)
+    uvs = mul(m, E(m, unreal.MaterialExpressionTextureCoordinate, -1500, 0), E(m, unreal.MaterialExpressionConstant, -1500, 120, r=tile), -1300, 0)
+    col = vparam(m, "Tint", rgb, -600, -200)
+    if dtex is not None:
+        t_ = E(m, unreal.MaterialExpressionTextureSample, -1000, -100)
+        t_.set_editor_property("texture", dtex)
+        link(uvs, "", t_, "UVs")
+        col = mul(m, t_, col, -400, -100, "RGB")
+    to_prop(col, "", MP.MP_BASE_COLOR)
+    if ntex is not None:
+        n_ = E(m, unreal.MaterialExpressionTextureSample, -1000, 300)
+        n_.set_editor_property("texture", ntex)
+        safe_set(n_, "sampler_type", unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+        link(uvs, "", n_, "UVs")
+        if False:   # (no FlattenNormal expression in Python: strength is baked into the generated textures)
+            fl = E(m, unreal.MaterialExpressionFlattenNormal, -700, 300)
+            link(n_, "RGB", fl, "Normal")
+            link(E(m, unreal.MaterialExpressionConstant, -900, 450, r=max(0.0, 1.0 - nstrength)), "", fl, "Flatness")
+            to_prop(fl, "", MP.MP_NORMAL)
+        else:
+            to_prop(n_, "RGB", MP.MP_NORMAL)
+    to_prop(E(m, unreal.MaterialExpressionConstant, -400, 200, r=rough), "", MP.MP_ROUGHNESS)
+    to_prop(E(m, unreal.MaterialExpressionConstant, -400, 300, r=sheen), "", MP.MP_SPECULAR)
+    to_prop(E(m, unreal.MaterialExpressionConstant, -400, 400, r=metal), "", MP.MP_METALLIC)
+    mel.recompile_material(m)
+    return m
 
 def mi(name, parent, scalars=None, vectors=None, textures=None):
     path = ROOT + "/Materials/" + name
@@ -1647,7 +1677,7 @@ def build():
         cdir = ROOT + "/NysaCoat"
         if eal.does_directory_exist(cdir):
             eal.delete_directory(cdir)
-        import_file(SRC + "/Nysa/coat/NysaCoat.obj", cdir)
+        import_file(SRC + "/Nysa/coat/" + os.environ.get("LETHE_NYSA_COAT_OBJ", "NysaCoat_cloth.obj"), cdir)
         coat_parts = [a_ for a_ in (unreal.load_asset(p_) for p_ in eal.list_assets(cdir, recursive=True))
                       if isinstance(a_, unreal.StaticMesh)]
         if os.environ.get("LETHE_NYSA_COAT", "1") != "1":
@@ -1656,16 +1686,25 @@ def build():
             ylo_ = min(a_.get_bounding_box().min.y for a_ in coat_parts)
             yhi_ = max(a_.get_bounding_box().max.y for a_ in coat_parts)
             mir = -1.0 if yhi_ < -ylo_ else 1.0          # the importer may flip Y; the sleeves reach forward (+Y)
+            if "cloth" in os.environ.get("LETHE_NYSA_COAT_OBJ", "NysaCoat_cloth.obj"):
+                mir = -1.0                                # the OBJ importer flips Y; the Blender coat is wider at the back than the sleeves reach, so no guessing
             log("coat: %d part(s), y %.1f..%.1f, mirror y %s" % (len(coat_parts), ylo_, yhi_, mir))
-            mi_wool = m_cloth("M_Nysa_Wool", (0.034, 0.033, 0.040), 0.82, plaster_tx.get("BaseColor"), 0.25)
-            mi_leather = m_cloth("M_Nysa_Leather", (0.062, 0.038, 0.024), 0.45, plaster_tx.get("BaseColor"), 0.0)
+            for tn_ in ("T_NysaWool_D", "T_NysaWool_N", "T_NysaLeather_D", "T_NysaLeather_N"):     # regenerated each round: re-import
+                if eal.does_asset_exist(ROOT + "/Textures/" + tn_):
+                    eal.delete_asset(ROOT + "/Textures/" + tn_)
+            # wool and leather with woven / pebbled detail (Scripts/make_fabric_textures.py); the coat's UVs are 40 cm a tile
+            mi_wool = m_fabric("M_Nysa_Wool", (0.014, 0.013, 0.015), 0.86, tex("Nysa/coat", "T_NysaWool_D.png", "color"),
+                               tex("Nysa/coat", "T_NysaWool_N.png", "normal"), 4.0, 0.25, 0.8)
+            mi_leather = m_fabric("M_Nysa_Leather", (0.030, 0.019, 0.012), 0.50, tex("Nysa/coat", "T_NysaLeather_D.png", "color"),
+                                  tex("Nysa/coat", "T_NysaLeather_N.png", "normal"), 4.0, 0.45, 0.7)
+            mi_metal = m_fabric("M_Nysa_Brass", (0.32, 0.24, 0.13), 0.38, None, None, 1.0, 0.5, 1.0, 1.0)
             for coat_sm in coat_parts:
                 ca_ = actors.spawn_actor_from_class(unreal.StaticMeshActor, V(NX, NY, 0.0), unreal.Rotator(0, 0, myaw))
                 ca_.static_mesh_component.set_static_mesh(coat_sm)
                 ca_.set_actor_scale3d(V(nsc, nsc * mir, nsc))
                 for k_, slot in enumerate(coat_sm.static_materials):
                     nm_s = (str(slot.material_slot_name) + coat_sm.get_name()).lower()
-                    ca_.static_mesh_component.set_material(k_, mi_leather if "leather" in nm_s else mi_wool)
+                    ca_.static_mesh_component.set_material(k_, mi_leather if "leather" in nm_s else (mi_metal if "metal" in nm_s else mi_wool))
                 tag(ca_, "Nysa_Coat_" + coat_sm.get_name(), N)
         else:
             log("COAT IMPORT FAILED")

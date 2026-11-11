@@ -745,3 +745,21 @@ Nysa close up against the painting: [compare/2026-11-07_nysa_close_r16.jpg](comp
 
 **Still different:**
 1. Her hair is shoulder length and straight; the painting's falls in curls to mid-back.
+
+## Painting match · round 17 · a new coat made in Blender
+
+![painting match round 17](2026-11-11_gate_painting_match_r17.png)
+
+Nysa close up against the painting: [compare/2026-11-11_nysa_close_r17.jpg](compare/2026-11-11_nysa_close_r17.jpg).
+
+**What changed:**
+- **Blender 5.3** (free, from blender.org; the portable build in `C:\LETHE\Tools`, checksum verified) now makes Nysa's clothes, run by script with no clicking.
+- `tools/export_nysa_body_fbx.py` exports her MetaHuman body and the lamp pose from Unreal. `tools/blender_drape_coat.py` rebuilds her exact pose in Blender (it lands on the pose data to within 0.5 cm). It then builds a one-piece long coat around her real body: fitted to the shirt line, a belted waist, an A-line skirt with heavy folds deepening to the hem, and sleeves along each arm with creases at the elbow. On top go a smooth belt with a brass buckle, brass buttons, a leather satchel (flap, straps, buckles) and a cross-body strap. Out comes `NysaCoat_cloth.obj`.
+- `tools/make_fabric_textures.py` generates a wool twill weave and a pebbled leather grain from code (no downloads); the coat and leather materials use them.
+- Near-black wool and dark leather, as painted.
+- A cloth simulation is in the script (`LETHE_CLOTH_FRAMES`), but it is off: on this body it crumpled the coat, so the folds are shaped directly instead.
+
+**Still different:**
+1. Her hair: straight and shoulder length; the painting's is long dark curls.
+2. Her shoulders read broad and square; the painting's coat is narrow at the shoulder.
+3. Her face is MetaHuman's default.
