@@ -168,8 +168,8 @@ def clump_path(ci):
         # different amounts so the curls pile up in depth instead of lying in one flat sheet
         # the mass falls a little toward her left (+X), as painted, leaving the strap on her right shoulder in view;
         # strands on her right side draw in toward the middle
-        x = (x0 * (0.55 if UNDER else 1.0)) * (1.0 + 0.004 * s) * (0.9 if x0 < 0 else 0.92) + c["drift"] * s + c["wa"] * math.sin(c["wob"] + s * c["wobf"]) \
-            + 1.2 * min(1.0, s / 18.0)
+        x = ((x0 - XS) * (1.0 + 0.045 * min(s, 32.0)) + XS * (1.0 - min(1.0, s / 22.0)) if UNDER else x0 * (1.0 + 0.004 * s) * (0.9 if x0 < 0 else 0.92)) + c["drift"] * 0.5 * s + c["wa"] * math.sin(c["wob"] + s * c["wobf"]) \
+            + (0.0 if UNDER else 1.2) * min(1.0, s / 18.0)
         y = min(y0 - 0.02 * s, back_y(x, z) - 1.2 - c["stand"] * min(1.0, s / 15.0) - 0.03 * s) \
             + 0.8 * math.sin(c["wob"] * 1.7 + s * c["wobf"] * 0.8)
         pts.append((x, y, z))
@@ -189,6 +189,9 @@ def tangent_frame(path, i):
     return t, n, b2
 
 
+# where the back of the (turned) head is: the hanging mass is drawn from there back to the middle of her back as it falls,
+# and fans out across it
+XS = turned(surf(math.pi, 1.6))[0]
 paths = [clump_path(i) for i in range(N_CLUMPS)]
 frames = [[tangent_frame(p, i) for i in range(len(p))] for p in paths]
 

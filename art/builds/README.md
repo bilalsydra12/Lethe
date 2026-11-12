@@ -777,3 +777,17 @@ Nysa close up against the painting: [compare/2026-11-12_nysa_close_r18.jpg](comp
 **Still different:**
 1. The ringlets hang mostly to her left of the coat's back; the painting's spread more across her back.
 2. Her face is MetaHuman's default.
+
+## Painting match · round 19 · curls across her back
+
+![painting match round 19](2026-11-12_gate_painting_match_r19.png)
+
+Nysa close up against the painting: [compare/2026-11-12_nysa_close_r19.jpg](compare/2026-11-12_nysa_close_r19.jpg).
+
+**What changed:**
+- The ringlets fan out as they fall: from the back of her turned head they're drawn back to the middle of her back and spread across its width, as painted, instead of hanging down one side (`tools/make_nysa_curls.py`; 18,000 strands in 105 ringlets).
+- A deeper brown, closer to her own hair on top.
+
+**Still different:**
+1. Her face is MetaHuman's default.
+2. Under the warm rim light the curls still read a little lighter than the painting's at their tips.

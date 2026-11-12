@@ -1742,8 +1742,8 @@ def build():
             groom_ = next((a_ for a_ in (unreal.load_asset(p_) for p_ in eal.list_assets(hdir, recursive=True))
                            if isinstance(a_, unreal.GroomAsset)), None)
             if groom_:
-                m_curls = m_hair_strands("M_Nysa_Curls", [float(x) for x in os.environ.get("LETHE_CURL_RGB", "0.018,0.011,0.007").split(",")],
-                                         rgb2=[float(x) for x in os.environ.get("LETHE_CURL_RGB2", "0.034,0.020,0.013").split(",")], rough=0.5, spec=0.16)
+                m_curls = m_hair_strands("M_Nysa_Curls", [float(x) for x in os.environ.get("LETHE_CURL_RGB", "0.009,0.0055,0.0036").split(",")],
+                                         rgb2=[float(x) for x in os.environ.get("LETHE_CURL_RGB2", "0.019,0.0115,0.0075").split(",")], rough=0.5, spec=0.16)
                 log("curl material: hair strands usage %s" % m_curls.get_editor_property("used_with_hair_strands"))
                 # no simulation (it would let the curls sag flat during the render), and our material on the asset itself
                 # (struct arrays come back as copies: modify, then set them back)
