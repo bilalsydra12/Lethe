@@ -12,7 +12,10 @@ import os
 import random
 import sys
 
-N_STRANDS = int(sys.argv[1]) if len(sys.argv) > 1 else int(os.environ.get("LETHE_CURL_STRANDS", "16000"))
+N_STRANDS = int(os.environ.get("LETHE_CURL_STRANDS", "14000"))
+# UNDER: the curls grow from the back and underside of the head, hidden under the MetaHuman hair, and carry on below
+# it as long ringlets to mid-back (the real hair keeps the hairline and crown)
+UNDER = os.environ.get("LETHE_CURLS_UNDER", "1") == "1"
 OUT = "C:/LETHE/SourceArt/Nysa/curls/NysaCurls.usda"
 rng = random.Random(21)
 pose = json.load(open("C:/LETHE/Saved/nysa_mh_pose.json"))
@@ -77,8 +80,24 @@ def center_y(z):
     return SPINE[-1][1]
 
 
+COAT_OBJ = "C:/LETHE/SourceArt/Nysa/coat/NysaCoat_cloth.obj"
+BACK = {}
+if os.path.exists(COAT_OBJ):
+    for line in open(COAT_OBJ):
+        if line.startswith("v "):
+            _x, _y, _z = (float(t) for t in line.split()[1:4])
+            k_ = (int(math.floor(_z)), int(math.floor(_x / 2.0)))
+            if _y < BACK.get(k_, 1e9):
+                BACK[k_] = _y
+
+
 def back_y(x, z):
-    """Y of the coat's back surface at (x, z); nothing behind her below the head."""
+    """Y of the coat's back surface at (x, z) (the Blender coat, else the old profile)."""
+    if BACK:
+        zi, xi = int(math.floor(z)), int(math.floor(x / 2.0))
+        cand = [BACK[(zi + dz, xi + dx)] for dz in (-1, 0, 1) for dx in (-1, 0, 1) if (zi + dz, xi + dx) in BACK]
+        if cand:
+            return min(cand) - 0.8
     rx, yf, yb = lerp_tab(PROFILE, z)
     q = min(0.98, abs(x) / rx)
     return center_y(z) - yb * math.sqrt(1 - q * q)
@@ -90,9 +109,11 @@ while len(roots) < N_STRANDS:
     u = rng.uniform(0, 2 * math.pi)
     v = math.acos(rng.uniform(-0.25, 1.0))
     p = surf(u, v)
+    if UNDER and not (math.cos(u) < 0.1 and 1.25 < v < 2.15):
+        continue
     if on_scalp(p):
         roots.append((u, v))
-N_CLUMPS = max(60, N_STRANDS // 90)
+N_CLUMPS = max(60, N_STRANDS // (170 if UNDER else 90))
 clumps = [roots[rng.randrange(len(roots))] for _ in range(N_CLUMPS)]
 
 
@@ -109,9 +130,9 @@ def nearest_clump(r):
 
 CL = []
 for c in clumps:
-    CL.append({"len": rng.uniform(36, 58), "rad": rng.uniform(1.6, 3.3), "pitch": rng.uniform(4.2, 7.0),
+    CL.append({"len": rng.uniform(44, 60) if UNDER else rng.uniform(36, 58), "rad": rng.uniform(2.2, 3.9), "pitch": rng.uniform(4.5, 7.5),
                "phase": rng.uniform(0, 6.28), "spin": rng.choice((-1, 1)), "drift": rng.uniform(-0.22, 0.22),
-               "lift": rng.uniform(1.4, 3.6), "stand": rng.uniform(0.0, 5.5) ** 1.2, "wob": rng.uniform(0, 6.28),
+               "lift": rng.uniform(1.4, 3.6), "stand": rng.uniform(0.0, 2.6) ** 1.1, "wob": rng.uniform(0, 6.28),
                "wobf": rng.uniform(0.04, 0.10), "wa": rng.uniform(1.2, 3.4)})     # ringlets sway, none hangs plumb
 
 
@@ -124,7 +145,7 @@ def clump_path(ci):
     u, v = u0, v0
     back_u = math.pi if u0 >= 0 else -math.pi
     while True:
-        p = surf_t(u, v, c["lift"] * (0.4 + 0.6 * min(1.0, v / 1.6)))
+        p = surf_t(u, v, (-0.8 + 0.4 * min(1.0, v / 1.6)) if UNDER else c["lift"] * (0.4 + 0.6 * min(1.0, v / 1.6)))
         pts.append(p)
         if v > 1.9 or p[2] < 150.0:
             break
@@ -147,8 +168,8 @@ def clump_path(ci):
         # different amounts so the curls pile up in depth instead of lying in one flat sheet
         # the mass falls a little toward her left (+X), as painted, leaving the strap on her right shoulder in view;
         # strands on her right side draw in toward the middle
-        x = x0 * (1.0 + 0.007 * s) * (0.82 if x0 < 0 else 1.0) + c["drift"] * s + c["wa"] * math.sin(c["wob"] + s * c["wobf"]) \
-            + 3.5 * min(1.0, s / 18.0)
+        x = (x0 * (0.55 if UNDER else 1.0)) * (1.0 + 0.004 * s) * (0.9 if x0 < 0 else 0.92) + c["drift"] * s + c["wa"] * math.sin(c["wob"] + s * c["wobf"]) \
+            + 1.2 * min(1.0, s / 18.0)
         y = min(y0 - 0.02 * s, back_y(x, z) - 1.2 - c["stand"] * min(1.0, s / 15.0) - 0.03 * s) \
             + 0.8 * math.sin(c["wob"] * 1.7 + s * c["wobf"] * 0.8)
         pts.append((x, y, z))
@@ -179,9 +200,9 @@ for r in roots:
     off0 = [pr[k] - pc[k] for k in range(3)]                 # where this strand starts relative to its clump
     jitter = rng.uniform(0.82, 1.18)
     ph_off = rng.gauss(0, 0.55)
-    stray = rng.random() < 0.05                              # one in twenty works loose of its ringlet
+    stray = rng.random() < 0.015                              # one in twenty works loose of its ringlet
     # each strand: its own place inside the ringlet, its own fine crimp, and a slow wander (smooth, no per-point noise)
-    spread = [rng.gauss(0, 0.2), rng.gauss(0, 0.2)]
+    spread = [rng.gauss(0, 0.07), rng.gauss(0, 0.07)]
     crimp_r, crimp_p, crimp_ph = rng.uniform(0.02, 0.08), rng.uniform(0.7, 1.2), rng.uniform(0, 6.28)
     wand = [(rng.uniform(0.02, 0.09), rng.uniform(0, 6.28), rng.uniform(0.04, 0.16) * (14.0 if stray else 1.0)) for _ in range(2)]
     my_len = len(path) * rng.uniform(0.74, 1.0)
@@ -224,6 +245,6 @@ with open(OUT, "w") as f:
     f.write(", ".join("(%.3f, %.3f, %.3f)" % (p[0], -p[1], p[2]) for c in curves for p in c))
     f.write("]\n")
     f.write("        float[] widths = [%s] (\n            interpolation = \"vertex\"\n        )\n" %
-            ", ".join("%.4f" % (0.013 * (1.0 - 0.7 * i / max(1, len(c) - 1))) for c in curves for i in range(len(c))))
+            ", ".join("%.4f" % (0.0085 * (1.0 - 0.6 * i / max(1, len(c) - 1))) for c in curves for i in range(len(c))))
     f.write("    }\n}\n")
 print("wrote %s: %d strands, %d clumps, %d points" % (OUT, len(curves), N_CLUMPS, nv))

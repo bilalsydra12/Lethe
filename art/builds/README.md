@@ -763,3 +763,17 @@ Nysa close up against the painting: [compare/2026-11-11_nysa_close_r17.jpg](comp
 1. Her hair: straight and shoulder length; the painting's is long dark curls.
 2. Her shoulders read broad and square; the painting's coat is narrow at the shoulder.
 3. Her face is MetaHuman's default.
+
+## Painting match · round 18 · narrower shoulders, long curls
+
+![painting match round 18](2026-11-12_gate_painting_match_r18.png)
+
+Nysa close up against the painting: [compare/2026-11-12_nysa_close_r18.jpg](compare/2026-11-12_nysa_close_r18.jpg).
+
+**What changed:**
+- **Shoulders:** the Blender coat no longer follows the placeholder shirt's puffy sleeves at the shoulder line: its width there is capped, and the sleeve tops are slimmer (`tools/blender_drape_coat.py`).
+- **Curls:** her real MetaHuman hair stays on the crown and hairline. Long dark ringlets now grow from under it at the back of her head and fall to mid-back (`tools/make_nysa_curls.py`, `LETHE_CURLS_UNDER=1`, 16,000 strands in 94 ringlets). They rest on the new coat's real back surface, read from `NysaCoat_cloth.obj`. Thin strands, separate ringlets with dark gaps, deep brown with a soft sheen.
+
+**Still different:**
+1. The ringlets hang mostly to her left of the coat's back; the painting's spread more across her back.
+2. Her face is MetaHuman's default.

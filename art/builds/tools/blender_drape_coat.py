@@ -233,6 +233,10 @@ for i, (c, rr) in enumerate(rings):
         # a few long creases running down from the shoulder blades
         if 104 < z < 138:
             r += 0.35 * math.sin(6 * a + 0.05 * z) * math.sin(math.pi * (z - 104) / 34)
+        # narrow shoulders, as painted: the coat hugs the shoulder line instead of the placeholder shirt's sleeves
+        if z > 110 and abs(math.cos(a)) > 0.25:
+            xl_ = 19.8 + 3.2 * max(0.0, min(1.0, (128.0 - z) / 18.0))
+            r = min(r, xl_ / abs(math.cos(a)))
         verts.append((c.x + r * math.cos(a), c.y + r * math.sin(a), z))
 for i in range(len(rings) - 1):
     for k in range(SEG):
@@ -261,7 +265,7 @@ for sd in ("r", "l"):
         u.normalize()
         w = t.cross(u).normalized()
         s_ = j / (tot - 1)
-        r = 7.6 - 2.4 * s_ + 0.6 * math.sin(math.pi * s_)
+        r = 6.7 - 1.6 * s_ + 0.5 * math.sin(math.pi * s_)
         de_ = (p - el).length
         bend_ = max(0.0, 1.0 - de_ / 9.0)                          # bunching where the arm bends
         cuff_ = max(0.0, (s_ - 0.8) / 0.2)                         # pushed-up cuff gathers
